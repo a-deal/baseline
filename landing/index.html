@@ -1454,12 +1454,60 @@ footer p {
 
 <div class="divider"></div>
 
-<!-- What you're missing -->
+<!-- Cost Comparison -->
 <section>
-  <div class="container" style="text-align:center;">
-    <h2>Every tool covers a slice.<br>What's yours missing?</h2>
-    <p style="color:var(--text-muted);font-size:0.92rem;margin-bottom:28px;">Oura, Function Health, Whoop, your annual physical — each covers different ground. See what falls through the cracks and the cheapest way to close the gap.</p>
-    <a href="/baseline/gaps" style="color:var(--text);font-weight:500;font-family:var(--font-mono);font-size:0.82rem;border-bottom:1px solid rgba(255,255,255,0.2);padding-bottom:2px;transition:border-color 0.2s;">See what your setup misses &rarr;</a>
+  <div class="container">
+    <p class="section-label">Cost comparison</p>
+    <h2>Where your health data lives today.</h2>
+
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>Product</th>
+          <th>Cost/yr</th>
+          <th>Designed for</th>
+          <th>Foundation (T1)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Function Health</td>
+          <td class="price">$365</td>
+          <td>Deep blood work (160+ tests, 2x/yr)</td>
+          <td class="coverage-cell"><span class="coverage-inline"><span class="mini-bar" style="width:38px"></span> 62%</span></td>
+        </tr>
+        <tr>
+          <td>InsideTracker</td>
+          <td class="price">$249–589</td>
+          <td>Blood + DNA optimization</td>
+          <td class="coverage-cell"><span class="coverage-inline"><span class="mini-bar" style="width:34px"></span> 55%</span></td>
+        </tr>
+        <tr>
+          <td>Oura Ring</td>
+          <td class="price">$369 yr 1</td>
+          <td>Sleep + recovery tracking</td>
+          <td class="coverage-cell"><span class="coverage-inline"><span class="mini-bar" style="width:14px"></span> 22%</span></td>
+        </tr>
+        <tr>
+          <td>Whoop</td>
+          <td class="price">$239</td>
+          <td>Strain + recovery coaching</td>
+          <td class="coverage-cell"><span class="coverage-inline"><span class="mini-bar" style="width:14px"></span> 22%</span></td>
+        </tr>
+        <tr class="row-baseline">
+          <td>Baseline T1</td>
+          <td class="price">~$100</td>
+          <td>Coverage scoring across all domains</td>
+          <td class="coverage-cell"><span class="coverage-inline"><span class="mini-bar" style="width:60px"></span> 100%</span></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p class="compare-note">
+      Each of these products is excellent at what it's designed for — deep labs, sleep optimization, recovery coaching. Baseline isn't a replacement for any of them. It's the <strong>layer that shows you the full picture</strong>: what you've covered across all domains, what's still missing, and what to do next. Different tools give you different slices. <strong>Baseline is the map.</strong> Year 2+ cost drops to ~$70–110 (just the annual labs).
+    </p>
+
+    <p style="margin-top:24px;"><a href="/baseline/gaps" style="color:var(--text-muted);font-family:var(--font-mono);font-size:0.78rem;border-bottom:1px solid rgba(255,255,255,0.15);padding-bottom:1px;">See what your current setup misses &rarr;</a></p>
   </div>
 </section>
 
