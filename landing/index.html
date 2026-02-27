@@ -477,6 +477,96 @@ h2 {
 
 .compare-note strong { color: var(--text); }
 
+/* Product gap cards */
+.gap-cards {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-top: 32px;
+}
+
+.gap-card {
+  padding: 18px 20px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+
+.gap-card .gap-product {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 500;
+  color: var(--text-dim);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.gap-card .gap-text {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  line-height: 1.55;
+}
+
+.gap-card .gap-text strong { color: var(--text); }
+
+/* Journey before/after */
+.journey-visual {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin: 32px 0 12px;
+  justify-content: center;
+}
+
+.journey-score {
+  text-align: center;
+}
+
+.journey-score .j-num {
+  font-family: var(--font-display);
+  font-size: 2.4rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.journey-score .j-num.before { color: var(--red); opacity: 0.7; }
+.journey-score .j-num.after { color: var(--text); }
+
+.journey-score .j-label {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  color: var(--text-dim);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-top: 4px;
+}
+
+.journey-arrow {
+  font-family: var(--font-mono);
+  font-size: 1.2rem;
+  color: var(--text-dim);
+}
+
+.journey-cost {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  padding: 8px 14px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+}
+
+/* Score counter */
+.score-counter {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-dim);
+  letter-spacing: 0.04em;
+  margin-top: 16px;
+}
+
 @media (max-width: 600px) {
   .compare-table th,
   .compare-table td {
@@ -484,6 +574,8 @@ h2 {
     font-size: 0.75rem;
   }
   .compare-table td.price { font-size: 0.72rem; }
+  .gap-cards { grid-template-columns: 1fr; }
+  .journey-visual { flex-wrap: wrap; gap: 16px; }
 }
 
 /* ── How It Works ── */
@@ -1052,6 +1144,7 @@ footer p {
       <button type="submit">Get early access</button>
     </form>
     <p class="trust-line">Free. Local-first. Your data stays yours.</p>
+    <p class="score-counter" id="score-counter"></p>
   </div>
 </div>
 <a href="#score-section" class="score-link">Calculate your score &darr;</a>
@@ -1243,6 +1336,25 @@ footer p {
     <p class="compare-note">
       These products are excellent at what they do. But none of them tell you what's <strong>missing</strong>. A Function Health member still has gaps in blood pressure monitoring, family history, medication context, and sleep regularity — things no blood test covers. <strong>7 of our 10 foundation metrics don't require a blood draw.</strong> Year 2+ cost drops to ~$70–110 (just the annual labs).
     </p>
+
+    <div class="gap-cards">
+      <div class="gap-card">
+        <div class="gap-product">Oura / Whoop user?</div>
+        <div class="gap-text">You're nailing sleep and recovery. You've likely <strong>never had ApoB or fasting insulin tested</strong>. Those two add-ons (~$30) would fill your biggest blind spots.</div>
+      </div>
+      <div class="gap-card">
+        <div class="gap-product">Function Health member?</div>
+        <div class="gap-text">160+ labs is impressive. But you're still missing <strong>blood pressure monitoring, family history, and medication context</strong> — things no blood test covers.</div>
+      </div>
+      <div class="gap-card">
+        <div class="gap-product">Annual physical only?</div>
+        <div class="gap-text">Your doctor ordered the standard panel. You probably don't know what was on it. <strong>Ask for a copy</strong> — and add ApoB and Lp(a) by name next time.</div>
+      </div>
+      <div class="gap-card">
+        <div class="gap-product">Just your phone?</div>
+        <div class="gap-text">Steps count. Literally. Each +1,000/day = <strong>~15% lower mortality</strong>. A $40 blood pressure cuff and one conversation with your parents gets you to 50%+.</div>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -1289,6 +1401,12 @@ footer p {
   <div class="container">
 
     <h2>I ran myself through 40 metrics.</h2>
+    <div class="journey-visual">
+      <div class="journey-score"><div class="j-num before">42%</div><div class="j-label">Before</div></div>
+      <div class="journey-arrow">&rarr;</div>
+      <div class="journey-score"><div class="j-num after">85%</div><div class="j-label">After</div></div>
+      <div class="journey-cost">~$50 to close the gap</div>
+    </div>
     <div class="story-block">
       <p>Seven draws. 200 biomarkers. Full blood work through Quest. My health coverage when I started: <strong>42%</strong>.</p>
       <p>The gaps weren't what I expected. I had comprehensive blood panels but had never collected family history. I tracked sleep duration religiously but not regularity. My wearable had 18 months of resting heart rate data — I'd never looked at the trend.</p>
@@ -1665,6 +1783,19 @@ document.querySelectorAll('form').forEach(form => {
     // Set hidden fields
     document.getElementById('hidden-score').value = score + '%';
     document.getElementById('hidden-catchall').value = 'via-chatgpt';
+
+    // Silent ping — capture score data even if user doesn't enter email
+    const pingData = new FormData();
+    pingData.append('_subject', 'Score ping (no email)');
+    pingData.append('source', 'chatgpt-deeplink');
+    pingData.append('coverage_score', score + '%');
+    if (!isNaN(t1)) pingData.append('t1', t1 + '%');
+    if (!isNaN(t2)) pingData.append('t2', t2 + '%');
+    if (insights) pingData.append('insights', insights);
+    fetch('https://formspree.io/f/mjgezrdp', {
+      method: 'POST', body: pingData,
+      headers: { 'Accept': 'application/json' }
+    }).catch(() => {});
   }
 })();
 
@@ -2005,6 +2136,20 @@ document.querySelectorAll('form').forEach(form => {
     // Hidden fields for Formspree
     document.getElementById('hidden-score').value = score.pct + '%';
     document.getElementById('hidden-catchall').value = answers.catchall;
+
+    // Silent ping — capture score data even if user doesn't enter email
+    const pingData = new FormData();
+    pingData.append('_subject', 'Score ping (no email)');
+    pingData.append('source', 'intake-form');
+    pingData.append('coverage_score', score.pct + '%');
+    pingData.append('t1', score.t1Pct + '%');
+    pingData.append('t2', score.t2Pct + '%');
+    pingData.append('insights', insights.map(i => i.id).join(','));
+    if (answers.catchall) pingData.append('catchall', answers.catchall);
+    fetch('https://formspree.io/f/mjgezrdp', {
+      method: 'POST', body: pingData,
+      headers: { 'Accept': 'application/json' }
+    }).catch(() => {});
   }
 })();
 </script>
