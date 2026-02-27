@@ -166,6 +166,20 @@ h1 .word-not {
   letter-spacing: 0.06em;
 }
 
+.score-link {
+  display: inline-block;
+  margin-top: 20px;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-dim);
+  letter-spacing: 0.04em;
+  transition: color 0.2s;
+}
+
+.score-link:hover {
+  color: var(--text-muted);
+}
+
 /* ── Divider ── */
 .divider {
   width: 40px;
@@ -919,6 +933,7 @@ footer p {
       <button type="submit">Get early access</button>
     </form>
     <p class="trust-line">Free. Local-first. Your data stays yours.</p>
+    <a href="#score-section" class="score-link">or calculate your score now &darr;</a>
   </div>
 </div>
 
