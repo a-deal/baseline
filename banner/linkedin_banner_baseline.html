@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1584">
+<title>Baseline — LinkedIn Banner</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=DM+Sans:wght@400;500;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    width: 1584px;
+    height: 396px;
+    overflow: hidden;
+    background: #000;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .banner {
+    width: 1584px;
+    height: 396px;
+    position: relative;
+    overflow: hidden;
+    background: #08080a;
+  }
+
+  /* Subtle grid pattern */
+  .banner::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(ellipse 55% 65% at 72% 50%, black 10%, transparent 60%);
+    -webkit-mask-image: radial-gradient(ellipse 55% 65% at 72% 50%, black 10%, transparent 60%);
+  }
+
+  /* LinkedIn safe zone: profile photo overlaps bottom-left.
+     Keep content right-aligned and vertically centered.
+     Safe area roughly: top 60px to bottom 60px, left 400px to right edge */
+
+  .brand-name {
+    position: absolute;
+    top: 128px;
+    right: 100px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 24px;
+    letter-spacing: -0.5px;
+    text-transform: lowercase;
+    color: #f0f0f0;
+    line-height: 1;
+    z-index: 10;
+  }
+
+  .brand-name .period {
+    color: #c83c3c;
+  }
+
+  .tagline-line {
+    position: absolute;
+    right: 100px;
+    top: 164px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 600;
+    font-size: 88px;
+    line-height: 1;
+    letter-spacing: -1px;
+    text-transform: uppercase;
+    color: #f0f0f0;
+    text-align: right;
+    z-index: 10;
+  }
+
+  .tagline-line .word-not {
+    color: #c83c3c;
+    display: inline-block;
+    transform: rotate(-12deg);
+    margin: 0 6px;
+    position: relative;
+    top: -3px;
+  }
+
+  .subtitle {
+    position: absolute;
+    top: 272px;
+    right: 100px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.28);
+    text-align: right;
+    z-index: 10;
+  }
+
+</style>
+</head>
+<body>
+<div class="banner">
+
+  <div class="brand-name">baseline<span class="period">.</span></div>
+  <div class="tagline-line">AVERAGE <span class="word-not">&ne;</span> HEALTHY.</div>
+  <div class="subtitle">Find where you actually stand</div>
+
+</div>
+</body>
+</html>

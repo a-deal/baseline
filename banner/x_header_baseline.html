@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=1500">
 <title>Baseline — X Header Banner</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=DM+Sans:wght@400;500;700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&display=swap');
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -25,77 +25,255 @@
     background: #08080a;
   }
 
-  /* Subtle grid pattern */
+  /* Subtle grid pattern — wider spread, slightly more visible */
   .banner::before {
     content: '';
     position: absolute;
     inset: 0;
     background-image:
-      linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
-    background-size: 60px 60px;
-    mask-image: radial-gradient(ellipse 55% 65% at 72% 50%, black 10%, transparent 60%);
-    -webkit-mask-image: radial-gradient(ellipse 55% 65% at 72% 50%, black 10%, transparent 60%);
+      linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+    background-size: 48px 48px;
+    mask-image: radial-gradient(ellipse 70% 80% at 65% 50%, black 10%, transparent 55%);
+    -webkit-mask-image: radial-gradient(ellipse 70% 80% at 65% 50%, black 10%, transparent 55%);
+  }
+
+  /* Distribution curve — the hero visual element */
+  .distribution {
+    position: absolute;
+    bottom: 80px;
+    left: 280px;
+    width: 900px;
+    height: 280px;
+    z-index: 2;
+    opacity: 0.12;
+  }
+
+  .distribution svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  /* Vertical marker line — "where you stand" */
+  .marker-line {
+    position: absolute;
+    bottom: 80px;
+    left: 870px;
+    width: 2px;
+    height: 200px;
+    z-index: 5;
+  }
+
+  .marker-line::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(200, 60, 60, 0), rgba(200, 60, 60, 0.6) 40%, rgba(200, 60, 60, 0.8));
+  }
+
+  .marker-dot {
+    position: absolute;
+    top: -6px;
+    left: -5px;
+    width: 12px;
+    height: 12px;
+    background: #c83c3c;
+    border-radius: 50%;
+    box-shadow: 0 0 20px rgba(200, 60, 60, 0.5), 0 0 40px rgba(200, 60, 60, 0.2);
+    z-index: 6;
+  }
+
+  /* Horizontal baseline rule */
+  .baseline-rule {
+    position: absolute;
+    bottom: 80px;
+    left: 280px;
+    width: 900px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08) 15%, rgba(255,255,255,0.12) 50%, rgba(255,255,255,0.08) 85%, transparent);
+    z-index: 3;
+  }
+
+  /* Tick marks along baseline */
+  .ticks {
+    position: absolute;
+    bottom: 72px;
+    left: 280px;
+    width: 900px;
+    height: 16px;
+    z-index: 3;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 40px;
+  }
+
+  .tick {
+    width: 1px;
+    height: 8px;
+    background: rgba(255,255,255,0.06);
+  }
+
+  .tick:nth-child(5n) {
+    height: 12px;
+    background: rgba(255,255,255,0.1);
+  }
+
+  /* Scatter dots — data points feel */
+  .scatter {
+    position: absolute;
+    border-radius: 50%;
+    z-index: 4;
+  }
+
+  .s1  { width: 3px; height: 3px; background: rgba(255,255,255,0.06); top: 260px; left: 420px; }
+  .s2  { width: 4px; height: 4px; background: rgba(255,255,255,0.05); top: 230px; left: 520px; }
+  .s3  { width: 3px; height: 3px; background: rgba(255,255,255,0.07); top: 200px; left: 600px; }
+  .s4  { width: 5px; height: 5px; background: rgba(255,255,255,0.04); top: 180px; left: 680px; }
+  .s5  { width: 3px; height: 3px; background: rgba(255,255,255,0.06); top: 170px; left: 740px; }
+  .s6  { width: 4px; height: 4px; background: rgba(255,255,255,0.08); top: 165px; left: 790px; }
+  .s7  { width: 3px; height: 3px; background: rgba(255,255,255,0.05); top: 175px; left: 850px; }
+  .s8  { width: 4px; height: 4px; background: rgba(200,60,60,0.25); top: 158px; left: 870px; }
+  .s9  { width: 3px; height: 3px; background: rgba(255,255,255,0.06); top: 185px; left: 920px; }
+  .s10 { width: 4px; height: 4px; background: rgba(255,255,255,0.05); top: 210px; left: 980px; }
+  .s11 { width: 3px; height: 3px; background: rgba(255,255,255,0.04); top: 250px; left: 1050px; }
+  .s12 { width: 3px; height: 3px; background: rgba(255,255,255,0.06); top: 195px; left: 650px; }
+  .s13 { width: 2px; height: 2px; background: rgba(255,255,255,0.05); top: 240px; left: 480px; }
+  .s14 { width: 3px; height: 3px; background: rgba(255,255,255,0.04); top: 220px; left: 560px; }
+  .s15 { width: 2px; height: 2px; background: rgba(255,255,255,0.06); top: 265px; left: 1100px; }
+
+  /* Ambient glow behind the marker zone */
+  .glow {
+    position: absolute;
+    top: 100px;
+    left: 780px;
+    width: 200px;
+    height: 300px;
+    background: radial-gradient(ellipse at center, rgba(200, 60, 60, 0.06) 0%, transparent 70%);
+    z-index: 1;
   }
 
   /* ============================================
-     THREE LINES — centered in safe zone
-     Safe zone: y=150 to y=375
+     LOGO MARK — baseline with threshold concept
      ============================================ */
 
-  .brand-name {
+  .logo {
     position: absolute;
-    top: 188px;
+    top: 155px;
     right: 100px;
-    font-family: 'DM Sans', sans-serif;
-    font-weight: 500;
-    font-size: 28px;
-    letter-spacing: 0.5px;
-    color: rgba(225, 225, 225, 0.40);
-    line-height: 1;
     z-index: 10;
+    display: flex;
+    align-items: center;
+    gap: 14px;
   }
 
-  .brand-name .period {
-    color: rgba(225, 225, 225, 0.20);
+  .logo-mark {
+    width: 36px;
+    height: 36px;
+    position: relative;
   }
 
-  .tagline-line {
+  .logo-mark svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .logo-text {
+    font-family: 'Barlow Condensed', 'DM Sans', sans-serif;
+    font-weight: 700;
+    font-size: 30px;
+    letter-spacing: -0.5px;
+    color: #f0f0f0;
+    line-height: 1;
+    text-transform: lowercase;
+  }
+
+  .logo-text .period {
+    color: #c83c3c;
+  }
+
+  /* ============================================
+     TAGLINE
+     ============================================ */
+
+  .tagline {
     position: absolute;
     right: 100px;
-    top: 230px;
+    top: 210px;
     font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 600;
-    font-size: 112px;
+    font-weight: 700;
+    font-size: 108px;
     line-height: 1;
-    letter-spacing: -1px;
+    letter-spacing: -2px;
     text-transform: uppercase;
     color: #f0f0f0;
     text-align: right;
     z-index: 10;
   }
 
-  .tagline-line .word-not {
+  .tagline .not {
     color: #c83c3c;
-    display: inline-block;
-    transform: rotate(-12deg);
-    margin: 0 8px;
+    font-style: italic;
     position: relative;
-    top: -4px;
+    display: inline-block;
+    margin: 0 4px;
+  }
+
+  /* Strike-through on "not" for emphasis */
+  .tagline .not::after {
+    content: '';
+    position: absolute;
+    left: -4px;
+    right: -4px;
+    top: 52%;
+    height: 3px;
+    background: rgba(200, 60, 60, 0.4);
+    transform: rotate(-2deg);
   }
 
   .subtitle {
     position: absolute;
-    top: 362px;
+    top: 338px;
     right: 100px;
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 24px;
-    font-weight: 600;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.28);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 20px;
+    font-weight: 400;
+    letter-spacing: 0.5px;
+    color: rgba(255, 255, 255, 0.30);
     text-align: right;
     z-index: 10;
+  }
+
+  /* Percentile labels along the baseline */
+  .percentile-labels {
+    position: absolute;
+    bottom: 56px;
+    left: 280px;
+    width: 900px;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 20px;
+    z-index: 3;
+  }
+
+  .pct-label {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 10px;
+    color: rgba(255,255,255,0.08);
+    letter-spacing: 0.5px;
+  }
+
+  /* "you" label near marker */
+  .you-label {
+    position: absolute;
+    bottom: 55px;
+    left: 856px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    color: rgba(200, 60, 60, 0.45);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    z-index: 7;
   }
 
 </style>
@@ -103,9 +281,89 @@
 <body>
 <div class="banner">
 
-  <div class="brand-name">baseline<span class="period">.</span></div>
-  <div class="tagline-line">AVERAGE <span class="word-not">≠</span> HEALTHY.</div>
-  <div class="subtitle">Find where you actually stand</div>
+  <!-- Ambient glow -->
+  <div class="glow"></div>
+
+  <!-- Distribution curve (bell curve silhouette) -->
+  <div class="distribution">
+    <svg viewBox="0 0 900 280" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0,280 C50,278 120,270 180,250 C240,230 300,190 380,140 C420,115 460,85 510,60 C540,48 570,38 600,35 C630,38 660,48 690,65 C730,90 770,125 810,170 C850,215 880,260 900,280 Z"
+            fill="url(#curveGrad)" />
+      <defs>
+        <linearGradient id="curveGrad" x1="450" y1="35" x2="450" y2="280" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stop-color="white" stop-opacity="0.5"/>
+          <stop offset="100%" stop-color="white" stop-opacity="0"/>
+        </linearGradient>
+      </defs>
+    </svg>
+  </div>
+
+  <!-- Baseline horizontal rule -->
+  <div class="baseline-rule"></div>
+
+  <!-- Tick marks -->
+  <div class="ticks">
+    <div class="tick"></div><div class="tick"></div><div class="tick"></div><div class="tick"></div><div class="tick"></div>
+    <div class="tick"></div><div class="tick"></div><div class="tick"></div><div class="tick"></div><div class="tick"></div>
+    <div class="tick"></div><div class="tick"></div><div class="tick"></div><div class="tick"></div><div class="tick"></div>
+    <div class="tick"></div><div class="tick"></div><div class="tick"></div><div class="tick"></div><div class="tick"></div>
+    <div class="tick"></div><div class="tick"></div><div class="tick"></div><div class="tick"></div><div class="tick"></div>
+  </div>
+
+  <!-- Percentile labels -->
+  <div class="percentile-labels">
+    <span class="pct-label">5th</span>
+    <span class="pct-label">25th</span>
+    <span class="pct-label">50th</span>
+    <span class="pct-label">75th</span>
+    <span class="pct-label">95th</span>
+  </div>
+
+  <!-- Scatter data points -->
+  <div class="scatter s1"></div>
+  <div class="scatter s2"></div>
+  <div class="scatter s3"></div>
+  <div class="scatter s4"></div>
+  <div class="scatter s5"></div>
+  <div class="scatter s6"></div>
+  <div class="scatter s7"></div>
+  <div class="scatter s8"></div>
+  <div class="scatter s9"></div>
+  <div class="scatter s10"></div>
+  <div class="scatter s11"></div>
+  <div class="scatter s12"></div>
+  <div class="scatter s13"></div>
+  <div class="scatter s14"></div>
+  <div class="scatter s15"></div>
+
+  <!-- Vertical marker line + dot -->
+  <div class="marker-line">
+    <div class="marker-dot"></div>
+  </div>
+  <div class="you-label">you</div>
+
+  <!-- Logo mark + text -->
+  <div class="logo">
+    <div class="logo-mark">
+      <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Horizontal baseline -->
+        <line x1="2" y1="24" x2="34" y2="24" stroke="rgba(255,255,255,0.25)" stroke-width="1.5"/>
+        <!-- Rising path from baseline -->
+        <polyline points="6,24 12,24 16,20 20,14 24,10" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        <!-- Marker dot at the peak -->
+        <circle cx="24" cy="10" r="3" fill="#c83c3c" opacity="0.85"/>
+        <!-- Subtle glow on dot -->
+        <circle cx="24" cy="10" r="6" fill="#c83c3c" opacity="0.15"/>
+      </svg>
+    </div>
+    <span class="logo-text">baseline<span class="period">.</span></span>
+  </div>
+
+  <!-- Tagline -->
+  <div class="tagline">AVERAGE IS <span class="not">NOT</span> HEALTHY.</div>
+
+  <!-- Subtitle -->
+  <div class="subtitle">Your health data, scored against the population.</div>
 
 </div>
 </body>
