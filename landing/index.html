@@ -520,6 +520,388 @@ footer p {
   color: var(--text-muted);
   padding: 14px 0;
 }
+
+/* ── Intake Form ── */
+.intake {
+  max-width: 560px;
+  margin: 0 auto;
+}
+
+.intake-progress {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 48px;
+}
+
+.intake-progress .pip {
+  flex: 1;
+  height: 2px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 1px;
+  transition: background 0.3s;
+}
+
+.intake-progress .pip.active {
+  background: rgba(255,255,255,0.35);
+}
+
+.intake-progress .pip.done {
+  background: var(--red);
+  opacity: 0.6;
+}
+
+.intake-step {
+  display: none;
+}
+
+.intake-step.active {
+  display: block;
+}
+
+.intake-step h3 {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: -0.3px;
+  margin-bottom: 8px;
+}
+
+.intake-step .step-hint {
+  font-size: 0.82rem;
+  color: var(--text-dim);
+  margin-bottom: 28px;
+  line-height: 1.5;
+}
+
+/* Radio / select groups */
+.option-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 32px;
+}
+
+.option-group.vertical {
+  flex-direction: column;
+  gap: 0;
+}
+
+.opt-btn {
+  padding: 10px 18px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  color: var(--text-muted);
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.15s;
+  user-select: none;
+}
+
+.opt-btn:hover {
+  border-color: rgba(255,255,255,0.15);
+  color: var(--text);
+}
+
+.opt-btn.selected {
+  border-color: rgba(255,255,255,0.25);
+  color: var(--text);
+  background: rgba(255,255,255,0.05);
+}
+
+/* Checklist items */
+.check-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  cursor: pointer;
+  transition: color 0.15s;
+  user-select: none;
+}
+
+.check-item:last-child { border-bottom: none; }
+.check-item:hover { color: var(--text); }
+
+.check-box {
+  width: 18px;
+  height: 18px;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+  font-size: 0.7rem;
+}
+
+.check-item.checked .check-box {
+  border-color: rgba(255,255,255,0.3);
+  background: rgba(255,255,255,0.08);
+}
+
+.check-item.checked .check-box::after {
+  content: '✓';
+  color: var(--text);
+}
+
+.check-label {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+.check-item.checked .check-label {
+  color: var(--text);
+}
+
+.check-label .sub {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  margin-top: 1px;
+}
+
+/* Navigation */
+.intake-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 40px;
+  padding-top: 24px;
+  border-top: 1px solid rgba(255,255,255,0.04);
+}
+
+.intake-nav .back-btn {
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  color: var(--text-dim);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px 0;
+  transition: color 0.15s;
+}
+
+.intake-nav .back-btn:hover { color: var(--text-muted); }
+.intake-nav .back-btn.hidden { visibility: hidden; }
+
+.intake-nav .next-btn {
+  padding: 11px 28px;
+  background: var(--text);
+  color: var(--bg);
+  border: none;
+  border-radius: 5px;
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  letter-spacing: 0.3px;
+}
+
+.intake-nav .next-btn:hover { opacity: 0.85; }
+
+/* Open text input */
+.intake-textarea {
+  width: 100%;
+  min-height: 80px;
+  padding: 14px 16px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  line-height: 1.5;
+  resize: vertical;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.intake-textarea::placeholder { color: var(--text-dim); }
+.intake-textarea:focus { border-color: rgba(255,255,255,0.2); }
+
+/* ── Results Screen ── */
+.result-screen {
+  display: none;
+  text-align: center;
+}
+
+.result-screen.active { display: block; }
+
+.score-ring {
+  position: relative;
+  width: 180px;
+  height: 180px;
+  margin: 0 auto 12px;
+}
+
+.score-ring svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.score-ring .track {
+  fill: none;
+  stroke: rgba(255,255,255,0.06);
+  stroke-width: 6;
+}
+
+.score-ring .fill {
+  fill: none;
+  stroke: var(--text);
+  stroke-width: 6;
+  stroke-linecap: round;
+  stroke-dasharray: 440;
+  stroke-dashoffset: 440;
+  transition: stroke-dashoffset 1.5s ease;
+}
+
+.score-ring .fill.red { stroke: var(--red); }
+
+.score-number {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.score-number .pct {
+  font-family: var(--font-display);
+  font-size: 3.2rem;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -1px;
+}
+
+.score-number .label {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--text-dim);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-top: 4px;
+}
+
+.score-context {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  margin-bottom: 40px;
+  line-height: 1.6;
+}
+
+.score-context strong { color: var(--text); }
+
+/* Tier bars */
+.tier-bars {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  margin-bottom: 48px;
+}
+
+.tier-bar {
+  text-align: center;
+}
+
+.tier-bar .tier-label {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--text-dim);
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+}
+
+.tier-bar .tier-track {
+  width: 120px;
+  height: 4px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 2px;
+  overflow: hidden;
+  margin: 0 auto 6px;
+}
+
+.tier-bar .tier-fill {
+  height: 100%;
+  border-radius: 2px;
+  background: var(--text);
+  opacity: 0.5;
+  transition: width 1.2s ease 0.3s;
+}
+
+.tier-bar .tier-pct {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+/* Insights */
+.insights {
+  text-align: left;
+  margin: 0 auto 48px;
+  max-width: 480px;
+}
+
+.insights h3 {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 20px;
+}
+
+.insight-card {
+  padding: 18px 20px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  margin-bottom: 10px;
+  text-align: left;
+}
+
+.insight-card .insight-label {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--text-dim);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.insight-card .insight-text {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+.insight-card .insight-text strong { color: var(--text); }
+
+/* Result email form */
+.result-email {
+  margin-top: 40px;
+  padding-top: 32px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+
+.result-email p {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  margin-bottom: 16px;
+}
+
+@media (max-width: 600px) {
+  .tier-bars { flex-direction: column; align-items: center; }
+  .option-group { flex-direction: column; }
+}
 </style>
 </head>
 <body>
@@ -727,16 +1109,247 @@ footer p {
   </div>
 </section>
 
-<!-- CTA -->
-<section class="cta-section">
+<!-- Intake / Score -->
+<section class="cta-section" id="score-section">
   <div class="container">
     <h2>See your score.</h2>
-    <p class="cta-sub">Join the waitlist. We'll notify you when the CLI + MCP server ships.</p>
-    <form class="signup-form" id="cta-form" action="https://formspree.io/f/mjgezrdp" method="POST" style="justify-content: center;">
-      <input type="email" name="email" placeholder="your@email.com" required autocomplete="email">
-      <button type="submit">Get early access</button>
-    </form>
-    <div class="form-success" id="form-success">You're on the list. We'll be in touch.</div>
+    <p class="cta-sub">9 questions. 60 seconds. No health data collected — just what you track.</p>
+
+    <div class="intake" id="intake">
+      <!-- Progress pips -->
+      <div class="intake-progress">
+        <div class="pip active" data-step="0"></div>
+        <div class="pip" data-step="1"></div>
+        <div class="pip" data-step="2"></div>
+        <div class="pip" data-step="3"></div>
+        <div class="pip" data-step="4"></div>
+      </div>
+
+      <!-- Step 0: Demographics -->
+      <div class="intake-step active" data-step="0">
+        <h3>About you</h3>
+        <p class="step-hint">Used for percentile comparison. Not stored.</p>
+
+        <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:10px;">Age range</p>
+        <div class="option-group" data-field="age" data-type="single">
+          <div class="opt-btn" data-value="20-29">20–29</div>
+          <div class="opt-btn" data-value="30-39">30–39</div>
+          <div class="opt-btn" data-value="40-49">40–49</div>
+          <div class="opt-btn" data-value="50-59">50–59</div>
+          <div class="opt-btn" data-value="60+">60+</div>
+        </div>
+
+        <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:10px;">Sex</p>
+        <div class="option-group" data-field="sex" data-type="single">
+          <div class="opt-btn" data-value="M">Male</div>
+          <div class="opt-btn" data-value="F">Female</div>
+        </div>
+
+        <div class="intake-nav">
+          <button class="back-btn hidden">&larr; Back</button>
+          <button class="next-btn">Next &rarr;</button>
+        </div>
+      </div>
+
+      <!-- Step 1: Blood work -->
+      <div class="intake-step" data-step="1">
+        <h3>Blood work</h3>
+        <p class="step-hint">Had blood work in the last 2 years? Check what was included.</p>
+
+        <div class="option-group vertical" data-field="bloodwork" data-type="multi">
+          <div class="check-item" data-value="lipids">
+            <div class="check-box"></div>
+            <div class="check-label">Lipid panel <span class="sub">Cholesterol, LDL, HDL, triglycerides</span></div>
+          </div>
+          <div class="check-item" data-value="apob">
+            <div class="check-box"></div>
+            <div class="check-label">ApoB</div>
+          </div>
+          <div class="check-item" data-value="glucose">
+            <div class="check-box"></div>
+            <div class="check-label">Fasting glucose or HbA1c</div>
+          </div>
+          <div class="check-item" data-value="insulin">
+            <div class="check-box"></div>
+            <div class="check-label">Fasting insulin</div>
+          </div>
+          <div class="check-item" data-value="lpa">
+            <div class="check-box"></div>
+            <div class="check-label">Lp(a) <span class="sub">Lipoprotein(a) — usually not included</span></div>
+          </div>
+          <div class="check-item" data-value="hscrp">
+            <div class="check-box"></div>
+            <div class="check-label">hs-CRP <span class="sub">High-sensitivity C-reactive protein</span></div>
+          </div>
+          <div class="check-item" data-value="liver">
+            <div class="check-box"></div>
+            <div class="check-label">Liver enzymes <span class="sub">ALT, AST, or GGT</span></div>
+          </div>
+          <div class="check-item" data-value="cbc">
+            <div class="check-box"></div>
+            <div class="check-label">CBC <span class="sub">Complete blood count</span></div>
+          </div>
+          <div class="check-item" data-value="tsh">
+            <div class="check-box"></div>
+            <div class="check-label">TSH <span class="sub">Thyroid</span></div>
+          </div>
+          <div class="check-item" data-value="vitd">
+            <div class="check-box"></div>
+            <div class="check-label">Vitamin D or ferritin</div>
+          </div>
+          <div class="check-item" data-value="unsure" data-exclusive="true">
+            <div class="check-box"></div>
+            <div class="check-label">I'm not sure what was included</div>
+          </div>
+          <div class="check-item" data-value="none" data-exclusive="true">
+            <div class="check-box"></div>
+            <div class="check-label">No blood work</div>
+          </div>
+        </div>
+
+        <div class="intake-nav">
+          <button class="back-btn">&larr; Back</button>
+          <button class="next-btn">Next &rarr;</button>
+        </div>
+      </div>
+
+      <!-- Step 2: Body + Wearable -->
+      <div class="intake-step" data-step="2">
+        <h3>Body &amp; activity</h3>
+        <p class="step-hint">Measurements and wearable data you currently have.</p>
+
+        <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:10px;">Body measurements</p>
+        <div class="option-group vertical" data-field="body" data-type="multi">
+          <div class="check-item" data-value="bp">
+            <div class="check-box"></div>
+            <div class="check-label">Blood pressure <span class="sub">Own a cuff or have a recent reading</span></div>
+          </div>
+          <div class="check-item" data-value="waist">
+            <div class="check-box"></div>
+            <div class="check-label">Waist circumference</div>
+          </div>
+          <div class="check-item" data-value="weight">
+            <div class="check-box"></div>
+            <div class="check-label">Weight <span class="sub">Scale, even occasionally</span></div>
+          </div>
+        </div>
+
+        <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:10px;margin-top:20px;">Wearable / activity tracking</p>
+        <div class="option-group vertical" data-field="wearable" data-type="multi">
+          <div class="check-item" data-value="steps">
+            <div class="check-box"></div>
+            <div class="check-label">Steps <span class="sub">Wearable or phone</span></div>
+          </div>
+          <div class="check-item" data-value="hr">
+            <div class="check-box"></div>
+            <div class="check-label">Heart rate</div>
+          </div>
+          <div class="check-item" data-value="sleep">
+            <div class="check-box"></div>
+            <div class="check-label">Sleep tracking</div>
+          </div>
+          <div class="check-item" data-value="vo2">
+            <div class="check-box"></div>
+            <div class="check-label">VO2 max estimate</div>
+          </div>
+          <div class="check-item" data-value="zones">
+            <div class="check-box"></div>
+            <div class="check-label">Heart rate zones <span class="sub">Zone 2 tracking</span></div>
+          </div>
+          <div class="check-item" data-value="no-wearable" data-exclusive="true">
+            <div class="check-box"></div>
+            <div class="check-label">No wearable or tracking</div>
+          </div>
+        </div>
+
+        <div class="intake-nav">
+          <button class="back-btn">&larr; Back</button>
+          <button class="next-btn">Next &rarr;</button>
+        </div>
+      </div>
+
+      <!-- Step 3: Context -->
+      <div class="intake-step" data-step="3">
+        <h3>Context</h3>
+        <p class="step-hint">A few yes/no questions that round out the picture.</p>
+
+        <div class="option-group vertical" data-field="context" data-type="multi">
+          <div class="check-item" data-value="family">
+            <div class="check-box"></div>
+            <div class="check-label">I've asked my parents about heart disease, stroke, or diabetes in the family</div>
+          </div>
+          <div class="check-item" data-value="meds">
+            <div class="check-box"></div>
+            <div class="check-label">I could list my current medications + supplements right now</div>
+          </div>
+          <div class="check-item" data-value="phq9">
+            <div class="check-box"></div>
+            <div class="check-label">I've completed a depression screening (PHQ-9) in the last year <span class="sub">Or know what it is</span></div>
+          </div>
+        </div>
+
+        <div class="intake-nav">
+          <button class="back-btn">&larr; Back</button>
+          <button class="next-btn">Next &rarr;</button>
+        </div>
+      </div>
+
+      <!-- Step 4: Catch-all -->
+      <div class="intake-step" data-step="4">
+        <h3>Anything else?</h3>
+        <p class="step-hint">Track something we didn't ask about? We want to know. (Optional)</p>
+
+        <textarea class="intake-textarea" id="catchall" placeholder="e.g. CGM, DEXA scan, grip strength, testosterone, genetic testing..."></textarea>
+
+        <div class="intake-nav">
+          <button class="back-btn">&larr; Back</button>
+          <button class="next-btn">See my score &rarr;</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Results -->
+    <div class="result-screen" id="results">
+      <div class="score-ring">
+        <svg viewBox="0 0 160 160">
+          <circle class="track" cx="80" cy="80" r="70"/>
+          <circle class="fill" id="score-arc" cx="80" cy="80" r="70"/>
+        </svg>
+        <div class="score-number">
+          <span class="pct" id="score-pct">0%</span>
+          <span class="label">coverage</span>
+        </div>
+      </div>
+
+      <p class="score-context" id="score-context"></p>
+
+      <div class="tier-bars">
+        <div class="tier-bar">
+          <div class="tier-label">Foundation</div>
+          <div class="tier-track"><div class="tier-fill" id="t1-fill" style="width:0%"></div></div>
+          <div class="tier-pct" id="t1-pct">0%</div>
+        </div>
+        <div class="tier-bar">
+          <div class="tier-label">Enhanced</div>
+          <div class="tier-track"><div class="tier-fill" id="t2-fill" style="width:0%"></div></div>
+          <div class="tier-pct" id="t2-pct">0%</div>
+        </div>
+      </div>
+
+      <div class="insights" id="insights"></div>
+
+      <div class="result-email">
+        <p>We'll let you know when you can import your actual data and get a full assessment.</p>
+        <form class="signup-form" id="result-form" action="https://formspree.io/f/mjgezrdp" method="POST" style="justify-content:center;">
+          <input type="email" name="email" placeholder="your@email.com" required autocomplete="email">
+          <input type="hidden" name="coverage_score" id="hidden-score" value="">
+          <input type="hidden" name="catchall" id="hidden-catchall" value="">
+          <button type="submit">Get early access</button>
+        </form>
+        <div class="form-success">You're on the list. We'll be in touch.</div>
+      </div>
+    </div>
+
   </div>
 </section>
 
@@ -751,6 +1364,7 @@ footer p {
 </footer>
 
 <script>
+// ── Form submissions (hero + result) ──
 document.querySelectorAll('form').forEach(form => {
   form.addEventListener('submit', function(e) {
     e.preventDefault();
@@ -778,6 +1392,334 @@ document.querySelectorAll('form').forEach(form => {
     });
   });
 });
+
+// ── Intake Form Engine ──
+(function() {
+  const TOTAL_STEPS = 5;
+  let currentStep = 0;
+  const answers = { age: null, sex: null, bloodwork: [], body: [], wearable: [], context: [], catchall: '' };
+
+  // Weight map — mirrors score.py TIER1_WEIGHTS + TIER2_WEIGHTS
+  // T1 = 60 pts, T2 = 25 pts, total = 85
+  const WEIGHTS = {
+    // T1
+    bp:       { tier: 1, weight: 8,  key: 'blood_pressure' },
+    lipids:   { tier: 1, weight: 8,  key: 'lipid_apob' },
+    metabolic:{ tier: 1, weight: 8,  key: 'metabolic' },
+    family:   { tier: 1, weight: 6,  key: 'family_history' },
+    sleep:    { tier: 1, weight: 5,  key: 'sleep' },
+    steps:    { tier: 1, weight: 4,  key: 'steps' },
+    rhr:      { tier: 1, weight: 4,  key: 'resting_hr' },
+    waist:    { tier: 1, weight: 5,  key: 'waist' },
+    meds:     { tier: 1, weight: 4,  key: 'medications' },
+    lpa:      { tier: 1, weight: 8,  key: 'lpa' },
+    // T2
+    vo2:      { tier: 2, weight: 5,  key: 'vo2_max' },
+    hrv:      { tier: 2, weight: 2,  key: 'hrv' },
+    hscrp:    { tier: 2, weight: 3,  key: 'hscrp' },
+    liver:    { tier: 2, weight: 2,  key: 'liver' },
+    cbc:      { tier: 2, weight: 2,  key: 'cbc' },
+    tsh:      { tier: 2, weight: 2,  key: 'thyroid' },
+    vitd:     { tier: 2, weight: 3,  key: 'vitamin_d_ferritin' },
+    weight:   { tier: 2, weight: 2,  key: 'weight_trends' },
+    phq9:     { tier: 2, weight: 2,  key: 'phq9' },
+    zone2:    { tier: 2, weight: 2,  key: 'zone2' },
+  };
+
+  // Map intake answers → covered weight keys
+  function mapAnswers() {
+    const covered = new Set();
+    const bw = answers.bloodwork;
+    const bd = answers.body;
+    const wr = answers.wearable;
+    const cx = answers.context;
+
+    // "I'm not sure" → assume standard panel
+    if (bw.includes('unsure')) {
+      covered.add('lipids');
+      covered.add('metabolic');
+      covered.add('cbc');
+      covered.add('liver');
+    }
+
+    // Blood work specifics
+    if (bw.includes('lipids'))  covered.add('lipids');
+    if (bw.includes('apob'))   covered.add('lipids'); // ApoB implies lipids covered
+    if (bw.includes('glucose') || bw.includes('insulin')) covered.add('metabolic');
+    if (bw.includes('lpa'))    covered.add('lpa');
+    if (bw.includes('hscrp'))  covered.add('hscrp');
+    if (bw.includes('liver'))  covered.add('liver');
+    if (bw.includes('cbc'))    covered.add('cbc');
+    if (bw.includes('tsh'))    covered.add('tsh');
+    if (bw.includes('vitd'))   covered.add('vitd');
+
+    // Body
+    if (bd.includes('bp'))     covered.add('bp');
+    if (bd.includes('waist'))  covered.add('waist');
+    if (bd.includes('weight')) covered.add('weight');
+
+    // Wearable
+    if (wr.includes('steps'))  covered.add('steps');
+    if (wr.includes('hr'))     { covered.add('rhr'); covered.add('hrv'); }
+    if (wr.includes('sleep'))  covered.add('sleep');
+    if (wr.includes('vo2'))    covered.add('vo2');
+    if (wr.includes('zones'))  covered.add('zone2');
+
+    // Context
+    if (cx.includes('family')) covered.add('family');
+    if (cx.includes('meds'))   covered.add('meds');
+    if (cx.includes('phq9'))   covered.add('phq9');
+
+    return covered;
+  }
+
+  function computeScore(covered) {
+    let t1Total = 0, t1Covered = 0, t2Total = 0, t2Covered = 0;
+    for (const [key, m] of Object.entries(WEIGHTS)) {
+      if (m.tier === 1) { t1Total += m.weight; if (covered.has(key)) t1Covered += m.weight; }
+      else              { t2Total += m.weight; if (covered.has(key)) t2Covered += m.weight; }
+    }
+    const total = t1Total + t2Total;
+    const coveredWeight = t1Covered + t2Covered;
+    return {
+      pct: Math.round(coveredWeight / total * 100),
+      t1Pct: Math.round(t1Covered / t1Total * 100),
+      t2Pct: Math.round(t2Covered / t2Total * 100),
+      t1Covered, t1Total, t2Covered, t2Total,
+      coveredWeight, total,
+    };
+  }
+
+  // Insight library — keyed by gap condition
+  const INSIGHTS = [
+    {
+      id: 'apob',
+      condition: (bw, covered) => bw.includes('lipids') && !bw.includes('apob'),
+      label: 'Lipid upgrade',
+      text: 'When ApoB and LDL-C disagree on your risk, <strong>ApoB wins</strong>. It\'s causally linked to atherosclerosis. Ask for it by name — your doctor probably won\'t order it otherwise. ~$15 add-on.',
+      tier: 1, weight: 8,
+    },
+    {
+      id: 'insulin',
+      condition: (bw) => (bw.includes('glucose') && !bw.includes('insulin')),
+      label: 'Metabolic upgrade',
+      text: 'Insulin resistance shows up <strong>10–15 years before a diabetes diagnosis</strong>. Fasting glucose misses early-stage IR. Fasting insulin catches it. ~$15 add-on to your next lab order.',
+      tier: 1, weight: 8,
+    },
+    {
+      id: 'bp',
+      condition: (bw, covered) => !covered.has('bp'),
+      label: 'Blood pressure',
+      text: '<strong>47% of US adults have hypertension. Half don\'t know.</strong> Each 20 mmHg above 115 systolic doubles CVD mortality. A $40 home cuff is the single highest-ROI health purchase.',
+      tier: 1, weight: 8,
+    },
+    {
+      id: 'lpa',
+      condition: (bw) => !bw.includes('lpa'),
+      label: 'Lp(a)',
+      text: '<strong>20% of people have elevated Lp(a)</strong> — genetically fixed, invisible on standard panels. One draw, ~$30, once in your entire life. Either changes your risk model permanently or it doesn\'t.',
+      tier: 1, weight: 8,
+    },
+    {
+      id: 'family',
+      condition: (bw, covered) => !covered.has('family'),
+      label: 'Family history',
+      text: 'Parental CVD before 60 roughly doubles your risk. <strong>One conversation with your parents changes your entire risk model.</strong> The cheapest, highest-ROI health data you\'ll ever collect.',
+      tier: 1, weight: 6,
+    },
+    {
+      id: 'sleep',
+      condition: (bw, covered) => !covered.has('sleep'),
+      label: 'Sleep tracking',
+      text: '<strong>Sleep regularity predicts mortality more than sleep duration.</strong> 8 hours doesn\'t help if your bedtime swings by 2 hours. If your device tracks it, turn it on.',
+      tier: 1, weight: 5,
+    },
+    {
+      id: 'no-wearable',
+      condition: (bw, covered, wr) => wr.includes('no-wearable'),
+      label: 'No wearable needed',
+      text: 'Your phone already counts steps. Each additional <strong>1,000 steps/day = ~15% lower all-cause mortality</strong>. No wearable required — just carry your phone.',
+      tier: 1, weight: 4,
+    },
+    {
+      id: 'meds',
+      condition: (bw, covered) => !covered.has('meds'),
+      label: 'Medication context',
+      text: 'Statins change your lipids. Beta-blockers suppress HR and HRV. <strong>If your tracker doesn\'t know what you\'re taking, every other number gets misread.</strong> Most underrated health metric.',
+      tier: 1, weight: 4,
+    },
+    {
+      id: 'phq9',
+      condition: (bw, covered, wr, cx) => !cx.includes('phq9'),
+      label: 'Mental health screen',
+      text: 'The PHQ-9 is a free, 3-minute depression screen. <strong>Depression independently raises cardiovascular risk 80%.</strong> Worth the 3 minutes.',
+      tier: 2, weight: 2,
+    },
+    {
+      id: 'unsure',
+      condition: (bw) => bw.includes('unsure'),
+      label: 'Get your records',
+      text: 'Ask your doctor\'s office for a copy of your last lab results. <strong>You paid for it — you own it.</strong> Knowing what was tested is the first step.',
+      tier: 0, weight: 100, // always show if applicable
+    },
+    {
+      id: 't1-complete',
+      condition: (bw, covered) => {
+        const t1Keys = Object.entries(WEIGHTS).filter(([,m]) => m.tier === 1).map(([k]) => k);
+        return t1Keys.every(k => covered.has(k));
+      },
+      label: 'Foundation complete',
+      text: 'You\'re ahead of <strong>95% of people</strong>. Your foundation is solid — the remaining gaps are in the enhanced picture. Most people never get this far.',
+      tier: 0, weight: 100,
+    },
+  ];
+
+  function pickInsights(covered) {
+    const bw = answers.bloodwork;
+    const wr = answers.wearable;
+    const cx = answers.context;
+    const applicable = INSIGHTS.filter(i => i.condition(bw, covered, wr, cx));
+    // Sort: tier 0 specials first, then T1 by weight desc, then T2
+    applicable.sort((a, b) => {
+      if (a.tier === 0 && b.tier !== 0) return -1;
+      if (b.tier === 0 && a.tier !== 0) return 1;
+      if (a.tier !== b.tier) return a.tier - b.tier;
+      return b.weight - a.weight;
+    });
+    return applicable.slice(0, 3);
+  }
+
+  // ── UI Logic ──
+
+  // Single-select option buttons
+  document.querySelectorAll('.option-group[data-type="single"] .opt-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const group = this.closest('.option-group');
+      group.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('selected'));
+      this.classList.add('selected');
+      answers[group.dataset.field] = this.dataset.value;
+    });
+  });
+
+  // Multi-select check items
+  document.querySelectorAll('.check-item').forEach(item => {
+    item.addEventListener('click', function() {
+      const group = this.closest('.option-group');
+      const field = group.dataset.field;
+      const val = this.dataset.value;
+      const isExclusive = this.dataset.exclusive === 'true';
+
+      if (isExclusive) {
+        // Deselect all others, toggle this
+        group.querySelectorAll('.check-item').forEach(ci => {
+          if (ci !== this) ci.classList.remove('checked');
+        });
+        this.classList.toggle('checked');
+      } else {
+        // Deselect exclusive items, toggle this
+        group.querySelectorAll('.check-item[data-exclusive="true"]').forEach(ci => ci.classList.remove('checked'));
+        this.classList.toggle('checked');
+      }
+
+      // Rebuild answer array
+      answers[field] = [];
+      group.querySelectorAll('.check-item.checked').forEach(ci => {
+        answers[field].push(ci.dataset.value);
+      });
+    });
+  });
+
+  // Step navigation
+  function showStep(n) {
+    document.querySelectorAll('.intake-step').forEach(s => s.classList.remove('active'));
+    const step = document.querySelector(`.intake-step[data-step="${n}"]`);
+    if (step) step.classList.add('active');
+
+    document.querySelectorAll('.intake-progress .pip').forEach(p => {
+      const ps = parseInt(p.dataset.step);
+      p.classList.remove('active', 'done');
+      if (ps === n) p.classList.add('active');
+      else if (ps < n) p.classList.add('done');
+    });
+
+    currentStep = n;
+  }
+
+  document.querySelectorAll('.next-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      if (currentStep < TOTAL_STEPS - 1) {
+        showStep(currentStep + 1);
+      } else {
+        // Final step — compute and show results
+        answers.catchall = document.getElementById('catchall').value.trim();
+        showResults();
+      }
+    });
+  });
+
+  document.querySelectorAll('.back-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      if (currentStep > 0) showStep(currentStep - 1);
+    });
+  });
+
+  function showResults() {
+    const covered = mapAnswers();
+    const score = computeScore(covered);
+    const insights = pickInsights(covered);
+    const isApprox = answers.bloodwork.includes('unsure');
+
+    // Hide form, show results
+    document.getElementById('intake').style.display = 'none';
+    const resultEl = document.getElementById('results');
+    resultEl.classList.add('active');
+
+    // Animate score ring
+    const circumference = 2 * Math.PI * 70; // ~440
+    const offset = circumference - (score.pct / 100) * circumference;
+    const arc = document.getElementById('score-arc');
+    arc.style.strokeDasharray = circumference;
+    setTimeout(() => { arc.style.strokeDashoffset = offset; }, 50);
+    if (score.pct < 40) arc.classList.add('red');
+
+    // Score number
+    document.getElementById('score-pct').textContent = (isApprox ? '~' : '') + score.pct + '%';
+
+    // Context text
+    let ctx = '';
+    if (score.pct >= 80) ctx = "You're ahead of most people. Your data coverage is strong.";
+    else if (score.pct >= 60) ctx = "Solid foundation. A few targeted additions would get you to <strong>80%+</strong>.";
+    else if (score.pct >= 40) ctx = "You're closer than you think. <strong>Three moves totaling ~$50</strong> could nearly double your coverage.";
+    else ctx = "Most people start here. The good news: the highest-ROI metrics are cheap or free.";
+    if (isApprox) ctx += ' <em style="color:var(--text-dim);font-size:0.82rem;">(Score is approximate — we assumed a standard panel.)</em>';
+    document.getElementById('score-context').innerHTML = ctx;
+
+    // Tier bars
+    setTimeout(() => {
+      document.getElementById('t1-fill').style.width = score.t1Pct + '%';
+      document.getElementById('t2-fill').style.width = score.t2Pct + '%';
+    }, 100);
+    document.getElementById('t1-pct').textContent = score.t1Pct + '%';
+    document.getElementById('t2-pct').textContent = score.t2Pct + '%';
+
+    // Insights
+    const insightsEl = document.getElementById('insights');
+    if (insights.length > 0) {
+      let html = '<h3>What we\'d tell you</h3>';
+      insights.forEach(ins => {
+        html += `<div class="insight-card">
+          <div class="insight-label">${ins.label}</div>
+          <div class="insight-text">${ins.text}</div>
+        </div>`;
+      });
+      insightsEl.innerHTML = html;
+    }
+
+    // Hidden fields for Formspree
+    document.getElementById('hidden-score').value = score.pct + '%';
+    document.getElementById('hidden-catchall').value = answers.catchall;
+  }
+})();
 </script>
 
 </body>
