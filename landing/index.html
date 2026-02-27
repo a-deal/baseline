@@ -1141,6 +1141,7 @@ footer p {
     <p class="hero-sub">Build your health record once. Use it everywhere. Take it with you forever.</p>
     <form class="signup-form" id="hero-form" action="https://formspree.io/f/mjgezrdp" method="POST">
       <input type="email" name="email" placeholder="your@email.com" required autocomplete="email">
+      <input type="hidden" name="source" value="hero">
       <button type="submit">Get early access</button>
     </form>
     <p class="trust-line">Free. Local-first. Your data stays yours.</p>
@@ -1652,6 +1653,7 @@ footer p {
         <p>We'll let you know when you can import your actual data and get a full assessment.</p>
         <form class="signup-form" id="result-form" action="https://formspree.io/f/mjgezrdp" method="POST" style="justify-content:center;">
           <input type="email" name="email" placeholder="your@email.com" required autocomplete="email">
+          <input type="hidden" name="source" id="hidden-source" value="intake-form">
           <input type="hidden" name="coverage_score" id="hidden-score" value="">
           <input type="hidden" name="catchall" id="hidden-catchall" value="">
           <button type="submit">Get early access</button>
@@ -1781,6 +1783,7 @@ document.querySelectorAll('form').forEach(form => {
     }
 
     // Set hidden fields
+    document.getElementById('hidden-source').value = 'chatgpt-deeplink';
     document.getElementById('hidden-score').value = score + '%';
     document.getElementById('hidden-catchall').value = 'via-chatgpt';
 
