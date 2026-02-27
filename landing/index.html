@@ -1437,6 +1437,89 @@ document.querySelectorAll('form').forEach(form => {
   });
 });
 
+// ── Query param deep-link (from ChatGPT) ──
+(function() {
+  const params = new URLSearchParams(window.location.search);
+  const score = parseInt(params.get('score'));
+  const t1 = parseInt(params.get('t1'));
+  const t2 = parseInt(params.get('t2'));
+  const insights = params.get('insights'); // comma-separated insight IDs
+
+  if (!isNaN(score)) {
+    // Hide form, show results directly
+    const intake = document.getElementById('intake');
+    const results = document.getElementById('results');
+    if (intake) intake.style.display = 'none';
+    if (results) results.classList.add('active');
+
+    // Scroll to score section
+    setTimeout(() => {
+      document.getElementById('score-section').scrollIntoView({ behavior: 'smooth' });
+    }, 300);
+
+    // Animate score ring
+    const circumference = 2 * Math.PI * 70;
+    const offset = circumference - (score / 100) * circumference;
+    const arc = document.getElementById('score-arc');
+    arc.style.strokeDasharray = circumference;
+    setTimeout(() => { arc.style.strokeDashoffset = offset; }, 400);
+    if (score < 40) arc.classList.add('red');
+
+    document.getElementById('score-pct').textContent = score + '%';
+
+    // Context
+    let ctx = '';
+    if (score >= 80) ctx = "You're ahead of most people. Your data coverage is strong.";
+    else if (score >= 60) ctx = "Solid foundation. A few targeted additions would get you to <strong>80%+</strong>.";
+    else if (score >= 40) ctx = "You're closer than you think. <strong>Three moves totaling ~$50</strong> could nearly double your coverage.";
+    else ctx = "Most people start here. The good news: the highest-ROI metrics are cheap or free.";
+    ctx += ' <em style="color:var(--text-dim);font-size:0.82rem;">Score calculated via AI conversation.</em>';
+    document.getElementById('score-context').innerHTML = ctx;
+
+    // Tier bars
+    if (!isNaN(t1)) {
+      setTimeout(() => { document.getElementById('t1-fill').style.width = t1 + '%'; }, 500);
+      document.getElementById('t1-pct').textContent = t1 + '%';
+    }
+    if (!isNaN(t2)) {
+      setTimeout(() => { document.getElementById('t2-fill').style.width = t2 + '%'; }, 500);
+      document.getElementById('t2-pct').textContent = t2 + '%';
+    }
+
+    // Insights from query param
+    const INSIGHT_MAP = {
+      'apob': { label: 'Lipid upgrade', text: 'When ApoB and LDL-C disagree on your risk, <strong>ApoB wins</strong>. Ask for it by name — your doctor probably won\'t order it otherwise. ~$15 add-on.' },
+      'insulin': { label: 'Metabolic upgrade', text: 'Insulin resistance shows up <strong>10–15 years before a diabetes diagnosis</strong>. Fasting insulin catches it earliest. ~$15 add-on to your next lab order.' },
+      'bp': { label: 'Blood pressure', text: '<strong>47% of US adults have hypertension. Half don\'t know.</strong> A $40 home cuff is the single highest-ROI health purchase.' },
+      'lpa': { label: 'Lp(a)', text: '<strong>20% of people have elevated Lp(a)</strong> — genetically fixed, invisible on standard panels. One draw, ~$30, once in your entire life.' },
+      'family': { label: 'Family history', text: 'One conversation with your parents changes your entire risk model. <strong>The cheapest health data you\'ll ever collect.</strong>' },
+      'sleep': { label: 'Sleep tracking', text: '<strong>Sleep regularity predicts mortality more than duration.</strong> If your device tracks it, turn it on.' },
+      'no-wearable': { label: 'No wearable needed', text: 'Your phone already counts steps. Each additional <strong>1,000 steps/day = ~15% lower all-cause mortality</strong>.' },
+      'meds': { label: 'Medication context', text: '<strong>If your tracker doesn\'t know what you\'re taking, every other number gets misread.</strong> Most underrated health metric.' },
+      'phq9': { label: 'Mental health screen', text: 'The PHQ-9 is a free, 3-minute depression screen. <strong>Depression independently raises cardiovascular risk 80%.</strong>' },
+      'unsure': { label: 'Get your records', text: 'Ask your doctor\'s office for a copy of your last lab results. <strong>You paid for it — you own it.</strong>' },
+      't1-complete': { label: 'Foundation complete', text: 'You\'re ahead of <strong>95% of people</strong>. Your foundation is solid.' },
+    };
+
+    if (insights) {
+      const ids = insights.split(',').map(s => s.trim()).filter(id => INSIGHT_MAP[id]);
+      if (ids.length > 0) {
+        const insightsEl = document.getElementById('insights');
+        let html = '<h3>What we\'d tell you</h3>';
+        ids.slice(0, 3).forEach(id => {
+          const ins = INSIGHT_MAP[id];
+          html += '<div class="insight-card"><div class="insight-label">' + ins.label + '</div><div class="insight-text">' + ins.text + '</div></div>';
+        });
+        insightsEl.innerHTML = html;
+      }
+    }
+
+    // Set hidden fields
+    document.getElementById('hidden-score').value = score + '%';
+    document.getElementById('hidden-catchall').value = 'via-chatgpt';
+  }
+})();
+
 // ── Score link visibility ──
 (function() {
   const link = document.querySelector('.score-link');
