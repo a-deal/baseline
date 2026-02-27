@@ -167,22 +167,31 @@ h1 .word-not {
 }
 
 .score-link {
-  display: inline-block;
-  margin-top: 24px;
-  font-family: var(--font-body);
-  font-size: 0.88rem;
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
   font-weight: 500;
-  color: rgba(240, 240, 240, 0.55);
-  letter-spacing: 0.02em;
-  transition: color 0.2s;
-  padding: 6px 0;
-  border-bottom: 1px solid rgba(255,255,255,0.12);
+  color: rgba(240, 240, 240, 0.45);
+  letter-spacing: 0.04em;
+  transition: all 0.25s;
+  padding: 10px 16px;
+  background: rgba(14, 14, 17, 0.85);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 5px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 50;
 }
 
 .score-link:hover {
   color: var(--text);
-  border-bottom-color: rgba(255,255,255,0.3);
+  border-color: rgba(255,255,255,0.2);
+  background: rgba(14, 14, 17, 0.95);
 }
+
+.score-link.hidden { opacity: 0; pointer-events: none; }
 
 /* ── Divider ── */
 .divider {
@@ -937,9 +946,9 @@ footer p {
       <button type="submit">Get early access</button>
     </form>
     <p class="trust-line">Free. Local-first. Your data stays yours.</p>
-    <a href="#score-section" class="score-link">Calculate your score &darr;</a>
   </div>
 </div>
+<a href="#score-section" class="score-link">Calculate your score &darr;</a>
 
 <div class="divider"></div>
 
@@ -1411,6 +1420,18 @@ document.querySelectorAll('form').forEach(form => {
     });
   });
 });
+
+// ── Score link visibility ──
+(function() {
+  const link = document.querySelector('.score-link');
+  const target = document.getElementById('score-section');
+  if (link && target) {
+    window.addEventListener('scroll', function() {
+      const rect = target.getBoundingClientRect();
+      link.classList.toggle('hidden', rect.top < window.innerHeight * 0.5);
+    }, { passive: true });
+  }
+})();
 
 // ── Intake Form Engine ──
 (function() {
