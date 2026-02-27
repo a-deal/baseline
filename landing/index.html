@@ -83,7 +83,7 @@ a:hover { color: var(--text); }
   letter-spacing: -0.5px;
   color: var(--text);
   margin-bottom: 56px;
-  text-align: left;
+  text-align: right;
 }
 
 .logo .period { color: var(--red); }
@@ -1196,64 +1196,6 @@ footer p {
       <button type="submit">Get early access</button>
     </form>
     <p class="trust-line">Free. Local-first. Your data stays yours.</p>
-    <div class="hero-compare">
-      <table>
-        <thead>
-          <tr>
-            <th></th>
-            <th>Function</th>
-            <th>Oura</th>
-            <th>Whoop</th>
-            <th class="col-baseline">Baseline</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Blood work</td>
-            <td class="check">&check;</td>
-            <td class="miss">&mdash;</td>
-            <td class="miss">&mdash;</td>
-            <td class="check-baseline">&check;</td>
-          </tr>
-          <tr>
-            <td>Blood pressure</td>
-            <td class="miss">&mdash;</td>
-            <td class="miss">&mdash;</td>
-            <td class="miss">&mdash;</td>
-            <td class="check-baseline">&check;</td>
-          </tr>
-          <tr>
-            <td>Sleep + activity</td>
-            <td class="miss">&mdash;</td>
-            <td class="check">&check;</td>
-            <td class="check">&check;</td>
-            <td class="check-baseline">&check;</td>
-          </tr>
-          <tr>
-            <td>Family history</td>
-            <td class="miss">&mdash;</td>
-            <td class="miss">&mdash;</td>
-            <td class="miss">&mdash;</td>
-            <td class="check-baseline">&check;</td>
-          </tr>
-          <tr>
-            <td>Gap analysis</td>
-            <td class="miss">&mdash;</td>
-            <td class="miss">&mdash;</td>
-            <td class="miss">&mdash;</td>
-            <td class="check-baseline">&check;</td>
-          </tr>
-          <tr>
-            <td>~cost/yr</td>
-            <td class="check">$365</td>
-            <td class="check">$369</td>
-            <td class="check">$239</td>
-            <td class="check-baseline">$100</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    <p class="score-counter" id="score-counter"></p>
   </div>
 </div>
 <a href="#score-section" class="score-link">Calculate your score &darr;</a>
@@ -1284,6 +1226,44 @@ footer p {
     </div>
   </div>
 </section>
+
+<div class="divider"></div>
+
+<!-- How It Works -->
+<section>
+  <div class="container">
+
+    <h2>Four steps to your coverage score.</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">01</div>
+        <div class="step-title">Drop it in</div>
+        <div class="step-desc">A lab PDF, a wearable export, or both</div>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <div class="step-title">We read it</div>
+        <div class="step-desc">Parsed and organized on your machine</div>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <div class="step-title">See your gaps</div>
+        <div class="step-desc">What you've covered and what's missing</div>
+      </div>
+      <div class="step">
+        <div class="step-num">04</div>
+        <div class="step-title">Know what's next</div>
+        <div class="step-desc">Ranked by cost and impact</div>
+      </div>
+    </div>
+    <p class="how-details">
+      Drop a lab PDF. Connect your wearable. Answer 3 questions. See your score.<br>
+      Runs locally as a CLI and <code>MCP server</code> — works with any AI assistant that supports the protocol.
+    </p>
+  </div>
+</section>
+
+<div class="divider"></div>
 
 <!-- Coverage -->
 <section>
@@ -1323,7 +1303,7 @@ footer p {
       </div>
     </div>
     <p class="journey-text">
-      I ran myself through 40 metrics. Started at <strong>42%</strong> coverage. Got to <strong>85%</strong> in a single session. Three moves totaling <strong>~$50</strong> would take most people from 40% to 80%.
+      Three moves totaling <strong>~$50</strong> would take most people from 40% to 80%.
     </p>
   </div>
 </section>
@@ -1393,118 +1373,6 @@ footer p {
 
 <div class="divider"></div>
 
-<!-- Cost Comparison -->
-<section>
-  <div class="container">
-    <p class="section-label">Cost comparison</p>
-    <h2>Where your health data lives today.</h2>
-
-    <table class="compare-table">
-      <thead>
-        <tr>
-          <th>Product</th>
-          <th>Cost/yr</th>
-          <th>Designed for</th>
-          <th>Foundation (T1)</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>Function Health</td>
-          <td class="price">$365</td>
-          <td>Deep blood work (160+ tests, 2x/yr)</td>
-          <td class="coverage-cell"><span class="coverage-inline"><span class="mini-bar" style="width:38px"></span> 62%</span></td>
-        </tr>
-        <tr>
-          <td>InsideTracker</td>
-          <td class="price">$249–589</td>
-          <td>Blood + DNA optimization</td>
-          <td class="coverage-cell"><span class="coverage-inline"><span class="mini-bar" style="width:34px"></span> 55%</span></td>
-        </tr>
-        <tr>
-          <td>Oura Ring</td>
-          <td class="price">$369 yr 1</td>
-          <td>Sleep + recovery tracking</td>
-          <td class="coverage-cell"><span class="coverage-inline"><span class="mini-bar" style="width:14px"></span> 22%</span></td>
-        </tr>
-        <tr>
-          <td>Whoop</td>
-          <td class="price">$239</td>
-          <td>Strain + recovery coaching</td>
-          <td class="coverage-cell"><span class="coverage-inline"><span class="mini-bar" style="width:14px"></span> 22%</span></td>
-        </tr>
-        <tr class="row-baseline">
-          <td>Baseline T1</td>
-          <td class="price">~$100</td>
-          <td>Coverage scoring across all domains</td>
-          <td class="coverage-cell"><span class="coverage-inline"><span class="mini-bar" style="width:60px"></span> 100%</span></td>
-        </tr>
-      </tbody>
-    </table>
-
-    <p class="compare-note">
-      Each of these products is excellent at what it's designed for — deep labs, sleep optimization, recovery coaching. Baseline isn't a replacement for any of them. It's the <strong>layer that shows you the full picture</strong>: what you've covered across all domains, what's still missing, and what to do next. Different tools give you different slices. <strong>Baseline is the map.</strong> Year 2+ cost drops to ~$70–110 (just the annual labs).
-    </p>
-
-    <div class="gap-cards">
-      <div class="gap-card">
-        <div class="gap-product">Oura / Whoop user?</div>
-        <div class="gap-text">You're nailing sleep and recovery. You've likely <strong>never had ApoB or fasting insulin tested</strong>. Those two add-ons (~$30) would fill your biggest blind spots.</div>
-      </div>
-      <div class="gap-card">
-        <div class="gap-product">Function Health member?</div>
-        <div class="gap-text">160+ labs is impressive. But you're still missing <strong>blood pressure monitoring, family history, and medication context</strong> — things no blood test covers.</div>
-      </div>
-      <div class="gap-card">
-        <div class="gap-product">Annual physical only?</div>
-        <div class="gap-text">Your doctor ordered the standard panel. You probably don't know what was on it. <strong>Ask for a copy</strong> — and add ApoB and Lp(a) by name next time.</div>
-      </div>
-      <div class="gap-card">
-        <div class="gap-product">Just your phone?</div>
-        <div class="gap-text">Steps count. Literally. Each +1,000/day = <strong>~15% lower mortality</strong>. A $40 blood pressure cuff and one conversation with your parents gets you to 50%+.</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<div class="divider"></div>
-
-<!-- How It Works -->
-<section>
-  <div class="container">
-
-    <h2>Four steps to your coverage score.</h2>
-    <div class="steps">
-      <div class="step">
-        <div class="step-num">01</div>
-        <div class="step-title">Drop it in</div>
-        <div class="step-desc">A lab PDF, a wearable export, or both</div>
-      </div>
-      <div class="step">
-        <div class="step-num">02</div>
-        <div class="step-title">We read it</div>
-        <div class="step-desc">Parsed and organized on your machine</div>
-      </div>
-      <div class="step">
-        <div class="step-num">03</div>
-        <div class="step-title">See your gaps</div>
-        <div class="step-desc">What you've covered and what's missing</div>
-      </div>
-      <div class="step">
-        <div class="step-num">04</div>
-        <div class="step-title">Know what's next</div>
-        <div class="step-desc">Ranked by cost and impact</div>
-      </div>
-    </div>
-    <p class="how-details">
-      Drop a lab PDF. Connect your wearable. Answer 3 questions. See your score.<br>
-      Runs locally as a CLI and <code>MCP server</code> — works with any AI assistant that supports the protocol.
-    </p>
-  </div>
-</section>
-
-<div class="divider"></div>
-
 <!-- Story -->
 <section>
   <div class="container">
@@ -1523,6 +1391,33 @@ footer p {
     </div>
     <div class="insulin-callout">
       <strong>3.5 &rarr; 13.9 mIU/L</strong> over 6 months. Each draw looked "normal" on its own. The trend told a different story. Insulin resistance shows up 10&ndash;15 years before a diabetes diagnosis — but only if you're tracking.
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- What you're missing -->
+<section>
+  <div class="container">
+    <h2>What your current setup misses.</h2>
+    <div class="gap-cards">
+      <div class="gap-card">
+        <div class="gap-product">Oura / Whoop user?</div>
+        <div class="gap-text">You're nailing sleep and recovery. You've likely <strong>never had ApoB or fasting insulin tested</strong>. Those two add-ons (~$30) would fill your biggest blind spots.</div>
+      </div>
+      <div class="gap-card">
+        <div class="gap-product">Function Health member?</div>
+        <div class="gap-text">160+ labs is impressive. But you're still missing <strong>blood pressure monitoring, family history, and medication context</strong> — things no blood test covers.</div>
+      </div>
+      <div class="gap-card">
+        <div class="gap-product">Annual physical only?</div>
+        <div class="gap-text">Your doctor ordered the standard panel. You probably don't know what was on it. <strong>Ask for a copy</strong> — and add ApoB and Lp(a) by name next time.</div>
+      </div>
+      <div class="gap-card">
+        <div class="gap-product">Just your phone?</div>
+        <div class="gap-text">Steps count. Literally. Each +1,000/day = <strong>~15% lower mortality</strong>. A $40 blood pressure cuff and one conversation with your parents gets you to 50%+.</div>
+      </div>
     </div>
   </div>
 </section>

@@ -38,35 +38,48 @@
     -webkit-mask-image: radial-gradient(ellipse 55% 65% at 72% 50%, black 10%, transparent 60%);
   }
 
-  /* LinkedIn safe zone: profile photo overlaps bottom-left.
-     Keep content right-aligned and vertically centered.
-     Safe area roughly: top 60px to bottom 60px, left 400px to right edge */
-
-  .brand-name {
+  /* Logo — mark + text */
+  .logo {
     position: absolute;
-    top: 128px;
+    top: 118px;
     right: 100px;
-    font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 700;
-    font-size: 24px;
-    letter-spacing: -0.5px;
-    text-transform: lowercase;
-    color: #f0f0f0;
-    line-height: 1;
     z-index: 10;
+    display: flex;
+    align-items: center;
+    gap: 10px;
   }
 
-  .brand-name .period {
-    color: #c83c3c;
+  .logo-mark {
+    width: 22px;
+    height: 22px;
+  }
+
+  .logo-mark svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .logo-text {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 18px;
+    letter-spacing: -0.5px;
+    text-transform: lowercase;
+    color: rgba(240, 240, 240, 0.5);
+    line-height: 1;
+  }
+
+  .logo-text .period {
+    color: rgba(200, 60, 60, 0.6);
   }
 
   .tagline-line {
     position: absolute;
     right: 100px;
-    top: 164px;
+    top: 160px;
     font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 600;
-    font-size: 88px;
+    font-weight: 700;
+    font-size: 84px;
     line-height: 1;
     letter-spacing: -1px;
     text-transform: uppercase;
@@ -78,21 +91,20 @@
   .tagline-line .word-not {
     color: #c83c3c;
     display: inline-block;
-    transform: rotate(-12deg);
     margin: 0 6px;
     position: relative;
     top: -3px;
+    transform: rotate(-12deg);
   }
 
   .subtitle {
     position: absolute;
-    top: 272px;
+    top: 262px;
     right: 100px;
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 20px;
-    font-weight: 600;
-    letter-spacing: 2px;
-    text-transform: uppercase;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 18px;
+    font-weight: 400;
+    letter-spacing: 0.5px;
     color: rgba(255, 255, 255, 0.28);
     text-align: right;
     z-index: 10;
@@ -103,9 +115,19 @@
 <body>
 <div class="banner">
 
-  <div class="brand-name">baseline<span class="period">.</span></div>
+  <div class="logo">
+    <div class="logo-mark">
+      <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <line x1="2" y1="24" x2="34" y2="24" stroke="rgba(255,255,255,0.15)" stroke-width="1.5"/>
+        <polyline points="6,24 12,24 16,20 20,14 24,10" stroke="rgba(255,255,255,0.25)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        <circle cx="24" cy="10" r="3" fill="#c83c3c" opacity="0.5"/>
+        <circle cx="24" cy="10" r="6" fill="#c83c3c" opacity="0.1"/>
+      </svg>
+    </div>
+    <span class="logo-text">baseline<span class="period">.</span></span>
+  </div>
   <div class="tagline-line">AVERAGE <span class="word-not">&ne;</span> HEALTHY.</div>
-  <div class="subtitle">Find where you actually stand</div>
+  <div class="subtitle">Find where you actually stand.</div>
 
 </div>
 </body>
