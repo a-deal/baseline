@@ -110,15 +110,11 @@ More data is not always better data.
 
 **13/ (Close)**
 
-I ran myself through all 40 metrics. Full blood work, 7 draws, 200 biomarkers.
+I scored myself across all 40. Coverage: 42%. Three moves for ~$50 would get me to 80%.
 
-My health coverage: roughly 42%.
+Building the tool to calculate yours.
 
-Three moves totaling ~$50 would get me to 80%. The gaps weren't what I expected.
-
-Working on a system to calculate your personal score.
-
-Early access: https://adeal.github.io/baseline
+Early access: https://andrewdeal.info/baseline
 
 ---
 
@@ -146,5 +142,5 @@ Post these as quote-tweets of the original thread over the following week:
 - No emojis. No "let's go" energy. The data is the hook.
 - Tweet 12 (counterproductive tracking) will be the most controversial — lean into it.
 - Tweet 10 (medication list) is the sleeper — most counterintuitive, will draw replies.
-- Tweet 13 now links to landing page: https://adeal.github.io/baseline
+- Tweet 13 now links to landing page: https://andrewdeal.info/baseline
 - Full 40-metric ranking is NOT in the thread. That's the landing page incentive.
