@@ -498,6 +498,19 @@ h2 {
   margin-bottom: 40px;
 }
 
+.ai-link {
+  color: var(--text);
+  font-weight: 500;
+  border-bottom: 1px solid rgba(255,255,255,0.2);
+  padding-bottom: 1px;
+  transition: border-color 0.2s;
+}
+
+.ai-link:hover {
+  color: var(--text);
+  border-bottom-color: rgba(255,255,255,0.5);
+}
+
 /* ── Footer ── */
 footer {
   padding: 48px 0;
@@ -1143,7 +1156,8 @@ footer p {
 <section class="cta-section" id="score-section">
   <div class="container">
     <h2>See your score.</h2>
-    <p class="cta-sub" style="color:var(--text-muted);">9 questions. 60 seconds. No health data collected — just what you track.</p>
+    <p class="cta-sub" style="color:var(--text-muted);">9 questions. 60 seconds. No health data collected — just what you track.<br>
+    Or <a href="https://chatgpt.com/g/g-69a200216dcc8191af219ebded578dc7-baseline-health-coverage" target="_blank" rel="noopener" class="ai-link">talk through it with AI &rarr;</a></p>
 
     <div class="intake" id="intake">
       <!-- Progress pips -->
