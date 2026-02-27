@@ -19,16 +19,13 @@
 
 :root {
   --bg: #08080a;
-  --bg-elevated: #0f0f12;
-  --bg-card: #141418;
-  --border: #1a1a20;
+  --bg-elevated: #0e0e11;
+  --border: #181820;
   --text: #f0f0f0;
-  --text-muted: #8a8a96;
-  --text-dim: #4a4a56;
+  --text-muted: #7a7a88;
+  --text-dim: #3e3e4a;
   --red: #c83c3c;
-  --red-dim: rgba(200, 60, 60, 0.12);
-  --teal: #2dd4a8;
-  --teal-dim: rgba(45, 212, 168, 0.10);
+  --red-dim: rgba(200, 60, 60, 0.10);
   --font-display: 'Barlow Condensed', sans-serif;
   --font-body: 'DM Sans', -apple-system, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
@@ -52,29 +49,29 @@ body::before {
   position: fixed;
   inset: 0;
   background-image:
-    linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px);
+    linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
   background-size: 60px 60px;
   pointer-events: none;
   z-index: 0;
-  mask-image: radial-gradient(ellipse 80% 60% at 50% 30%, black 0%, transparent 70%);
-  -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 30%, black 0%, transparent 70%);
+  mask-image: radial-gradient(ellipse 90% 70% at 50% 25%, black 0%, transparent 65%);
+  -webkit-mask-image: radial-gradient(ellipse 90% 70% at 50% 25%, black 0%, transparent 65%);
 }
 
-a { color: var(--teal); text-decoration: none; }
-a:hover { text-decoration: underline; }
+a { color: var(--text-muted); text-decoration: none; }
+a:hover { color: var(--text); }
 
 .container {
-  max-width: 720px;
+  max-width: 680px;
   margin: 0 auto;
-  padding: 0 24px;
+  padding: 0 28px;
   position: relative;
   z-index: 1;
 }
 
 /* ── Hero ── */
 .hero {
-  padding: 120px 0 88px;
+  padding: 140px 0 120px;
   text-align: center;
 }
 
@@ -83,20 +80,20 @@ a:hover { text-decoration: underline; }
   font-size: 1.1rem;
   font-weight: 500;
   letter-spacing: 0.5px;
-  color: rgba(225, 225, 225, 0.40);
-  margin-bottom: 48px;
+  color: rgba(225, 225, 225, 0.35);
+  margin-bottom: 56px;
 }
 
-.logo .period { color: rgba(225, 225, 225, 0.20); }
+.logo .period { color: rgba(225, 225, 225, 0.18); }
 
 h1 {
   font-family: var(--font-display);
-  font-size: clamp(2.8rem, 7vw, 4.5rem);
+  font-size: clamp(3rem, 8vw, 5rem);
   font-weight: 700;
-  line-height: 1.05;
+  line-height: 1.0;
   letter-spacing: -0.5px;
   text-transform: uppercase;
-  margin-bottom: 28px;
+  margin-bottom: 36px;
 }
 
 h1 .line-neg {
@@ -113,138 +110,149 @@ h1 .word-not {
   margin: 0 4px;
 }
 
-h1 .line-pos {
-  display: block;
-  color: var(--teal);
-  font-size: 0.65em;
-  font-weight: 600;
-  letter-spacing: 1px;
-  margin-top: 8px;
-}
-
 .hero-sub {
-  font-size: 1.1rem;
+  font-size: 1.05rem;
   color: var(--text-muted);
-  max-width: 480px;
-  margin: 0 auto 44px;
+  max-width: 440px;
+  margin: 0 auto 52px;
   font-weight: 300;
-  line-height: 1.55;
+  line-height: 1.6;
 }
 
 .signup-form {
   display: flex;
   gap: 8px;
-  max-width: 420px;
-  margin: 0 auto 16px;
+  max-width: 400px;
+  margin: 0 auto 14px;
 }
 
 .signup-form input {
   flex: 1;
-  padding: 14px 18px;
+  padding: 13px 16px;
   background: var(--bg-elevated);
   border: 1px solid var(--border);
-  border-radius: 6px;
+  border-radius: 5px;
   color: var(--text);
   font-family: var(--font-mono);
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   outline: none;
   transition: border-color 0.2s;
 }
 
 .signup-form input::placeholder { color: var(--text-dim); }
-.signup-form input:focus { border-color: var(--teal); }
+.signup-form input:focus { border-color: rgba(240,240,240,0.2); }
 
 .signup-form button {
-  padding: 14px 28px;
-  background: var(--teal);
+  padding: 13px 24px;
+  background: var(--text);
   color: var(--bg);
   border: none;
-  border-radius: 6px;
+  border-radius: 5px;
   font-family: var(--font-body);
   font-weight: 700;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   cursor: pointer;
   white-space: nowrap;
   transition: opacity 0.2s;
   letter-spacing: 0.3px;
 }
 
-.signup-form button:hover { opacity: 0.88; }
+.signup-form button:hover { opacity: 0.85; }
 
 .trust-line {
   font-family: var(--font-mono);
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   color: var(--text-dim);
-  letter-spacing: 0.05em;
+  letter-spacing: 0.06em;
+}
+
+/* ── Divider ── */
+.divider {
+  width: 40px;
+  height: 1px;
+  background: var(--border);
+  margin: 0 auto;
+}
+
+/* ── Bridge ── */
+.bridge {
+  padding: 80px 0;
+  text-align: center;
+}
+
+.bridge p {
+  font-family: var(--font-display);
+  font-size: clamp(1.4rem, 3.5vw, 2rem);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: rgba(240, 240, 240, 0.3);
 }
 
 /* ── Section base ── */
 section {
-  padding: 72px 0;
-  border-top: 1px solid var(--border);
+  padding: 96px 0;
 }
 
 .section-label {
   font-family: var(--font-display);
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 3px;
+  letter-spacing: 4px;
   color: var(--text-dim);
-  margin-bottom: 14px;
+  margin-bottom: 20px;
 }
 
 h2 {
   font-family: var(--font-display);
-  font-size: clamp(1.6rem, 4vw, 2.4rem);
+  font-size: clamp(1.6rem, 4vw, 2.2rem);
   font-weight: 700;
   line-height: 1.1;
   letter-spacing: -0.3px;
   text-transform: uppercase;
-  margin-bottom: 24px;
+  margin-bottom: 32px;
 }
 
 /* ── Problem ── */
 .pain-points {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  margin-bottom: 32px;
+  gap: 0;
+  margin-bottom: 40px;
 }
 
 .pain-point {
   display: flex;
-  align-items: flex-start;
-  gap: 14px;
-  padding: 18px 20px;
-  background: var(--bg-elevated);
-  border: 1px solid var(--border);
-  border-radius: 8px;
+  align-items: baseline;
+  gap: 16px;
+  padding: 16px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
 }
+
+.pain-point:last-child { border-bottom: none; }
 
 .pain-icon {
   font-family: var(--font-mono);
-  font-size: 0.8rem;
+  font-size: 0.72rem;
   color: var(--red);
   flex-shrink: 0;
-  margin-top: 2px;
 }
 
 .pain-point p {
   font-size: 0.92rem;
   color: var(--text-muted);
-  line-height: 1.5;
+  line-height: 1.55;
 }
 
 .stat-callout {
-  padding: 20px 24px;
+  padding: 24px 28px;
   background: var(--red-dim);
-  border-left: 3px solid var(--red);
-  border-radius: 0 6px 6px 0;
-  font-family: var(--font-mono);
-  font-size: 0.82rem;
+  border-left: 2px solid var(--red);
+  border-radius: 0 4px 4px 0;
+  font-size: 0.9rem;
   color: var(--text-muted);
-  line-height: 1.65;
+  line-height: 1.7;
 }
 
 .stat-callout strong { color: var(--text); }
@@ -253,19 +261,19 @@ h2 {
 .coverage-visual {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  margin: 32px 0;
+  gap: 12px;
+  margin: 40px 0;
 }
 
 .coverage-bar {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
 }
 
 .coverage-bar .label {
   font-family: var(--font-mono);
-  font-size: 0.72rem;
+  font-size: 0.7rem;
   color: var(--text-dim);
   width: 110px;
   flex-shrink: 0;
@@ -274,67 +282,63 @@ h2 {
 
 .bar-track {
   flex: 1;
-  height: 5px;
-  background: rgba(255,255,255,0.04);
-  border-radius: 3px;
+  height: 3px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 2px;
   overflow: hidden;
 }
 
 .bar-fill {
   height: 100%;
-  border-radius: 3px;
+  border-radius: 2px;
+  background: var(--text);
   transition: width 1.5s ease;
 }
 
-.bar-fill.high { background: var(--teal); }
-.bar-fill.med { background: #e8a838; }
-.bar-fill.low { background: var(--red); }
+.bar-fill.high { opacity: 0.7; }
+.bar-fill.med { opacity: 0.4; }
+.bar-fill.low { background: var(--red); opacity: 0.6; }
 
 .coverage-bar .pct {
   font-family: var(--font-mono);
-  font-size: 0.72rem;
+  font-size: 0.7rem;
   color: var(--text-dim);
   width: 36px;
 }
 
 .journey-text {
-  margin-top: 28px;
+  margin-top: 36px;
   font-size: 0.92rem;
   color: var(--text-muted);
-  line-height: 1.65;
+  line-height: 1.7;
 }
 
 .journey-text strong { color: var(--text); }
-
-.teal { color: var(--teal); }
 
 /* ── Top 10 ── */
 .metrics-list {
   display: flex;
   flex-direction: column;
   gap: 0;
-  margin-top: 24px;
+  margin-top: 28px;
 }
 
 .metric-row {
   display: flex;
   align-items: center;
   gap: 16px;
-  padding: 11px 16px;
-  border-radius: 4px;
-  transition: background 0.15s;
-  border-bottom: 1px solid rgba(255,255,255,0.03);
+  padding: 13px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
 }
 
 .metric-row:last-child { border-bottom: none; }
-.metric-row:hover { background: var(--bg-elevated); }
 
 .metric-rank {
   font-family: var(--font-mono);
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   font-weight: 500;
-  color: var(--teal);
-  width: 28px;
+  color: var(--text-dim);
+  width: 24px;
   flex-shrink: 0;
 }
 
@@ -347,17 +351,20 @@ h2 {
 .metric-cost {
   font-family: var(--font-mono);
   font-size: 0.78rem;
-  color: var(--text-dim);
+  color: var(--text-muted);
   text-align: right;
   white-space: nowrap;
 }
 
-.metric-cost.free { color: var(--teal); }
+.metric-cost.free {
+  color: var(--text);
+  font-weight: 500;
+}
 
 .metrics-note {
-  margin-top: 20px;
+  margin-top: 28px;
   font-family: var(--font-mono);
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   color: var(--text-dim);
 }
 
@@ -365,25 +372,26 @@ h2 {
 .steps {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 12px;
-  margin: 28px 0;
+  gap: 1px;
+  margin: 36px 0;
+  background: rgba(255,255,255,0.04);
+  border-radius: 8px;
+  overflow: hidden;
 }
 
 .step {
-  padding: 20px 16px;
-  background: var(--bg-elevated);
-  border: 1px solid var(--border);
-  border-radius: 8px;
+  padding: 28px 16px;
+  background: var(--bg);
   text-align: center;
 }
 
 .step-num {
   font-family: var(--font-mono);
-  font-size: 0.65rem;
+  font-size: 0.62rem;
   font-weight: 500;
-  color: var(--teal);
+  color: var(--text-dim);
   letter-spacing: 0.1em;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
 }
 
 .step-title {
@@ -392,98 +400,97 @@ h2 {
   font-size: 1.05rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  margin-bottom: 6px;
+  margin-bottom: 8px;
 }
 
 .step-desc {
-  font-size: 0.78rem;
+  font-size: 0.75rem;
   color: var(--text-dim);
-  line-height: 1.4;
+  line-height: 1.45;
 }
 
 .how-details {
-  margin-top: 24px;
-  font-size: 0.9rem;
+  margin-top: 28px;
+  font-size: 0.88rem;
   color: var(--text-muted);
-  line-height: 1.6;
+  line-height: 1.65;
 }
 
 .how-details code {
   font-family: var(--font-mono);
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   background: var(--bg-elevated);
   padding: 2px 7px;
-  border-radius: 4px;
-  color: var(--teal);
+  border-radius: 3px;
+  color: var(--text);
 }
 
 /* ── Story ── */
 .story-block {
-  padding: 28px;
-  background: var(--bg-elevated);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  margin-top: 20px;
+  margin-top: 24px;
 }
 
 .story-block p {
   font-size: 0.92rem;
   color: var(--text-muted);
-  line-height: 1.65;
-  margin-bottom: 16px;
+  line-height: 1.75;
+  margin-bottom: 20px;
 }
 
 .story-block p:last-child { margin-bottom: 0; }
 .story-block strong { color: var(--text); }
 
 .insulin-callout {
-  margin-top: 20px;
-  padding: 16px 20px;
-  background: var(--teal-dim);
-  border-left: 3px solid var(--teal);
-  border-radius: 0 6px 6px 0;
+  margin-top: 32px;
+  padding: 24px 28px;
+  background: var(--red-dim);
+  border-left: 2px solid var(--red);
+  border-radius: 0 4px 4px 0;
   font-family: var(--font-mono);
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   color: var(--text-muted);
-  line-height: 1.65;
+  line-height: 1.7;
 }
 
-.insulin-callout strong { color: var(--teal); }
+.insulin-callout strong { color: var(--text); }
 
 /* ── CTA ── */
 .cta-section {
   text-align: center;
-  padding: 80px 0;
+  padding: 120px 0;
 }
 
-.cta-section h2 { margin-bottom: 12px; }
+.cta-section h2 {
+  margin-bottom: 16px;
+  font-size: clamp(1.8rem, 5vw, 2.8rem);
+}
 
 .cta-sub {
-  font-size: 0.92rem;
+  font-size: 0.9rem;
   color: var(--text-muted);
-  margin-bottom: 32px;
+  margin-bottom: 40px;
 }
 
 /* ── Footer ── */
 footer {
-  padding: 40px 0;
+  padding: 48px 0;
   border-top: 1px solid var(--border);
   text-align: center;
 }
 
 footer p {
   font-family: var(--font-mono);
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   color: var(--text-dim);
-  line-height: 1.8;
+  line-height: 2;
 }
 
 /* ── Mobile ── */
 @media (max-width: 600px) {
-  .hero { padding: 80px 0 64px; }
-  section { padding: 56px 0; }
+  .hero { padding: 100px 0 80px; }
+  section { padding: 72px 0; }
 
-  h1 { font-size: clamp(2.2rem, 9vw, 3.2rem); }
+  h1 { font-size: clamp(2.4rem, 10vw, 3.5rem); }
 
   .signup-form {
     flex-direction: column;
@@ -501,14 +508,16 @@ footer p {
   .steps {
     grid-template-columns: 1fr 1fr;
   }
+
+  .cta-section { padding: 80px 0; }
 }
 
 /* ── Form success state ── */
 .form-success {
   display: none;
   font-family: var(--font-mono);
-  font-size: 0.85rem;
-  color: var(--teal);
+  font-size: 0.82rem;
+  color: var(--text-muted);
   padding: 14px 0;
 }
 </style>
@@ -521,7 +530,6 @@ footer p {
     <div class="logo">baseline<span class="period">.</span></div>
     <h1>
       <span class="line-neg">Average <span class="word-not">&ne;</span> Healthy.</span>
-      <span class="line-pos">You're closer than you think.</span>
     </h1>
     <p class="hero-sub">Build your health record once. Use it everywhere. Take it with you forever.</p>
     <form class="signup-form" id="hero-form" action="https://formspree.io/f/mjgezrdp" method="POST">
@@ -532,11 +540,13 @@ footer p {
   </div>
 </div>
 
+<div class="divider"></div>
+
 <!-- Problem -->
 <section>
   <div class="container">
-    <p class="section-label">The problem</p>
-    <h2>Your health data is everywhere except where it's useful.</h2>
+
+    <h2>Your health data is everywhere<br>except where it's useful.</h2>
     <div class="pain-points">
       <div class="pain-point">
         <span class="pain-icon">01</span>
@@ -560,9 +570,8 @@ footer p {
 <!-- Coverage -->
 <section>
   <div class="container">
-    <p class="section-label">The differentiator</p>
-    <h2>Your health has a coverage score.</h2>
-    <p style="color: var(--text-muted); margin-bottom: 8px; font-size: 0.92rem;">Not a wellness grade. A map of what you've measured — and what you haven't.</p>
+    <h2>You're closer than you think.</h2>
+    <p style="color: var(--text-muted); margin-bottom: 8px; font-size: 0.9rem;">Your health has a coverage score. Not a wellness grade. A map of what you've measured — and what you haven't.</p>
     <div class="coverage-visual">
       <div class="coverage-bar">
         <span class="label">blood work</span>
@@ -596,15 +605,17 @@ footer p {
       </div>
     </div>
     <p class="journey-text">
-      I ran myself through 40 metrics. Started at <strong>42%</strong> coverage. Got to <strong class="teal">85%</strong> in a single session. Three moves totaling <strong>~$50</strong> would take most people from 40% to 80%.
+      I ran myself through 40 metrics. Started at <strong>42%</strong> coverage. Got to <strong>85%</strong> in a single session. Three moves totaling <strong>~$50</strong> would take most people from 40% to 80%.
     </p>
   </div>
 </section>
 
+<div class="divider"></div>
+
 <!-- Top 10 -->
 <section>
   <div class="container">
-    <p class="section-label">The ranking</p>
+
     <h2>Top 10 health metrics by ROI.</h2>
     <div class="metrics-list">
       <div class="metric-row">
@@ -662,31 +673,33 @@ footer p {
   </div>
 </section>
 
+<div class="divider"></div>
+
 <!-- How It Works -->
 <section>
   <div class="container">
-    <p class="section-label">How it works</p>
+
     <h2>Four steps to your coverage score.</h2>
     <div class="steps">
       <div class="step">
         <div class="step-num">01</div>
-        <div class="step-title">Ingest</div>
-        <div class="step-desc">Drop a lab PDF or connect your wearable</div>
+        <div class="step-title">Drop it in</div>
+        <div class="step-desc">A lab PDF, a wearable export, or both</div>
       </div>
       <div class="step">
         <div class="step-num">02</div>
-        <div class="step-title">Structure</div>
-        <div class="step-desc">Data parsed and normalized locally</div>
+        <div class="step-title">We read it</div>
+        <div class="step-desc">Parsed and organized on your machine</div>
       </div>
       <div class="step">
         <div class="step-num">03</div>
-        <div class="step-title">Score</div>
-        <div class="step-desc">See your coverage across 40 metrics</div>
+        <div class="step-title">See your gaps</div>
+        <div class="step-desc">What you've covered and what's missing</div>
       </div>
       <div class="step">
         <div class="step-num">04</div>
-        <div class="step-title">Guide</div>
-        <div class="step-desc">Ranked next steps by cost and impact</div>
+        <div class="step-title">Know what's next</div>
+        <div class="step-desc">Ranked by cost and impact</div>
       </div>
     </div>
     <p class="how-details">
@@ -696,10 +709,12 @@ footer p {
   </div>
 </section>
 
+<div class="divider"></div>
+
 <!-- Story -->
 <section>
   <div class="container">
-    <p class="section-label">The backstory</p>
+
     <h2>I ran myself through 40 metrics.</h2>
     <div class="story-block">
       <p>Seven draws. 200 biomarkers. Full blood work through Quest. My health coverage when I started: <strong>42%</strong>.</p>
@@ -707,7 +722,7 @@ footer p {
       <p>The real find was my fasting insulin. Single draw: 3.5 mIU/L. Looks perfect. But across three draws over six months: <strong>3.5 &rarr; 8.2 &rarr; 13.9</strong>. A trend that a single snapshot would never catch.</p>
     </div>
     <div class="insulin-callout">
-      <strong>3.5 &rarr; 13.9 mIU/L</strong> over 6 months. Each draw looked "normal" on its own. The trend told a different story. Insulin resistance shows up 10–15 years before a diabetes diagnosis — but only if you're tracking.
+      <strong>3.5 &rarr; 13.9 mIU/L</strong> over 6 months. Each draw looked "normal" on its own. The trend told a different story. Insulin resistance shows up 10&ndash;15 years before a diabetes diagnosis — but only if you're tracking.
     </div>
   </div>
 </section>
@@ -729,7 +744,7 @@ footer p {
 <footer>
   <div class="container">
     <p>
-      Built by Andrew Deal &middot; <a href="https://x.com/a_e_deal" target="_blank" rel="noopener">@a_e_deal</a><br>
+      Built in San Francisco with love &middot; <a href="https://x.com/a_e_deal" target="_blank" rel="noopener">@a_e_deal</a><br>
       Local-first. Your health data never touches our servers.
     </p>
   </div>
