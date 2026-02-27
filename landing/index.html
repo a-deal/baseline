@@ -587,16 +587,17 @@ footer p {
 
 .intake-step h3 {
   font-family: var(--font-display);
-  font-size: 1.4rem;
+  font-size: 1.6rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: -0.3px;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
+  color: var(--text);
 }
 
 .intake-step .step-hint {
-  font-size: 0.82rem;
-  color: var(--text-dim);
+  font-size: 0.88rem;
+  color: var(--text-muted);
   margin-bottom: 28px;
   line-height: 1.5;
 }
@@ -615,60 +616,60 @@ footer p {
 }
 
 .opt-btn {
-  padding: 10px 18px;
+  padding: 11px 20px;
   background: var(--bg-elevated);
-  border: 1px solid var(--border);
+  border: 1px solid rgba(255,255,255,0.1);
   border-radius: 5px;
-  color: var(--text-muted);
+  color: rgba(240, 240, 240, 0.7);
   font-family: var(--font-body);
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   cursor: pointer;
   transition: all 0.15s;
   user-select: none;
 }
 
 .opt-btn:hover {
-  border-color: rgba(255,255,255,0.15);
+  border-color: rgba(255,255,255,0.22);
   color: var(--text);
 }
 
 .opt-btn.selected {
-  border-color: rgba(255,255,255,0.25);
+  border-color: rgba(255,255,255,0.3);
   color: var(--text);
-  background: rgba(255,255,255,0.05);
+  background: rgba(255,255,255,0.07);
 }
 
 /* Checklist items */
 .check-item {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 12px 0;
-  border-bottom: 1px solid rgba(255,255,255,0.04);
+  gap: 14px;
+  padding: 13px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
   cursor: pointer;
   transition: color 0.15s;
   user-select: none;
 }
 
 .check-item:last-child { border-bottom: none; }
-.check-item:hover { color: var(--text); }
+.check-item:hover .check-label { color: var(--text); }
 
 .check-box {
-  width: 18px;
-  height: 18px;
-  border: 1px solid var(--border);
-  border-radius: 3px;
+  width: 20px;
+  height: 20px;
+  border: 1.5px solid rgba(255,255,255,0.15);
+  border-radius: 4px;
   flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.15s;
-  font-size: 0.7rem;
+  font-size: 0.72rem;
 }
 
 .check-item.checked .check-box {
-  border-color: rgba(255,255,255,0.3);
-  background: rgba(255,255,255,0.08);
+  border-color: rgba(255,255,255,0.4);
+  background: rgba(255,255,255,0.1);
 }
 
 .check-item.checked .check-box::after {
@@ -677,20 +678,21 @@ footer p {
 }
 
 .check-label {
-  font-size: 0.88rem;
-  color: var(--text-muted);
+  font-size: 0.92rem;
+  color: rgba(240, 240, 240, 0.65);
   line-height: 1.4;
 }
 
+.check-item:hover .check-label,
 .check-item.checked .check-label {
   color: var(--text);
 }
 
 .check-label .sub {
   display: block;
-  font-size: 0.75rem;
-  color: var(--text-dim);
-  margin-top: 1px;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin-top: 2px;
 }
 
 /* Navigation */
@@ -705,8 +707,8 @@ footer p {
 
 .intake-nav .back-btn {
   font-family: var(--font-body);
-  font-size: 0.82rem;
-  color: var(--text-dim);
+  font-size: 0.85rem;
+  color: var(--text-muted);
   background: none;
   border: none;
   cursor: pointer;
@@ -714,7 +716,7 @@ footer p {
   transition: color 0.15s;
 }
 
-.intake-nav .back-btn:hover { color: var(--text-muted); }
+.intake-nav .back-btn:hover { color: var(--text); }
 .intake-nav .back-btn.hidden { visibility: hidden; }
 
 .intake-nav .next-btn {
@@ -1141,7 +1143,7 @@ footer p {
 <section class="cta-section" id="score-section">
   <div class="container">
     <h2>See your score.</h2>
-    <p class="cta-sub">9 questions. 60 seconds. No health data collected — just what you track.</p>
+    <p class="cta-sub" style="color:var(--text-muted);">9 questions. 60 seconds. No health data collected — just what you track.</p>
 
     <div class="intake" id="intake">
       <!-- Progress pips -->
