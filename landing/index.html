@@ -193,6 +193,55 @@ h1 .word-not {
 
 .score-link.hidden { opacity: 0; pointer-events: none; }
 
+/* ── Hero comparison grid ── */
+.hero-compare {
+  margin-top: 32px;
+  display: inline-block;
+}
+
+.hero-compare table {
+  border-collapse: collapse;
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.03em;
+}
+
+.hero-compare th {
+  padding: 0 10px 6px;
+  font-weight: 400;
+  color: var(--text-dim);
+  text-align: center;
+  white-space: nowrap;
+}
+
+.hero-compare th.col-baseline {
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.hero-compare td {
+  padding: 3px 10px;
+  text-align: center;
+  color: var(--text-dim);
+}
+
+.hero-compare td:first-child {
+  text-align: right;
+  color: rgba(240,240,240,0.25);
+  padding-right: 14px;
+  font-size: 0.58rem;
+}
+
+.hero-compare .check { color: var(--text-muted); }
+.hero-compare .check-baseline { color: var(--text); font-weight: 600; }
+.hero-compare .miss { color: rgba(255,255,255,0.08); }
+
+@media (max-width: 600px) {
+  .hero-compare { margin-top: 24px; }
+  .hero-compare th,
+  .hero-compare td { padding: 2px 6px; font-size: 0.56rem; }
+}
+
 /* ── Divider ── */
 .divider {
   width: 40px;
@@ -1145,6 +1194,63 @@ footer p {
       <button type="submit">Get early access</button>
     </form>
     <p class="trust-line">Free. Local-first. Your data stays yours.</p>
+    <div class="hero-compare">
+      <table>
+        <thead>
+          <tr>
+            <th></th>
+            <th>Function</th>
+            <th>Oura</th>
+            <th>Whoop</th>
+            <th class="col-baseline">Baseline</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Blood work</td>
+            <td class="check">&check;</td>
+            <td class="miss">&mdash;</td>
+            <td class="miss">&mdash;</td>
+            <td class="check-baseline">&check;</td>
+          </tr>
+          <tr>
+            <td>Blood pressure</td>
+            <td class="miss">&mdash;</td>
+            <td class="miss">&mdash;</td>
+            <td class="miss">&mdash;</td>
+            <td class="check-baseline">&check;</td>
+          </tr>
+          <tr>
+            <td>Sleep + activity</td>
+            <td class="miss">&mdash;</td>
+            <td class="check">&check;</td>
+            <td class="check">&check;</td>
+            <td class="check-baseline">&check;</td>
+          </tr>
+          <tr>
+            <td>Family history</td>
+            <td class="miss">&mdash;</td>
+            <td class="miss">&mdash;</td>
+            <td class="miss">&mdash;</td>
+            <td class="check-baseline">&check;</td>
+          </tr>
+          <tr>
+            <td>Gap analysis</td>
+            <td class="miss">&mdash;</td>
+            <td class="miss">&mdash;</td>
+            <td class="miss">&mdash;</td>
+            <td class="check-baseline">&check;</td>
+          </tr>
+          <tr>
+            <td>~cost/yr</td>
+            <td class="check">$365</td>
+            <td class="check">$369</td>
+            <td class="check">$239</td>
+            <td class="check-baseline">$100</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
     <p class="score-counter" id="score-counter"></p>
   </div>
 </div>
@@ -1279,7 +1385,7 @@ footer p {
         <span class="metric-cost">$30 once</span>
       </div>
     </div>
-    <p class="metrics-note">$143/year combined. Several are free. Full methodology and 40-metric ranking coming soon.</p>
+    <p class="metrics-note">$143/year combined. Several are free. <a href="/baseline/methodology" style="color:var(--text-muted);border-bottom:1px solid rgba(255,255,255,0.15);padding-bottom:1px;">Full methodology and 40-metric ranking &rarr;</a></p>
   </div>
 </section>
 
