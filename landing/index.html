@@ -13,23 +13,24 @@
 <meta name="twitter:description" content="Build your health record once. Use it everywhere. Take it with you forever.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
 :root {
-  --bg: #0a0a0c;
-  --bg-elevated: #111114;
-  --bg-card: #16161a;
-  --border: #1e1e24;
-  --text: #e8e8ed;
+  --bg: #08080a;
+  --bg-elevated: #0f0f12;
+  --bg-card: #141418;
+  --border: #1a1a20;
+  --text: #f0f0f0;
   --text-muted: #8a8a96;
-  --text-dim: #5a5a66;
+  --text-dim: #4a4a56;
   --red: #c83c3c;
-  --red-dim: rgba(200, 60, 60, 0.15);
+  --red-dim: rgba(200, 60, 60, 0.12);
   --teal: #2dd4a8;
-  --teal-dim: rgba(45, 212, 168, 0.12);
-  --font-sans: 'Outfit', -apple-system, sans-serif;
+  --teal-dim: rgba(45, 212, 168, 0.10);
+  --font-display: 'Barlow Condensed', sans-serif;
+  --font-body: 'DM Sans', -apple-system, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
 }
 
@@ -38,10 +39,26 @@ html { scroll-behavior: smooth; }
 body {
   background: var(--bg);
   color: var(--text);
-  font-family: var(--font-sans);
+  font-family: var(--font-body);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
+  position: relative;
+}
+
+/* ── Subtle grid (from banner) ── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px);
+  background-size: 60px 60px;
+  pointer-events: none;
+  z-index: 0;
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 30%, black 0%, transparent 70%);
+  -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 30%, black 0%, transparent 70%);
 }
 
 a { color: var(--teal); text-decoration: none; }
@@ -51,40 +68,67 @@ a:hover { text-decoration: underline; }
   max-width: 720px;
   margin: 0 auto;
   padding: 0 24px;
+  position: relative;
+  z-index: 1;
 }
 
 /* ── Hero ── */
 .hero {
-  padding: 100px 0 80px;
+  padding: 120px 0 88px;
   text-align: center;
 }
 
 .logo {
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
   font-size: 1.1rem;
-  font-weight: 600;
-  letter-spacing: 0.05em;
-  color: var(--text-muted);
-  margin-bottom: 40px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  color: rgba(225, 225, 225, 0.40);
+  margin-bottom: 48px;
 }
 
-.logo span { color: var(--teal); }
+.logo .period { color: rgba(225, 225, 225, 0.20); }
 
 h1 {
-  font-size: clamp(2.2rem, 5vw, 3.2rem);
+  font-family: var(--font-display);
+  font-size: clamp(2.8rem, 7vw, 4.5rem);
   font-weight: 700;
-  line-height: 1.15;
-  letter-spacing: -0.02em;
-  margin-bottom: 20px;
+  line-height: 1.05;
+  letter-spacing: -0.5px;
+  text-transform: uppercase;
+  margin-bottom: 28px;
+}
+
+h1 .line-neg {
+  display: block;
+  color: var(--text);
+}
+
+h1 .word-not {
+  color: var(--red);
+  display: inline-block;
+  transform: rotate(-8deg);
+  position: relative;
+  top: -2px;
+  margin: 0 4px;
+}
+
+h1 .line-pos {
+  display: block;
+  color: var(--teal);
+  font-size: 0.65em;
+  font-weight: 600;
+  letter-spacing: 1px;
+  margin-top: 8px;
 }
 
 .hero-sub {
-  font-size: 1.15rem;
+  font-size: 1.1rem;
   color: var(--text-muted);
-  max-width: 520px;
-  margin: 0 auto 40px;
+  max-width: 480px;
+  margin: 0 auto 44px;
   font-weight: 300;
-  line-height: 1.5;
+  line-height: 1.55;
 }
 
 .signup-form {
@@ -99,10 +143,10 @@ h1 {
   padding: 14px 18px;
   background: var(--bg-elevated);
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: 6px;
   color: var(--text);
   font-family: var(--font-mono);
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   outline: none;
   transition: border-color 0.2s;
 }
@@ -111,26 +155,27 @@ h1 {
 .signup-form input:focus { border-color: var(--teal); }
 
 .signup-form button {
-  padding: 14px 24px;
+  padding: 14px 28px;
   background: var(--teal);
   color: var(--bg);
   border: none;
-  border-radius: 8px;
-  font-family: var(--font-sans);
-  font-weight: 600;
+  border-radius: 6px;
+  font-family: var(--font-body);
+  font-weight: 700;
   font-size: 0.9rem;
   cursor: pointer;
   white-space: nowrap;
   transition: opacity 0.2s;
+  letter-spacing: 0.3px;
 }
 
 .signup-form button:hover { opacity: 0.88; }
 
 .trust-line {
   font-family: var(--font-mono);
-  font-size: 0.78rem;
+  font-size: 0.75rem;
   color: var(--text-dim);
-  letter-spacing: 0.03em;
+  letter-spacing: 0.05em;
 }
 
 /* ── Section base ── */
@@ -140,20 +185,22 @@ section {
 }
 
 .section-label {
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  font-weight: 500;
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.12em;
+  letter-spacing: 3px;
   color: var(--text-dim);
-  margin-bottom: 12px;
+  margin-bottom: 14px;
 }
 
 h2 {
-  font-size: clamp(1.5rem, 3.5vw, 2rem);
-  font-weight: 600;
-  line-height: 1.2;
-  letter-spacing: -0.015em;
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 4vw, 2.4rem);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.3px;
+  text-transform: uppercase;
   margin-bottom: 24px;
 }
 
@@ -161,7 +208,7 @@ h2 {
 .pain-points {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 12px;
   margin-bottom: 32px;
 }
 
@@ -172,19 +219,19 @@ h2 {
   padding: 18px 20px;
   background: var(--bg-elevated);
   border: 1px solid var(--border);
-  border-radius: 10px;
+  border-radius: 8px;
 }
 
 .pain-icon {
   font-family: var(--font-mono);
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   color: var(--red);
   flex-shrink: 0;
   margin-top: 2px;
 }
 
 .pain-point p {
-  font-size: 0.95rem;
+  font-size: 0.92rem;
   color: var(--text-muted);
   line-height: 1.5;
 }
@@ -193,11 +240,11 @@ h2 {
   padding: 20px 24px;
   background: var(--red-dim);
   border-left: 3px solid var(--red);
-  border-radius: 0 8px 8px 0;
+  border-radius: 0 6px 6px 0;
   font-family: var(--font-mono);
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   color: var(--text-muted);
-  line-height: 1.6;
+  line-height: 1.65;
 }
 
 .stat-callout strong { color: var(--text); }
@@ -218,7 +265,7 @@ h2 {
 
 .coverage-bar .label {
   font-family: var(--font-mono);
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   color: var(--text-dim);
   width: 110px;
   flex-shrink: 0;
@@ -227,8 +274,8 @@ h2 {
 
 .bar-track {
   flex: 1;
-  height: 6px;
-  background: var(--bg);
+  height: 5px;
+  background: rgba(255,255,255,0.04);
   border-radius: 3px;
   overflow: hidden;
 }
@@ -245,14 +292,14 @@ h2 {
 
 .coverage-bar .pct {
   font-family: var(--font-mono);
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   color: var(--text-dim);
   width: 36px;
 }
 
 .journey-text {
   margin-top: 28px;
-  font-size: 0.95rem;
+  font-size: 0.92rem;
   color: var(--text-muted);
   line-height: 1.65;
 }
@@ -265,7 +312,7 @@ h2 {
 .metrics-list {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 0;
   margin-top: 24px;
 }
 
@@ -273,17 +320,19 @@ h2 {
   display: flex;
   align-items: center;
   gap: 16px;
-  padding: 12px 16px;
-  border-radius: 6px;
+  padding: 11px 16px;
+  border-radius: 4px;
   transition: background 0.15s;
+  border-bottom: 1px solid rgba(255,255,255,0.03);
 }
 
+.metric-row:last-child { border-bottom: none; }
 .metric-row:hover { background: var(--bg-elevated); }
 
 .metric-rank {
   font-family: var(--font-mono);
-  font-size: 0.85rem;
-  font-weight: 600;
+  font-size: 0.8rem;
+  font-weight: 500;
   color: var(--teal);
   width: 28px;
   flex-shrink: 0;
@@ -291,13 +340,13 @@ h2 {
 
 .metric-name {
   flex: 1;
-  font-size: 0.95rem;
+  font-size: 0.92rem;
   color: var(--text);
 }
 
 .metric-cost {
   font-family: var(--font-mono);
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   color: var(--text-dim);
   text-align: right;
   white-space: nowrap;
@@ -308,57 +357,60 @@ h2 {
 .metrics-note {
   margin-top: 20px;
   font-family: var(--font-mono);
-  font-size: 0.78rem;
+  font-size: 0.75rem;
   color: var(--text-dim);
 }
 
 /* ── How It Works ── */
 .steps {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
   margin: 28px 0;
 }
 
 .step {
-  padding: 20px;
+  padding: 20px 16px;
   background: var(--bg-elevated);
   border: 1px solid var(--border);
-  border-radius: 10px;
+  border-radius: 8px;
   text-align: center;
 }
 
 .step-num {
   font-family: var(--font-mono);
-  font-size: 0.7rem;
-  font-weight: 600;
+  font-size: 0.65rem;
+  font-weight: 500;
   color: var(--teal);
   letter-spacing: 0.1em;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 }
 
 .step-title {
-  font-weight: 600;
-  font-size: 0.95rem;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.05rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
   margin-bottom: 6px;
 }
 
 .step-desc {
-  font-size: 0.82rem;
+  font-size: 0.78rem;
   color: var(--text-dim);
-  line-height: 1.45;
+  line-height: 1.4;
 }
 
 .how-details {
   margin-top: 24px;
-  font-size: 0.92rem;
+  font-size: 0.9rem;
   color: var(--text-muted);
   line-height: 1.6;
 }
 
 .how-details code {
   font-family: var(--font-mono);
-  font-size: 0.82rem;
+  font-size: 0.8rem;
   background: var(--bg-elevated);
   padding: 2px 7px;
   border-radius: 4px;
@@ -370,12 +422,12 @@ h2 {
   padding: 28px;
   background: var(--bg-elevated);
   border: 1px solid var(--border);
-  border-radius: 12px;
+  border-radius: 10px;
   margin-top: 20px;
 }
 
 .story-block p {
-  font-size: 0.95rem;
+  font-size: 0.92rem;
   color: var(--text-muted);
   line-height: 1.65;
   margin-bottom: 16px;
@@ -389,11 +441,11 @@ h2 {
   padding: 16px 20px;
   background: var(--teal-dim);
   border-left: 3px solid var(--teal);
-  border-radius: 0 8px 8px 0;
+  border-radius: 0 6px 6px 0;
   font-family: var(--font-mono);
-  font-size: 0.82rem;
+  font-size: 0.8rem;
   color: var(--text-muted);
-  line-height: 1.6;
+  line-height: 1.65;
 }
 
 .insulin-callout strong { color: var(--teal); }
@@ -407,7 +459,7 @@ h2 {
 .cta-section h2 { margin-bottom: 12px; }
 
 .cta-sub {
-  font-size: 0.95rem;
+  font-size: 0.92rem;
   color: var(--text-muted);
   margin-bottom: 32px;
 }
@@ -421,15 +473,17 @@ footer {
 
 footer p {
   font-family: var(--font-mono);
-  font-size: 0.78rem;
+  font-size: 0.75rem;
   color: var(--text-dim);
   line-height: 1.8;
 }
 
 /* ── Mobile ── */
 @media (max-width: 600px) {
-  .hero { padding: 72px 0 56px; }
+  .hero { padding: 80px 0 64px; }
   section { padding: 56px 0; }
+
+  h1 { font-size: clamp(2.2rem, 9vw, 3.2rem); }
 
   .signup-form {
     flex-direction: column;
@@ -441,7 +495,7 @@ footer p {
 
   .coverage-bar .label {
     width: 80px;
-    font-size: 0.68rem;
+    font-size: 0.65rem;
   }
 
   .steps {
@@ -453,7 +507,7 @@ footer p {
 .form-success {
   display: none;
   font-family: var(--font-mono);
-  font-size: 0.88rem;
+  font-size: 0.85rem;
   color: var(--teal);
   padding: 14px 0;
 }
@@ -464,8 +518,11 @@ footer p {
 <!-- Hero -->
 <div class="container">
   <div class="hero">
-    <div class="logo">baseline<span>.</span></div>
-    <h1>Average is not healthy.<br>You're closer than you think.</h1>
+    <div class="logo">baseline<span class="period">.</span></div>
+    <h1>
+      <span class="line-neg">Average <span class="word-not">&ne;</span> Healthy.</span>
+      <span class="line-pos">You're closer than you think.</span>
+    </h1>
     <p class="hero-sub">Build your health record once. Use it everywhere. Take it with you forever.</p>
     <form class="signup-form" id="hero-form" action="https://formspree.io/f/mjgezrdp" method="POST">
       <input type="email" name="email" placeholder="your@email.com" required autocomplete="email">
@@ -505,7 +562,7 @@ footer p {
   <div class="container">
     <p class="section-label">The differentiator</p>
     <h2>Your health has a coverage score.</h2>
-    <p style="color: var(--text-muted); margin-bottom: 8px;">Not a wellness grade. A map of what you've measured — and what you haven't.</p>
+    <p style="color: var(--text-muted); margin-bottom: 8px; font-size: 0.92rem;">Not a wellness grade. A map of what you've measured — and what you haven't.</p>
     <div class="coverage-visual">
       <div class="coverage-bar">
         <span class="label">blood work</span>
@@ -647,10 +704,10 @@ footer p {
     <div class="story-block">
       <p>Seven draws. 200 biomarkers. Full blood work through Quest. My health coverage when I started: <strong>42%</strong>.</p>
       <p>The gaps weren't what I expected. I had comprehensive blood panels but had never collected family history. I tracked sleep duration religiously but not regularity. My wearable had 18 months of resting heart rate data — I'd never looked at the trend.</p>
-      <p>The real find was my fasting insulin. Single draw: 3.5 mIU/L. Looks perfect. But across three draws over six months: <strong>3.5 → 8.2 → 13.9</strong>. A trend that a single snapshot would never catch.</p>
+      <p>The real find was my fasting insulin. Single draw: 3.5 mIU/L. Looks perfect. But across three draws over six months: <strong>3.5 &rarr; 8.2 &rarr; 13.9</strong>. A trend that a single snapshot would never catch.</p>
     </div>
     <div class="insulin-callout">
-      <strong>3.5 → 13.9 mIU/L</strong> over 6 months. Each draw looked "normal" on its own. The trend told a different story. Insulin resistance shows up 10–15 years before a diabetes diagnosis — but only if you're tracking.
+      <strong>3.5 &rarr; 13.9 mIU/L</strong> over 6 months. Each draw looked "normal" on its own. The trend told a different story. Insulin resistance shows up 10–15 years before a diabetes diagnosis — but only if you're tracking.
     </div>
   </div>
 </section>
@@ -672,7 +729,7 @@ footer p {
 <footer>
   <div class="container">
     <p>
-      Built by Andrew Deal · <a href="https://x.com/a_e_deal" target="_blank" rel="noopener">@a_e_deal</a><br>
+      Built by Andrew Deal &middot; <a href="https://x.com/a_e_deal" target="_blank" rel="noopener">@a_e_deal</a><br>
       Local-first. Your health data never touches our servers.
     </p>
   </div>
