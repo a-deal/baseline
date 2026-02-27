@@ -1,0 +1,21 @@
+# Personal health data
+draws/
+profiles/
+garmin_latest.json
+weight_log.csv
+strength_log.csv
+.garmin_tokens/
+
+# NHANES raw data
+nhanes/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# Automerge artifacts
+*.automerge
+
+# OS
+.DS_Store

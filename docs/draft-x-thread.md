@@ -1,0 +1,150 @@
+# X/Twitter Thread Draft (v2)
+
+**Hook:** Alt C variant + ranked list
+**Voice:** Engineer who did the research. Data-forward, no hype.
+**Goal:** Reach + quote-tweet flywheel. Each tweet stands alone if screenshotted.
+
+---
+
+## Thread
+
+**1/ (Hook)**
+
+96 million Americans are prediabetic. 47% have hypertension — half don't know it. 20% carry a genetic lipid risk factor that's invisible on standard tests.
+
+I spent 3 months in the literature and ranked 40 health metrics by ROI.
+
+The top 10 cost $143/year combined. Several are free.
+
+**2/**
+
+Methodology: I scored each metric on 3 axes.
+
+1. Strength of causal evidence (RCTs > cohort > cross-sectional)
+2. Cost to measure
+3. Whether knowing the number actually changes what you do
+
+Most "health tracking" fails on #3.
+
+**3/**
+
+#1: Blood pressure. $40 one-time.
+
+Each 20 mmHg above 115 systolic doubles CVD mortality (1M-participant meta-analysis). SPRINT showed intensive lowering cut all-cause mortality 27%.
+
+47% of US adults have hypertension. Half are unaware. A $40 cuff fixes that.
+
+**4/**
+
+#2: Lipid panel + ApoB. $30-50/year.
+
+When ApoB and LDL-C disagree on your risk, ApoB wins. It's causally linked to atherosclerosis. Most panels don't include it.
+
+Ask for it by name. Your doctor probably won't order it otherwise.
+
+**5/**
+
+#3: Fasting insulin + metabolic panel. $40-60/year.
+
+Insulin resistance shows up 10-15 years before a diabetes diagnosis. Lifestyle intervention reduces progression by 58%.
+
+But only if you catch it. Standard glucose tests miss early-stage insulin resistance.
+
+**6/**
+
+#4: Family history. Free.
+
+Parental CVD before 60 roughly doubles your risk. One conversation with your parents changes your entire risk model. You only need to do it once.
+
+The cheapest, highest-ROI health data you'll ever collect.
+
+**7/**
+
+#5: Sleep regularity. Free (any wearable).
+
+UK Biobank, 72K people: sleep regularity predicts mortality more than sleep duration.
+
+8 hours doesn't help if it's 10pm-6am Monday and 1am-9am Saturday.
+
+**8/**
+
+#6-7: Daily steps + resting heart rate. Both free.
+
+Steps: each additional 1,000/day = ~15% lower all-cause mortality (47K meta-analysis). Benefits plateau around 10K.
+
+RHR: 71-80 bpm = 51% higher mortality vs. 51-60 bpm. Your watch already tracks this.
+
+**9/**
+
+#8: Waist circumference. $3 tape measure.
+
+Forget BMI. The INTERHEART study identified 9 factors explaining 90% of heart attack risk. Waist-to-hip ratio was one.
+
+If your waist is less than half your height, you're in good shape. BMI can't tell you that.
+
+**10/**
+
+#9: Your medication list.
+
+Sounds boring. It's not.
+
+Statins change your lipids. Beta-blockers suppress HR and HRV. Metformin alters your glucose curve.
+
+If your tracker doesn't know what you're taking, every other number gets misread. This is the most underrated health metric.
+
+**11/**
+
+#10: Lp(a). ~$30. Once in your entire life.
+
+20% of people have elevated Lp(a). Genetically fixed — doesn't respond to diet or exercise. Invisible on a standard panel.
+
+One draw. One number. Either changes your risk model permanently or it doesn't.
+
+**12/**
+
+Now — where tracking is counterproductive.
+
+PSA: 27 men overtreated for every 1 death prevented. CGMs for non-diabetics: no evidence of benefit, documented increase in food anxiety.
+
+More data is not always better data.
+
+**13/ (Close)**
+
+I ran myself through all 40 metrics. Full blood work, 7 draws, 200 biomarkers.
+
+My health coverage: roughly 42%.
+
+Three moves totaling ~$50 would get me to 80%. The gaps weren't what I expected.
+
+Working on a system to calculate your personal score.
+
+Early access: https://adeal.github.io/baseline
+
+---
+
+## Standalone Quote-Tweet Schedule
+
+Post these as quote-tweets of the original thread over the following week:
+
+| Day | Tweet to QT | Standalone angle |
+|-----|-------------|-----------------|
+| +2 | #11 (Lp(a)) | "The $30 test your doctor never ordered" |
+| +3 | #10 (Medication list) | "The most underrated health metric isn't a biomarker" |
+| +5 | #12 (Counterproductive) | "CGMs for non-diabetics: no evidence of benefit" |
+| +7 | #7 (Sleep) | "Sleep regularity > sleep duration" |
+
+## Reply Strategy
+
+- Reply to Peter Attia, Andrew Huberman, Rhonda Patrick threads with specific data points from the thread (not links to the thread itself)
+- If anyone asks "what tool/system?" — respond honestly: "Building it now. Happy to share when it's ready. What do you currently use to track?" (turns it into data collection)
+- Engage with every reply in the first 2 hours. Algorithm rewards early engagement velocity.
+
+---
+
+## Notes
+
+- No emojis. No "let's go" energy. The data is the hook.
+- Tweet 12 (counterproductive tracking) will be the most controversial — lean into it.
+- Tweet 10 (medication list) is the sleeper — most counterintuitive, will draw replies.
+- Tweet 13 now links to landing page: https://adeal.github.io/baseline
+- Full 40-metric ranking is NOT in the thread. That's the landing page incentive.

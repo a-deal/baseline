@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1500">
+<title>Baseline — X Header Banner</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=DM+Sans:wght@400;500;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    width: 1500px;
+    height: 500px;
+    overflow: hidden;
+    background: #000;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .banner {
+    width: 1500px;
+    height: 500px;
+    position: relative;
+    overflow: hidden;
+    background: #08080a;
+  }
+
+  /* Subtle grid pattern */
+  .banner::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(ellipse 55% 65% at 72% 50%, black 10%, transparent 60%);
+    -webkit-mask-image: radial-gradient(ellipse 55% 65% at 72% 50%, black 10%, transparent 60%);
+  }
+
+  /* ============================================
+     THREE LINES — centered in safe zone
+     Safe zone: y=150 to y=375
+     ============================================ */
+
+  .brand-name {
+    position: absolute;
+    top: 188px;
+    right: 100px;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+    font-size: 28px;
+    letter-spacing: 0.5px;
+    color: rgba(225, 225, 225, 0.40);
+    line-height: 1;
+    z-index: 10;
+  }
+
+  .brand-name .period {
+    color: rgba(225, 225, 225, 0.20);
+  }
+
+  .tagline-line {
+    position: absolute;
+    right: 100px;
+    top: 230px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 600;
+    font-size: 112px;
+    line-height: 1;
+    letter-spacing: -1px;
+    text-transform: uppercase;
+    color: #f0f0f0;
+    text-align: right;
+    z-index: 10;
+  }
+
+  .tagline-line .word-not {
+    color: #c83c3c;
+    display: inline-block;
+    transform: rotate(-12deg);
+    margin: 0 8px;
+    position: relative;
+    top: -4px;
+  }
+
+  .subtitle {
+    position: absolute;
+    top: 362px;
+    right: 100px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 24px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.28);
+    text-align: right;
+    z-index: 10;
+  }
+
+</style>
+</head>
+<body>
+<div class="banner">
+
+  <div class="brand-name">baseline<span class="period">.</span></div>
+  <div class="tagline-line">AVERAGE <span class="word-not">≠</span> HEALTHY.</div>
+  <div class="subtitle">Find where you actually stand</div>
+
+</div>
+</body>
+</html>

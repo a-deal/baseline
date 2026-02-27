@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>baseline. — Average is not healthy.</title>
+<meta name="description" content="Build your health record once. Use it everywhere. Take it with you forever. Free, local-first health coverage scoring.">
+<meta property="og:title" content="baseline. — Average is not healthy.">
+<meta property="og:description" content="I ranked 40 health metrics by ROI. The top 10 cost $143/year combined. Several are free.">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="baseline. — Average is not healthy.">
+<meta name="twitter:description" content="Build your health record once. Use it everywhere. Take it with you forever.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #0a0a0c;
+  --bg-elevated: #111114;
+  --bg-card: #16161a;
+  --border: #1e1e24;
+  --text: #e8e8ed;
+  --text-muted: #8a8a96;
+  --text-dim: #5a5a66;
+  --red: #c83c3c;
+  --red-dim: rgba(200, 60, 60, 0.15);
+  --teal: #2dd4a8;
+  --teal-dim: rgba(45, 212, 168, 0.12);
+  --font-sans: 'Outfit', -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+a { color: var(--teal); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+.container {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* ── Hero ── */
+.hero {
+  padding: 100px 0 80px;
+  text-align: center;
+}
+
+.logo {
+  font-family: var(--font-mono);
+  font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  margin-bottom: 40px;
+}
+
+.logo span { color: var(--teal); }
+
+h1 {
+  font-size: clamp(2.2rem, 5vw, 3.2rem);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  margin-bottom: 20px;
+}
+
+.hero-sub {
+  font-size: 1.15rem;
+  color: var(--text-muted);
+  max-width: 520px;
+  margin: 0 auto 40px;
+  font-weight: 300;
+  line-height: 1.5;
+}
+
+.signup-form {
+  display: flex;
+  gap: 8px;
+  max-width: 420px;
+  margin: 0 auto 16px;
+}
+
+.signup-form input {
+  flex: 1;
+  padding: 14px 18px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.signup-form input::placeholder { color: var(--text-dim); }
+.signup-form input:focus { border-color: var(--teal); }
+
+.signup-form button {
+  padding: 14px 24px;
+  background: var(--teal);
+  color: var(--bg);
+  border: none;
+  border-radius: 8px;
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: opacity 0.2s;
+}
+
+.signup-form button:hover { opacity: 0.88; }
+
+.trust-line {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--text-dim);
+  letter-spacing: 0.03em;
+}
+
+/* ── Section base ── */
+section {
+  padding: 72px 0;
+  border-top: 1px solid var(--border);
+}
+
+.section-label {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--text-dim);
+  margin-bottom: 12px;
+}
+
+h2 {
+  font-size: clamp(1.5rem, 3.5vw, 2rem);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+  margin-bottom: 24px;
+}
+
+/* ── Problem ── */
+.pain-points {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.pain-point {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 18px 20px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+.pain-icon {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--red);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.pain-point p {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.stat-callout {
+  padding: 20px 24px;
+  background: var(--red-dim);
+  border-left: 3px solid var(--red);
+  border-radius: 0 8px 8px 0;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+.stat-callout strong { color: var(--text); }
+
+/* ── Coverage ── */
+.coverage-visual {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 32px 0;
+}
+
+.coverage-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.coverage-bar .label {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  width: 110px;
+  flex-shrink: 0;
+  text-align: right;
+}
+
+.bar-track {
+  flex: 1;
+  height: 6px;
+  background: var(--bg);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.bar-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 1.5s ease;
+}
+
+.bar-fill.high { background: var(--teal); }
+.bar-fill.med { background: #e8a838; }
+.bar-fill.low { background: var(--red); }
+
+.coverage-bar .pct {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  width: 36px;
+}
+
+.journey-text {
+  margin-top: 28px;
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  line-height: 1.65;
+}
+
+.journey-text strong { color: var(--text); }
+
+.teal { color: var(--teal); }
+
+/* ── Top 10 ── */
+.metrics-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: 24px;
+}
+
+.metric-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 16px;
+  border-radius: 6px;
+  transition: background 0.15s;
+}
+
+.metric-row:hover { background: var(--bg-elevated); }
+
+.metric-rank {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--teal);
+  width: 28px;
+  flex-shrink: 0;
+}
+
+.metric-name {
+  flex: 1;
+  font-size: 0.95rem;
+  color: var(--text);
+}
+
+.metric-cost {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--text-dim);
+  text-align: right;
+  white-space: nowrap;
+}
+
+.metric-cost.free { color: var(--teal); }
+
+.metrics-note {
+  margin-top: 20px;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--text-dim);
+}
+
+/* ── How It Works ── */
+.steps {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 16px;
+  margin: 28px 0;
+}
+
+.step {
+  padding: 20px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  text-align: center;
+}
+
+.step-num {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--teal);
+  letter-spacing: 0.1em;
+  margin-bottom: 8px;
+}
+
+.step-title {
+  font-weight: 600;
+  font-size: 0.95rem;
+  margin-bottom: 6px;
+}
+
+.step-desc {
+  font-size: 0.82rem;
+  color: var(--text-dim);
+  line-height: 1.45;
+}
+
+.how-details {
+  margin-top: 24px;
+  font-size: 0.92rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+.how-details code {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  background: var(--bg-elevated);
+  padding: 2px 7px;
+  border-radius: 4px;
+  color: var(--teal);
+}
+
+/* ── Story ── */
+.story-block {
+  padding: 28px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  margin-top: 20px;
+}
+
+.story-block p {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  line-height: 1.65;
+  margin-bottom: 16px;
+}
+
+.story-block p:last-child { margin-bottom: 0; }
+.story-block strong { color: var(--text); }
+
+.insulin-callout {
+  margin-top: 20px;
+  padding: 16px 20px;
+  background: var(--teal-dim);
+  border-left: 3px solid var(--teal);
+  border-radius: 0 8px 8px 0;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+.insulin-callout strong { color: var(--teal); }
+
+/* ── CTA ── */
+.cta-section {
+  text-align: center;
+  padding: 80px 0;
+}
+
+.cta-section h2 { margin-bottom: 12px; }
+
+.cta-sub {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  margin-bottom: 32px;
+}
+
+/* ── Footer ── */
+footer {
+  padding: 40px 0;
+  border-top: 1px solid var(--border);
+  text-align: center;
+}
+
+footer p {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--text-dim);
+  line-height: 1.8;
+}
+
+/* ── Mobile ── */
+@media (max-width: 600px) {
+  .hero { padding: 72px 0 56px; }
+  section { padding: 56px 0; }
+
+  .signup-form {
+    flex-direction: column;
+  }
+
+  .signup-form button {
+    padding: 14px;
+  }
+
+  .coverage-bar .label {
+    width: 80px;
+    font-size: 0.68rem;
+  }
+
+  .steps {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* ── Form success state ── */
+.form-success {
+  display: none;
+  font-family: var(--font-mono);
+  font-size: 0.88rem;
+  color: var(--teal);
+  padding: 14px 0;
+}
+</style>
+</head>
+<body>
+
+<!-- Hero -->
+<div class="container">
+  <div class="hero">
+    <div class="logo">baseline<span>.</span></div>
+    <h1>Average is not healthy.</h1>
+    <p class="hero-sub">Build your health record once. Use it everywhere. Take it with you forever.</p>
+    <form class="signup-form" id="hero-form" action="https://formspree.io/f/mjgezrdp" method="POST">
+      <input type="email" name="email" placeholder="your@email.com" required autocomplete="email">
+      <button type="submit">Get early access</button>
+    </form>
+    <p class="trust-line">Free. Local-first. Your data stays yours.</p>
+  </div>
+</div>
+
+<!-- Problem -->
+<section>
+  <div class="container">
+    <p class="section-label">The problem</p>
+    <h2>Your health data is everywhere except where it's useful.</h2>
+    <div class="pain-points">
+      <div class="pain-point">
+        <span class="pain-icon">01</span>
+        <p>Lab results buried in email PDFs and patient portals you'll never log into again.</p>
+      </div>
+      <div class="pain-point">
+        <span class="pain-icon">02</span>
+        <p>Wearable data siloed in apps that don't talk to each other — or to your doctor.</p>
+      </div>
+      <div class="pain-point">
+        <span class="pain-icon">03</span>
+        <p>No tool tells you what's <em>missing</em>. You don't know what you don't know.</p>
+      </div>
+    </div>
+    <div class="stat-callout">
+      <strong>96M Americans are prediabetic.</strong> 47% have hypertension — half don't know it. 20% carry a genetic lipid risk factor invisible on standard tests.
+    </div>
+  </div>
+</section>
+
+<!-- Coverage -->
+<section>
+  <div class="container">
+    <p class="section-label">The differentiator</p>
+    <h2>Your health has a coverage score.</h2>
+    <p style="color: var(--text-muted); margin-bottom: 8px;">Not a wellness grade. A map of what you've measured — and what you haven't.</p>
+    <div class="coverage-visual">
+      <div class="coverage-bar">
+        <span class="label">blood work</span>
+        <div class="bar-track"><div class="bar-fill high" style="width: 82%"></div></div>
+        <span class="pct">82%</span>
+      </div>
+      <div class="coverage-bar">
+        <span class="label">cardiovascular</span>
+        <div class="bar-track"><div class="bar-fill high" style="width: 75%"></div></div>
+        <span class="pct">75%</span>
+      </div>
+      <div class="coverage-bar">
+        <span class="label">sleep</span>
+        <div class="bar-track"><div class="bar-fill med" style="width: 60%"></div></div>
+        <span class="pct">60%</span>
+      </div>
+      <div class="coverage-bar">
+        <span class="label">activity</span>
+        <div class="bar-track"><div class="bar-fill high" style="width: 90%"></div></div>
+        <span class="pct">90%</span>
+      </div>
+      <div class="coverage-bar">
+        <span class="label">family history</span>
+        <div class="bar-track"><div class="bar-fill low" style="width: 25%"></div></div>
+        <span class="pct">25%</span>
+      </div>
+      <div class="coverage-bar">
+        <span class="label">medications</span>
+        <div class="bar-track"><div class="bar-fill high" style="width: 100%"></div></div>
+        <span class="pct">100%</span>
+      </div>
+    </div>
+    <p class="journey-text">
+      I ran myself through 40 metrics. Started at <strong>42%</strong> coverage. Got to <strong class="teal">85%</strong> in a single session. Three moves totaling <strong>~$50</strong> would take most people from 40% to 80%.
+    </p>
+  </div>
+</section>
+
+<!-- Top 10 -->
+<section>
+  <div class="container">
+    <p class="section-label">The ranking</p>
+    <h2>Top 10 health metrics by ROI.</h2>
+    <div class="metrics-list">
+      <div class="metric-row">
+        <span class="metric-rank">01</span>
+        <span class="metric-name">Blood pressure</span>
+        <span class="metric-cost">$40 one-time</span>
+      </div>
+      <div class="metric-row">
+        <span class="metric-rank">02</span>
+        <span class="metric-name">Lipid panel + ApoB</span>
+        <span class="metric-cost">$30–50/yr</span>
+      </div>
+      <div class="metric-row">
+        <span class="metric-rank">03</span>
+        <span class="metric-name">Fasting insulin + metabolic panel</span>
+        <span class="metric-cost">$40–60/yr</span>
+      </div>
+      <div class="metric-row">
+        <span class="metric-rank">04</span>
+        <span class="metric-name">Family history</span>
+        <span class="metric-cost free">free</span>
+      </div>
+      <div class="metric-row">
+        <span class="metric-rank">05</span>
+        <span class="metric-name">Sleep regularity</span>
+        <span class="metric-cost free">free</span>
+      </div>
+      <div class="metric-row">
+        <span class="metric-rank">06</span>
+        <span class="metric-name">Daily steps</span>
+        <span class="metric-cost free">free</span>
+      </div>
+      <div class="metric-row">
+        <span class="metric-rank">07</span>
+        <span class="metric-name">Resting heart rate</span>
+        <span class="metric-cost free">free</span>
+      </div>
+      <div class="metric-row">
+        <span class="metric-rank">08</span>
+        <span class="metric-name">Waist circumference</span>
+        <span class="metric-cost">$3</span>
+      </div>
+      <div class="metric-row">
+        <span class="metric-rank">09</span>
+        <span class="metric-name">Medication list</span>
+        <span class="metric-cost free">free</span>
+      </div>
+      <div class="metric-row">
+        <span class="metric-rank">10</span>
+        <span class="metric-name">Lp(a)</span>
+        <span class="metric-cost">$30 once</span>
+      </div>
+    </div>
+    <p class="metrics-note">$143/year combined. Several are free. Full methodology and 40-metric ranking coming soon.</p>
+  </div>
+</section>
+
+<!-- How It Works -->
+<section>
+  <div class="container">
+    <p class="section-label">How it works</p>
+    <h2>Four steps to your coverage score.</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">01</div>
+        <div class="step-title">Ingest</div>
+        <div class="step-desc">Drop a lab PDF or connect your wearable</div>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <div class="step-title">Structure</div>
+        <div class="step-desc">Data parsed and normalized locally</div>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <div class="step-title">Score</div>
+        <div class="step-desc">See your coverage across 40 metrics</div>
+      </div>
+      <div class="step">
+        <div class="step-num">04</div>
+        <div class="step-title">Guide</div>
+        <div class="step-desc">Ranked next steps by cost and impact</div>
+      </div>
+    </div>
+    <p class="how-details">
+      Drop a lab PDF. Connect your wearable. Answer 3 questions. See your score.<br>
+      Runs locally as a CLI and <code>MCP server</code> — works with any AI assistant that supports the protocol.
+    </p>
+  </div>
+</section>
+
+<!-- Story -->
+<section>
+  <div class="container">
+    <p class="section-label">The backstory</p>
+    <h2>I ran myself through 40 metrics.</h2>
+    <div class="story-block">
+      <p>Seven draws. 200 biomarkers. Full blood work through Quest. My health coverage when I started: <strong>42%</strong>.</p>
+      <p>The gaps weren't what I expected. I had comprehensive blood panels but had never collected family history. I tracked sleep duration religiously but not regularity. My wearable had 18 months of resting heart rate data — I'd never looked at the trend.</p>
+      <p>The real find was my fasting insulin. Single draw: 3.5 mIU/L. Looks perfect. But across three draws over six months: <strong>3.5 → 8.2 → 13.9</strong>. A trend that a single snapshot would never catch.</p>
+    </div>
+    <div class="insulin-callout">
+      <strong>3.5 → 13.9 mIU/L</strong> over 6 months. Each draw looked "normal" on its own. The trend told a different story. Insulin resistance shows up 10–15 years before a diabetes diagnosis — but only if you're tracking.
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="container">
+    <h2>See your score.</h2>
+    <p class="cta-sub">Join the waitlist. We'll notify you when the CLI + MCP server ships.</p>
+    <form class="signup-form" id="cta-form" action="https://formspree.io/f/mjgezrdp" method="POST" style="justify-content: center;">
+      <input type="email" name="email" placeholder="your@email.com" required autocomplete="email">
+      <button type="submit">Get early access</button>
+    </form>
+    <div class="form-success" id="form-success">You're on the list. We'll be in touch.</div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="container">
+    <p>
+      Built by Andrew Deal · <a href="https://x.com/andrewdeal" target="_blank" rel="noopener">@andrewdeal</a><br>
+      Local-first. Your health data never touches our servers.
+    </p>
+  </div>
+</footer>
+
+<script>
+document.querySelectorAll('form').forEach(form => {
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    const data = new FormData(this);
+    fetch(this.action, {
+      method: 'POST',
+      body: data,
+      headers: { 'Accept': 'application/json' }
+    }).then(r => {
+      if (r.ok) {
+        this.style.display = 'none';
+        const success = this.parentElement.querySelector('.form-success') ||
+          this.nextElementSibling;
+        if (success && success.classList.contains('form-success')) {
+          success.style.display = 'block';
+        } else {
+          const msg = document.createElement('p');
+          msg.className = 'form-success';
+          msg.style.display = 'block';
+          msg.textContent = "You're on the list. We'll be in touch.";
+          this.parentElement.insertBefore(msg, this.nextSibling);
+        }
+        this.reset();
+      }
+    });
+  });
+});
+</script>
+
+</body>
+</html>
