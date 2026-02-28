@@ -1,0 +1,1440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>baseline. — Health Coverage Score</title>
+<meta name="description" content="Enter your health data and get a real coverage score with NHANES percentile benchmarks and actionable gap analysis.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #08080a;
+  --bg-elevated: #0e0e11;
+  --border: #181820;
+  --text: #f0f0f0;
+  --text-muted: #7a7a88;
+  --text-dim: #3e3e4a;
+  --red: #c83c3c;
+  --red-dim: rgba(200, 60, 60, 0.10);
+  --green: #3c8c5c;
+  --green-dim: rgba(60, 140, 92, 0.12);
+  --font-display: 'Barlow Condensed', sans-serif;
+  --font-body: 'DM Sans', -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  position: relative;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
+  background-size: 60px 60px;
+  pointer-events: none;
+  z-index: 0;
+  mask-image: radial-gradient(ellipse 90% 70% at 50% 25%, black 0%, transparent 65%);
+  -webkit-mask-image: radial-gradient(ellipse 90% 70% at 50% 25%, black 0%, transparent 65%);
+}
+
+a { color: var(--text-muted); text-decoration: none; }
+a:hover { color: var(--text); }
+
+.container {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0 28px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Header ── */
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 28px 0;
+}
+
+.logo {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 700;
+  text-transform: lowercase;
+  letter-spacing: -0.5px;
+  color: var(--text);
+}
+
+.logo .period { color: var(--red); }
+
+.back-to-landing {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-dim);
+  letter-spacing: 0.04em;
+}
+
+/* ── Progress bar ── */
+.progress-bar {
+  display: flex;
+  gap: 3px;
+  margin-bottom: 48px;
+}
+
+.progress-bar .pip {
+  flex: 1;
+  height: 2px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 1px;
+  transition: background 0.3s;
+}
+
+.progress-bar .pip.active { background: rgba(255,255,255,0.35); }
+.progress-bar .pip.done { background: var(--red); opacity: 0.6; }
+
+/* ── Step containers ── */
+.step { display: none; }
+.step.active { display: block; }
+
+.step h2 {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: -0.3px;
+  margin-bottom: 8px;
+}
+
+.step-hint {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  margin-bottom: 32px;
+  line-height: 1.5;
+}
+
+/* ── Form inputs ── */
+.field-group {
+  margin-bottom: 28px;
+}
+
+.field-label {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: var(--text-dim);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.field-row {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.field-row .field-col {
+  flex: 1;
+}
+
+.field-input {
+  width: 100%;
+  padding: 12px 14px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.field-input::placeholder { color: var(--text-dim); }
+.field-input:focus { border-color: rgba(255,255,255,0.2); }
+
+.field-unit {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--text-dim);
+  margin-top: 4px;
+}
+
+.field-hint {
+  font-size: 0.78rem;
+  color: var(--text-dim);
+  margin-top: 4px;
+  line-height: 1.4;
+}
+
+/* Option buttons (single-select) */
+.option-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.opt-btn {
+  padding: 11px 20px;
+  background: var(--bg-elevated);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 5px;
+  color: rgba(240, 240, 240, 0.7);
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.15s;
+  user-select: none;
+}
+
+.opt-btn:hover { border-color: rgba(255,255,255,0.22); color: var(--text); }
+.opt-btn.selected { border-color: rgba(255,255,255,0.3); color: var(--text); background: rgba(255,255,255,0.07); }
+
+/* Toggle buttons (yes/no) */
+.toggle-group {
+  display: flex;
+  gap: 8px;
+}
+
+.toggle-btn {
+  padding: 8px 18px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  color: var(--text-muted);
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.toggle-btn:hover { border-color: rgba(255,255,255,0.2); }
+.toggle-btn.selected { border-color: rgba(255,255,255,0.3); color: var(--text); background: rgba(255,255,255,0.07); }
+
+/* ── Navigation ── */
+.step-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 40px;
+  padding-top: 24px;
+  border-top: 1px solid rgba(255,255,255,0.04);
+}
+
+.nav-back {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px 0;
+  transition: color 0.15s;
+}
+
+.nav-back:hover { color: var(--text); }
+.nav-back.hidden { visibility: hidden; }
+
+.nav-next {
+  padding: 11px 28px;
+  background: var(--text);
+  color: var(--bg);
+  border: none;
+  border-radius: 5px;
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  letter-spacing: 0.3px;
+}
+
+.nav-next:hover { opacity: 0.85; }
+
+.skip-hint {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--text-dim);
+  text-align: center;
+  margin-top: 12px;
+  letter-spacing: 0.03em;
+}
+
+/* ── Results screen ── */
+#results { display: none; padding-bottom: 80px; }
+#results.active { display: block; }
+
+.results-header {
+  text-align: center;
+  padding: 60px 0 48px;
+}
+
+.score-ring {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  margin: 0 auto 16px;
+}
+
+.score-ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.score-ring .track { fill: none; stroke: rgba(255,255,255,0.06); stroke-width: 6; }
+.score-ring .fill-ring { fill: none; stroke: var(--text); stroke-width: 6; stroke-linecap: round; stroke-dasharray: 440; stroke-dashoffset: 440; transition: stroke-dashoffset 1.5s ease; }
+.score-ring .fill-ring.red { stroke: var(--red); }
+
+.score-number {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.score-number .pct {
+  font-family: var(--font-display);
+  font-size: 3.5rem;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -1px;
+}
+
+.score-number .label {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--text-dim);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-top: 4px;
+}
+
+.score-context {
+  font-size: 0.92rem;
+  color: var(--text-muted);
+  margin-bottom: 12px;
+  line-height: 1.6;
+}
+
+.score-context strong { color: var(--text); }
+
+.percentile-line {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin-bottom: 40px;
+}
+
+/* Tier bars */
+.tier-summary {
+  display: flex;
+  gap: 24px;
+  justify-content: center;
+  margin-bottom: 52px;
+}
+
+.tier-block { text-align: center; }
+
+.tier-block .t-label {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--text-dim);
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+}
+
+.tier-block .t-track {
+  width: 140px;
+  height: 4px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 2px;
+  overflow: hidden;
+  margin: 0 auto 6px;
+}
+
+.tier-block .t-fill {
+  height: 100%;
+  border-radius: 2px;
+  background: var(--text);
+  opacity: 0.5;
+  transition: width 1.2s ease 0.3s;
+}
+
+.tier-block .t-pct {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+/* Section dividers in results */
+.results-section {
+  margin-bottom: 48px;
+}
+
+.results-section h3 {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+.results-section h3 .count {
+  font-weight: 400;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+/* Metric rows in results table */
+.metric-row {
+  display: grid;
+  grid-template-columns: 28px 1fr 160px 90px 56px;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  font-size: 0.85rem;
+}
+
+.metric-row:last-child { border-bottom: none; }
+
+.metric-rank {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-dim);
+}
+
+.metric-name { color: var(--text); }
+
+.metric-value {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  text-align: right;
+}
+
+.metric-standing {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 500;
+  text-align: center;
+  padding: 3px 8px;
+  border-radius: 3px;
+}
+
+.standing-optimal { color: #5cb85c; background: rgba(92, 184, 92, 0.1); }
+.standing-good { color: #5bc0de; background: rgba(91, 192, 222, 0.1); }
+.standing-average { color: #f0ad4e; background: rgba(240, 173, 78, 0.1); }
+.standing-below { color: #e08850; background: rgba(224, 136, 80, 0.1); }
+.standing-concerning { color: #d9534f; background: rgba(217, 83, 79, 0.1); }
+.standing-unknown { color: var(--text-dim); }
+
+.metric-pct {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-dim);
+  text-align: right;
+}
+
+/* Gap cards */
+.gap-card {
+  padding: 18px 20px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  margin-bottom: 10px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 12px;
+  align-items: start;
+}
+
+.gap-info h4 {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.gap-cost {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+
+.gap-note {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.gap-note strong { color: var(--text); }
+
+.gap-impact {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--text);
+  white-space: nowrap;
+  padding: 6px 12px;
+  background: rgba(255,255,255,0.04);
+  border-radius: 4px;
+}
+
+/* Next 3 moves */
+.next-moves { margin-bottom: 48px; }
+
+.next-moves h3 {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 20px;
+}
+
+.move-card {
+  padding: 20px 24px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  margin-bottom: 10px;
+  display: flex;
+  gap: 16px;
+  align-items: start;
+}
+
+.move-num {
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--text-dim);
+  line-height: 1;
+  flex-shrink: 0;
+  width: 28px;
+}
+
+.move-body { flex: 1; }
+
+.move-body h4 {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.move-body .move-detail {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.move-body .move-detail strong { color: var(--text); }
+
+.move-tag {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: var(--red);
+  background: var(--red-dim);
+  padding: 4px 10px;
+  border-radius: 3px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  align-self: center;
+}
+
+/* Return visit banner */
+.return-banner {
+  display: none;
+  padding: 16px 20px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  margin-bottom: 32px;
+  font-size: 0.88rem;
+  color: var(--text-muted);
+}
+
+.return-banner.active { display: flex; gap: 12px; align-items: center; justify-content: space-between; }
+
+.return-banner strong { color: var(--text); }
+
+.return-banner button {
+  padding: 8px 16px;
+  background: none;
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 4px;
+  color: var(--text-muted);
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.return-banner button:hover { border-color: rgba(255,255,255,0.3); color: var(--text); }
+
+/* Actions */
+.result-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 40px;
+  padding-top: 32px;
+  border-top: 1px solid var(--border);
+}
+
+.result-actions button {
+  padding: 11px 24px;
+  border-radius: 5px;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.btn-primary {
+  background: var(--text);
+  color: var(--bg);
+  border: none;
+  font-weight: 700;
+}
+
+.btn-primary:hover { opacity: 0.85; }
+
+.btn-secondary {
+  background: none;
+  border: 1px solid rgba(255,255,255,0.15);
+  color: var(--text-muted);
+}
+
+.btn-secondary:hover { border-color: rgba(255,255,255,0.3); color: var(--text); }
+
+/* Footer */
+footer {
+  padding: 48px 0;
+  border-top: 1px solid var(--border);
+  text-align: center;
+}
+
+footer p {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-dim);
+  line-height: 2;
+}
+
+/* ── Mobile ── */
+@media (max-width: 640px) {
+  .container { padding: 0 20px; }
+  .field-row { flex-direction: column; gap: 12px; }
+  .metric-row {
+    grid-template-columns: 1fr;
+    gap: 4px;
+    padding: 14px 0;
+  }
+  .metric-row .metric-rank { display: none; }
+  .metric-row .metric-value { text-align: left; }
+  .metric-row .metric-standing { text-align: left; display: inline-block; }
+  .metric-row .metric-pct { text-align: left; }
+  .tier-summary { flex-direction: column; align-items: center; }
+  .move-card { flex-direction: column; gap: 10px; }
+  .move-tag { align-self: flex-start; }
+  .gap-card { grid-template-columns: 1fr; }
+  .option-group { flex-direction: column; }
+  .result-actions { flex-direction: column; }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <!-- Header -->
+  <div class="app-header">
+    <a href="../landing/" class="logo">baseline<span class="period">.</span></a>
+    <a href="../landing/" class="back-to-landing">&larr; back to landing page</a>
+  </div>
+
+  <!-- Return visit banner -->
+  <div class="return-banner" id="return-banner">
+    <span>Welcome back. Your previous profile is saved. <strong>Update or start fresh?</strong></span>
+    <div style="display:flex;gap:8px;">
+      <button onclick="loadSavedProfile()">Load previous</button>
+      <button onclick="clearSaved()">Start fresh</button>
+    </div>
+  </div>
+
+  <!-- Questionnaire -->
+  <div id="questionnaire">
+    <div class="progress-bar" id="progress-bar"></div>
+
+    <!-- Step 0: Demographics -->
+    <div class="step active" data-step="0">
+      <h2>About you</h2>
+      <p class="step-hint">Used for NHANES percentile comparison. Stored locally only.</p>
+
+      <div class="field-group">
+        <div class="field-label">Age</div>
+        <input type="number" class="field-input" id="f-age" placeholder="35" min="18" max="100" style="max-width:120px;">
+      </div>
+
+      <div class="field-group">
+        <div class="field-label">Sex</div>
+        <div class="option-group" id="f-sex">
+          <div class="opt-btn" data-value="M">Male</div>
+          <div class="opt-btn" data-value="F">Female</div>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <div class="field-label">Height & Weight</div>
+        <div class="field-row">
+          <div class="field-col">
+            <input type="number" class="field-input" id="f-height-ft" placeholder="5" min="3" max="8" step="1">
+            <div class="field-unit">feet</div>
+          </div>
+          <div class="field-col">
+            <input type="number" class="field-input" id="f-height-in" placeholder="10" min="0" max="11" step="1">
+            <div class="field-unit">inches</div>
+          </div>
+          <div class="field-col">
+            <input type="number" class="field-input" id="f-weight" placeholder="175" min="60" max="600">
+            <div class="field-unit">lbs</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-nav">
+        <button class="nav-back hidden">&larr; Back</button>
+        <button class="nav-next" onclick="nextStep()">Next &rarr;</button>
+      </div>
+      <p class="skip-hint">Leave any field blank to skip it</p>
+    </div>
+
+    <!-- Step 1: Blood Work -->
+    <div class="step" data-step="1">
+      <h2>Blood work</h2>
+      <p class="step-hint">Enter your actual values. Leave blank any you don't have — they'll show as gaps.</p>
+
+      <div class="field-group">
+        <div class="field-label">Lipids</div>
+        <div class="field-row">
+          <div class="field-col">
+            <input type="number" class="field-input" id="f-apob" placeholder="—" step="0.1">
+            <div class="field-unit">ApoB (mg/dL)</div>
+          </div>
+          <div class="field-col">
+            <input type="number" class="field-input" id="f-ldl" placeholder="—" step="0.1">
+            <div class="field-unit">LDL-C (mg/dL)</div>
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field-col">
+            <input type="number" class="field-input" id="f-hdl" placeholder="—" step="0.1">
+            <div class="field-unit">HDL-C (mg/dL)</div>
+          </div>
+          <div class="field-col">
+            <input type="number" class="field-input" id="f-trig" placeholder="—" step="0.1">
+            <div class="field-unit">Triglycerides (mg/dL)</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <div class="field-label">Metabolic</div>
+        <div class="field-row">
+          <div class="field-col">
+            <input type="number" class="field-input" id="f-glucose" placeholder="—" step="0.1">
+            <div class="field-unit">Fasting Glucose (mg/dL)</div>
+          </div>
+          <div class="field-col">
+            <input type="number" class="field-input" id="f-hba1c" placeholder="—" step="0.01">
+            <div class="field-unit">HbA1c (%)</div>
+          </div>
+          <div class="field-col">
+            <input type="number" class="field-input" id="f-insulin" placeholder="—" step="0.1">
+            <div class="field-unit">Fasting Insulin (µIU/mL)</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <div class="field-label">Special markers</div>
+        <div class="field-row">
+          <div class="field-col">
+            <input type="number" class="field-input" id="f-lpa" placeholder="—" step="0.1">
+            <div class="field-unit">Lp(a) (nmol/L)</div>
+          </div>
+          <div class="field-col">
+            <input type="number" class="field-input" id="f-hscrp" placeholder="—" step="0.01">
+            <div class="field-unit">hs-CRP (mg/L)</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-nav">
+        <button class="nav-back" onclick="prevStep()">&larr; Back</button>
+        <button class="nav-next" onclick="nextStep()">Next &rarr;</button>
+      </div>
+      <p class="skip-hint">Leave any field blank to skip it</p>
+    </div>
+
+    <!-- Step 2: More Blood Work + Body -->
+    <div class="step" data-step="2">
+      <h2>Labs continued</h2>
+      <p class="step-hint">Liver, CBC, thyroid, vitamins. Usually included in standard panels.</p>
+
+      <div class="field-group">
+        <div class="field-label">Liver enzymes</div>
+        <div class="field-row">
+          <div class="field-col">
+            <input type="number" class="field-input" id="f-alt" placeholder="—" step="0.1">
+            <div class="field-unit">ALT (U/L)</div>
+          </div>
+          <div class="field-col">
+            <input type="number" class="field-input" id="f-ggt" placeholder="—" step="0.1">
+            <div class="field-unit">GGT (U/L)</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <div class="field-label">CBC</div>
+        <div class="field-row">
+          <div class="field-col">
+            <input type="number" class="field-input" id="f-hemoglobin" placeholder="—" step="0.1">
+            <div class="field-unit">Hemoglobin (g/dL)</div>
+          </div>
+          <div class="field-col">
+            <input type="number" class="field-input" id="f-wbc" placeholder="—" step="0.1">
+            <div class="field-unit">WBC (K/µL)</div>
+          </div>
+          <div class="field-col">
+            <input type="number" class="field-input" id="f-platelets" placeholder="—" step="1">
+            <div class="field-unit">Platelets (K/µL)</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <div class="field-label">Thyroid & vitamins</div>
+        <div class="field-row">
+          <div class="field-col">
+            <input type="number" class="field-input" id="f-tsh" placeholder="—" step="0.01">
+            <div class="field-unit">TSH (mIU/L)</div>
+          </div>
+          <div class="field-col">
+            <input type="number" class="field-input" id="f-vitd" placeholder="—" step="0.1">
+            <div class="field-unit">Vitamin D (ng/mL)</div>
+          </div>
+          <div class="field-col">
+            <input type="number" class="field-input" id="f-ferritin" placeholder="—" step="0.1">
+            <div class="field-unit">Ferritin (ng/mL)</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-nav">
+        <button class="nav-back" onclick="prevStep()">&larr; Back</button>
+        <button class="nav-next" onclick="nextStep()">Next &rarr;</button>
+      </div>
+      <p class="skip-hint">Leave any field blank to skip it</p>
+    </div>
+
+    <!-- Step 3: Cardiovascular & Body -->
+    <div class="step" data-step="3">
+      <h2>Cardiovascular & body</h2>
+      <p class="step-hint">Blood pressure, heart rate, waist circumference.</p>
+
+      <div class="field-group">
+        <div class="field-label">Blood pressure</div>
+        <div class="field-row">
+          <div class="field-col">
+            <input type="number" class="field-input" id="f-sbp" placeholder="—" step="1">
+            <div class="field-unit">Systolic (mmHg)</div>
+          </div>
+          <div class="field-col">
+            <input type="number" class="field-input" id="f-dbp" placeholder="—" step="1">
+            <div class="field-unit">Diastolic (mmHg)</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <div class="field-label">Heart rate & fitness</div>
+        <div class="field-row">
+          <div class="field-col">
+            <input type="number" class="field-input" id="f-rhr" placeholder="—" step="0.1">
+            <div class="field-unit">Resting HR (bpm)</div>
+          </div>
+          <div class="field-col">
+            <input type="number" class="field-input" id="f-vo2" placeholder="—" step="0.1">
+            <div class="field-unit">VO2 Max (mL/kg/min)</div>
+          </div>
+          <div class="field-col">
+            <input type="number" class="field-input" id="f-hrv" placeholder="—" step="0.1">
+            <div class="field-unit">HRV RMSSD (ms)</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <div class="field-label">Body</div>
+        <div class="field-row">
+          <div class="field-col">
+            <input type="number" class="field-input" id="f-waist" placeholder="—" step="0.1">
+            <div class="field-unit">Waist circumference (inches)</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-nav">
+        <button class="nav-back" onclick="prevStep()">&larr; Back</button>
+        <button class="nav-next" onclick="nextStep()">Next &rarr;</button>
+      </div>
+      <p class="skip-hint">Leave any field blank to skip it</p>
+    </div>
+
+    <!-- Step 4: Activity & Sleep -->
+    <div class="step" data-step="4">
+      <h2>Activity & sleep</h2>
+      <p class="step-hint">Wearable data, exercise, sleep patterns.</p>
+
+      <div class="field-group">
+        <div class="field-label">Activity</div>
+        <div class="field-row">
+          <div class="field-col">
+            <input type="number" class="field-input" id="f-steps" placeholder="—" step="100">
+            <div class="field-unit">Avg daily steps</div>
+          </div>
+          <div class="field-col">
+            <input type="number" class="field-input" id="f-zone2" placeholder="—" step="1">
+            <div class="field-unit">Zone 2 min/week</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <div class="field-label">Sleep</div>
+        <div class="field-row">
+          <div class="field-col">
+            <input type="number" class="field-input" id="f-sleep-hours" placeholder="—" step="0.1">
+            <div class="field-unit">Avg sleep (hours/night)</div>
+          </div>
+          <div class="field-col">
+            <input type="number" class="field-input" id="f-sleep-reg" placeholder="—" step="1">
+            <div class="field-unit">Bedtime variability (min std dev)</div>
+            <div class="field-hint">How much your bedtime varies night to night</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-nav">
+        <button class="nav-back" onclick="prevStep()">&larr; Back</button>
+        <button class="nav-next" onclick="nextStep()">Next &rarr;</button>
+      </div>
+      <p class="skip-hint">Leave any field blank to skip it</p>
+    </div>
+
+    <!-- Step 5: Context -->
+    <div class="step" data-step="5">
+      <h2>Context</h2>
+      <p class="step-hint">A few yes/no items that complete the picture.</p>
+
+      <div class="field-group">
+        <div class="field-label">Family history</div>
+        <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:10px;">Have you asked your parents about heart disease, stroke, or diabetes in the family?</p>
+        <div class="toggle-group" data-field="family-history">
+          <div class="toggle-btn" data-value="yes">Yes</div>
+          <div class="toggle-btn" data-value="no">No</div>
+          <div class="toggle-btn" data-value="skip">I don't know</div>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <div class="field-label">Medications</div>
+        <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:10px;">Could you list your current medications and supplements right now?</p>
+        <div class="toggle-group" data-field="medications">
+          <div class="toggle-btn" data-value="yes">Yes</div>
+          <div class="toggle-btn" data-value="no">No</div>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <div class="field-label">Mental health</div>
+        <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:10px;">Have you completed a depression screening (PHQ-9) in the last year?</p>
+        <div class="toggle-group" data-field="phq9">
+          <div class="toggle-btn" data-value="yes">Yes</div>
+          <div class="toggle-btn" data-value="no">No</div>
+        </div>
+      </div>
+
+      <div class="step-nav">
+        <button class="nav-back" onclick="prevStep()">&larr; Back</button>
+        <button class="nav-next" onclick="computeResults()">See my score &rarr;</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Results -->
+  <div id="results">
+    <div class="results-header">
+      <div class="score-ring">
+        <svg viewBox="0 0 160 160">
+          <circle class="track" cx="80" cy="80" r="70"/>
+          <circle class="fill-ring" id="score-arc" cx="80" cy="80" r="70"/>
+        </svg>
+        <div class="score-number">
+          <span class="pct" id="r-score">0%</span>
+          <span class="label">coverage</span>
+        </div>
+      </div>
+      <p class="score-context" id="r-context"></p>
+      <p class="percentile-line" id="r-percentile"></p>
+
+      <div class="tier-summary">
+        <div class="tier-block">
+          <div class="t-label">Foundation (T1)</div>
+          <div class="t-track"><div class="t-fill" id="r-t1-fill" style="width:0%"></div></div>
+          <div class="t-pct" id="r-t1-pct">0%</div>
+        </div>
+        <div class="tier-block">
+          <div class="t-label">Enhanced (T2)</div>
+          <div class="t-track"><div class="t-fill" id="r-t2-fill" style="width:0%"></div></div>
+          <div class="t-pct" id="r-t2-pct">0%</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Next 3 moves -->
+    <div class="next-moves" id="r-moves"></div>
+
+    <!-- Metric results -->
+    <div class="results-section" id="r-tier1"></div>
+    <div class="results-section" id="r-tier2"></div>
+
+    <!-- All gaps -->
+    <div class="results-section" id="r-gaps"></div>
+
+    <!-- Actions -->
+    <div class="result-actions">
+      <button class="btn-primary" onclick="startOver()">Update values</button>
+      <button class="btn-secondary" onclick="clearAndRestart()">Start fresh</button>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="container">
+    <p>
+      Percentiles: NHANES 2017-2020 (survey-weighted, continuous interpolation)<br>
+      Your data never leaves your browser. <a href="../landing/">andrewdeal.info/baseline</a>
+    </p>
+  </div>
+</footer>
+
+<script type="module">
+import { loadNhanes } from './nhanes.js';
+import { scoreProfile, Standing } from './score.js';
+import { saveProfile, loadProfile, clearProfile } from './storage.js';
+
+// ── State ──
+const TOTAL_STEPS = 6;
+let currentStep = 0;
+
+// ── Init ──
+await loadNhanes();
+initProgressBar();
+initToggleButtons();
+checkReturnVisit();
+
+function initProgressBar() {
+  const bar = document.getElementById('progress-bar');
+  for (let i = 0; i < TOTAL_STEPS; i++) {
+    const pip = document.createElement('div');
+    pip.className = 'pip' + (i === 0 ? ' active' : '');
+    pip.dataset.step = i;
+    bar.appendChild(pip);
+  }
+}
+
+function initToggleButtons() {
+  document.querySelectorAll('.toggle-group').forEach(group => {
+    group.querySelectorAll('.toggle-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        group.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+      });
+    });
+  });
+
+  document.querySelectorAll('.option-group .opt-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const group = btn.closest('.option-group');
+      group.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+    });
+  });
+}
+
+function checkReturnVisit() {
+  const saved = loadProfile();
+  if (saved) {
+    document.getElementById('return-banner').classList.add('active');
+  }
+}
+
+// ── Navigation ──
+window.nextStep = function() {
+  if (currentStep < TOTAL_STEPS - 1) {
+    showStep(currentStep + 1);
+  }
+};
+
+window.prevStep = function() {
+  if (currentStep > 0) {
+    showStep(currentStep - 1);
+  }
+};
+
+function showStep(n) {
+  document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+  const step = document.querySelector(`.step[data-step="${n}"]`);
+  if (step) step.classList.add('active');
+
+  document.querySelectorAll('.progress-bar .pip').forEach(p => {
+    const ps = parseInt(p.dataset.step);
+    p.classList.remove('active', 'done');
+    if (ps === n) p.classList.add('active');
+    else if (ps < n) p.classList.add('done');
+  });
+
+  currentStep = n;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ── Build profile from form ──
+function val(id) {
+  const el = document.getElementById(id);
+  if (!el) return null;
+  const v = parseFloat(el.value);
+  return isNaN(v) ? null : v;
+}
+
+function toggleVal(field) {
+  const group = document.querySelector(`.toggle-group[data-field="${field}"]`);
+  if (!group) return null;
+  const selected = group.querySelector('.toggle-btn.selected');
+  if (!selected) return null;
+  return selected.dataset.value;
+}
+
+function buildProfile() {
+  const age = val('f-age') || 35;
+  const sexEl = document.querySelector('#f-sex .opt-btn.selected');
+  const sex = sexEl ? sexEl.dataset.value : 'M';
+
+  // BMI calc
+  const heightFt = val('f-height-ft');
+  const heightIn = val('f-height-in');
+  const weightLbs = val('f-weight');
+  let bmi = null;
+  if (heightFt != null && weightLbs != null) {
+    const totalInches = (heightFt * 12) + (heightIn || 0);
+    bmi = (weightLbs / (totalInches * totalInches)) * 703;
+  }
+
+  const fhAnswer = toggleVal('family-history');
+  const medsAnswer = toggleVal('medications');
+  const phq9Answer = toggleVal('phq9');
+
+  return {
+    demographics: { age, sex, ethnicity: 'white' },
+    systolic: val('f-sbp'),
+    diastolic: val('f-dbp'),
+    ldl_c: val('f-ldl'),
+    hdl_c: val('f-hdl'),
+    total_cholesterol: null,
+    triglycerides: val('f-trig'),
+    apob: val('f-apob'),
+    fasting_glucose: val('f-glucose'),
+    hba1c: val('f-hba1c'),
+    fasting_insulin: val('f-insulin'),
+    has_family_history: fhAnswer === 'yes' ? true : (fhAnswer === 'no' ? false : null),
+    sleep_regularity_stddev: val('f-sleep-reg'),
+    sleep_duration_avg: val('f-sleep-hours'),
+    daily_steps_avg: val('f-steps'),
+    resting_hr: val('f-rhr'),
+    waist_circumference: val('f-waist'),
+    has_medication_list: medsAnswer === 'yes' ? true : (medsAnswer === 'no' ? false : null),
+    lpa: val('f-lpa'),
+    hscrp: val('f-hscrp'),
+    alt: val('f-alt'),
+    ast: null,
+    ggt: val('f-ggt'),
+    tsh: val('f-tsh'),
+    vitamin_d: val('f-vitd'),
+    ferritin: val('f-ferritin'),
+    hemoglobin: val('f-hemoglobin'),
+    wbc: val('f-wbc'),
+    platelets: val('f-platelets'),
+    vo2_max: val('f-vo2'),
+    hrv_rmssd_avg: val('f-hrv'),
+    weight_lbs: weightLbs,
+    phq9_score: phq9Answer === 'yes' ? 0 : null,  // "yes" means they've done screening
+    zone2_min_per_week: val('f-zone2'),
+    has_supplement_list: null,
+    _bmi: bmi,
+  };
+}
+
+// ── Compute & render results ──
+window.computeResults = function() {
+  const profile = buildProfile();
+  saveProfile(profile);
+  const output = scoreProfile(profile);
+  renderResults(output, profile);
+};
+
+function standingClass(s) {
+  switch (s) {
+    case Standing.OPTIMAL: return 'standing-optimal';
+    case Standing.GOOD: return 'standing-good';
+    case Standing.AVERAGE: return 'standing-average';
+    case Standing.BELOW_AVG: return 'standing-below';
+    case Standing.CONCERNING: return 'standing-concerning';
+    default: return 'standing-unknown';
+  }
+}
+
+function renderResults(output, profile) {
+  // Hide form, show results
+  document.getElementById('questionnaire').style.display = 'none';
+  document.getElementById('return-banner').classList.remove('active');
+  const resultsEl = document.getElementById('results');
+  resultsEl.classList.add('active');
+
+  // Score ring
+  const circumference = 2 * Math.PI * 70;
+  const offset = circumference - (output.coverageScore / 100) * circumference;
+  const arc = document.getElementById('score-arc');
+  arc.style.strokeDasharray = circumference;
+  setTimeout(() => { arc.style.strokeDashoffset = offset; }, 50);
+  if (output.coverageScore < 40) arc.classList.add('red');
+  else arc.classList.remove('red');
+
+  document.getElementById('r-score').textContent = output.coverageScore + '%';
+
+  // Context
+  let ctx = '';
+  if (output.coverageScore >= 80) ctx = "You're ahead of most people. Your data coverage is <strong>strong</strong>.";
+  else if (output.coverageScore >= 60) ctx = "Solid foundation. A few targeted additions would get you to <strong>80%+</strong>.";
+  else if (output.coverageScore >= 40) ctx = "You're closer than you think. <strong>A few moves</strong> could nearly double your coverage.";
+  else ctx = "Most people start here. The highest-ROI metrics are <strong>cheap or free</strong>.";
+  document.getElementById('r-context').innerHTML = ctx;
+
+  // Percentile
+  if (output.avgPercentile != null) {
+    document.getElementById('r-percentile').textContent =
+      `Assessed metrics avg: ~${output.avgPercentile}th percentile vs NHANES peers`;
+  }
+
+  // Tier bars
+  setTimeout(() => {
+    document.getElementById('r-t1-fill').style.width = output.tier1Pct + '%';
+    document.getElementById('r-t2-fill').style.width = output.tier2Pct + '%';
+  }, 100);
+  document.getElementById('r-t1-pct').textContent = `${output.tier1Pct}% (${output.tier1Weight} pts)`;
+  document.getElementById('r-t2-pct').textContent = `${output.tier2Pct}% (${output.tier2Weight} pts)`;
+
+  // Next 3 moves
+  renderMoves(output.gaps);
+
+  // Metric tables
+  renderTier('r-tier1', 'Tier 1: Foundation', output.results.filter(r => r.tier === 1));
+  renderTier('r-tier2', 'Tier 2: Enhanced', output.results.filter(r => r.tier === 2));
+
+  // All gaps
+  renderGaps(output.gaps);
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function renderTier(containerId, title, metrics) {
+  const el = document.getElementById(containerId);
+  const covered = metrics.filter(r => r.hasData).length;
+  let html = `<h3>${title} <span class="count">${covered}/${metrics.length}</span></h3>`;
+
+  metrics.forEach(r => {
+    const valStr = r.hasData && r.value != null ? `${Number(r.value).toLocaleString(undefined, {maximumFractionDigits: 1})} ${r.unit}` :
+      r.hasData ? 'Collected' : '— missing';
+    const pctStr = r.percentile != null ? `~${r.percentile}%ile` : '';
+    const cls = standingClass(r.standing);
+
+    html += `<div class="metric-row">
+      <span class="metric-rank">${String(r.rank).padStart(2, '0')}</span>
+      <span class="metric-name">${r.name}</span>
+      <span class="metric-value">${valStr}</span>
+      <span class="metric-standing ${cls}">${r.standing}</span>
+      <span class="metric-pct">${pctStr}</span>
+    </div>`;
+  });
+
+  el.innerHTML = html;
+}
+
+function renderMoves(gaps) {
+  const el = document.getElementById('r-moves');
+  if (gaps.length === 0) {
+    el.innerHTML = '<h3>You\'re fully covered</h3><p style="color:var(--text-muted);font-size:0.9rem;">All 20 metrics have data. That puts you ahead of 95%+ of people.</p>';
+    return;
+  }
+
+  let html = '<h3>Your next 3 moves</h3>';
+  gaps.slice(0, 3).forEach((g, i) => {
+    html += `<div class="move-card">
+      <div class="move-num">${i + 1}</div>
+      <div class="move-body">
+        <h4>${g.name}</h4>
+        <p class="move-detail">${g.note ? `<strong>${g.note}</strong> ` : ''}${g.costToClose}</p>
+      </div>
+      <div class="move-tag">+${g.weight} pts</div>
+    </div>`;
+  });
+
+  el.innerHTML = html;
+}
+
+function renderGaps(gaps) {
+  const el = document.getElementById('r-gaps');
+  if (gaps.length === 0) {
+    el.innerHTML = '';
+    return;
+  }
+
+  let html = `<h3>All gaps <span class="count">${gaps.length} remaining</span></h3>`;
+  gaps.forEach(g => {
+    html += `<div class="gap-card">
+      <div class="gap-info">
+        <h4>${g.name}</h4>
+        <div class="gap-cost">${g.costToClose}</div>
+        ${g.note ? `<div class="gap-note">${g.note}</div>` : ''}
+      </div>
+      <div class="gap-impact">+${g.weight} pts</div>
+    </div>`;
+  });
+
+  el.innerHTML = html;
+}
+
+// ── Return visit / saved profile ──
+window.loadSavedProfile = function() {
+  const saved = loadProfile();
+  if (!saved) return;
+  document.getElementById('return-banner').classList.remove('active');
+  populateForm(saved);
+};
+
+window.clearSaved = function() {
+  clearProfile();
+  document.getElementById('return-banner').classList.remove('active');
+};
+
+function populateForm(p) {
+  function setVal(id, v) {
+    if (v != null) document.getElementById(id).value = v;
+  }
+
+  setVal('f-age', p.demographics?.age);
+
+  // Sex
+  if (p.demographics?.sex) {
+    document.querySelectorAll('#f-sex .opt-btn').forEach(b => {
+      b.classList.toggle('selected', b.dataset.value === p.demographics.sex);
+    });
+  }
+
+  setVal('f-weight', p.weight_lbs);
+  setVal('f-apob', p.apob);
+  setVal('f-ldl', p.ldl_c);
+  setVal('f-hdl', p.hdl_c);
+  setVal('f-trig', p.triglycerides);
+  setVal('f-glucose', p.fasting_glucose);
+  setVal('f-hba1c', p.hba1c);
+  setVal('f-insulin', p.fasting_insulin);
+  setVal('f-lpa', p.lpa);
+  setVal('f-hscrp', p.hscrp);
+  setVal('f-alt', p.alt);
+  setVal('f-ggt', p.ggt);
+  setVal('f-hemoglobin', p.hemoglobin);
+  setVal('f-wbc', p.wbc);
+  setVal('f-platelets', p.platelets);
+  setVal('f-tsh', p.tsh);
+  setVal('f-vitd', p.vitamin_d);
+  setVal('f-ferritin', p.ferritin);
+  setVal('f-sbp', p.systolic);
+  setVal('f-dbp', p.diastolic);
+  setVal('f-rhr', p.resting_hr);
+  setVal('f-vo2', p.vo2_max);
+  setVal('f-hrv', p.hrv_rmssd_avg);
+  setVal('f-waist', p.waist_circumference);
+  setVal('f-steps', p.daily_steps_avg);
+  setVal('f-zone2', p.zone2_min_per_week);
+  setVal('f-sleep-hours', p.sleep_duration_avg);
+  setVal('f-sleep-reg', p.sleep_regularity_stddev);
+
+  // Toggles
+  function setToggle(field, val) {
+    if (val == null) return;
+    const group = document.querySelector(`.toggle-group[data-field="${field}"]`);
+    if (!group) return;
+    const target = val === true ? 'yes' : (val === false ? 'no' : 'skip');
+    group.querySelectorAll('.toggle-btn').forEach(b => {
+      b.classList.toggle('selected', b.dataset.value === target);
+    });
+  }
+
+  setToggle('family-history', p.has_family_history);
+  setToggle('medications', p.has_medication_list);
+  setToggle('phq9', p.phq9_score != null ? true : null);
+}
+
+window.startOver = function() {
+  document.getElementById('results').classList.remove('active');
+  document.getElementById('questionnaire').style.display = 'block';
+  showStep(0);
+};
+
+window.clearAndRestart = function() {
+  clearProfile();
+  document.getElementById('results').classList.remove('active');
+  document.getElementById('questionnaire').style.display = 'block';
+  // Clear all inputs
+  document.querySelectorAll('.field-input').forEach(i => i.value = '');
+  document.querySelectorAll('.opt-btn, .toggle-btn').forEach(b => b.classList.remove('selected'));
+  showStep(0);
+};
+</script>
+</body>
+</html>
