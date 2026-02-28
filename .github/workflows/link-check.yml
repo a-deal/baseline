@@ -1,0 +1,47 @@
+name: Link Check
+
+on:
+  # Run after deploy completes
+  workflow_run:
+    workflows: ["Deploy to GitHub Pages"]
+    types: [completed]
+  # Also run on PRs that touch landing pages
+  pull_request:
+    paths:
+      - 'landing/**'
+
+jobs:
+  check-links:
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'pull_request' || github.event.workflow_run.conclusion == 'success' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check live site links (post-deploy)
+        if: github.event_name != 'pull_request'
+        uses: lycheeverse/lychee-action@v2
+        with:
+          args: >-
+            --base https://andrewdeal.info/baseline
+            --include-fragments
+            --no-progress
+            --accept 200,204,301,302
+            --exclude 'formspree\.io'
+            --exclude 'chatgpt\.com'
+            --exclude 'x\.com'
+            --exclude 'fonts\.googleapis\.com'
+            --exclude 'fonts\.gstatic\.com'
+            landing/**/*.html
+          fail: true
+
+      - name: Check internal links (PR)
+        if: github.event_name == 'pull_request'
+        uses: lycheeverse/lychee-action@v2
+        with:
+          args: >-
+            --offline
+            --include-fragments
+            --no-progress
+            --exclude 'https?://'
+            landing/**/*.html
+          fail: true
