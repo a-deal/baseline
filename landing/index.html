@@ -715,6 +715,87 @@ h2 {
 
 .insulin-callout strong { color: var(--text); }
 
+/* ── Freshness ── */
+.freshness-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  margin-top: 32px;
+}
+
+.freshness-cell {
+  background: var(--bg-elevated);
+  padding: 24px 20px;
+}
+
+.freshness-cell .fc-label {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--text-dim);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.freshness-cell .fc-window {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+
+.freshness-cell .fc-examples {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+.freshness-callout {
+  margin-top: 28px;
+  padding: 20px 24px;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  line-height: 1.7;
+}
+
+.freshness-callout strong { color: var(--text); }
+
+.decay-visual {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  margin-top: 16px;
+}
+
+.decay-bar {
+  height: 6px;
+  border-radius: 3px;
+  flex: 1;
+}
+
+.decay-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 6px;
+}
+
+.decay-labels span {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--text-dim);
+}
+
+@media (max-width: 640px) {
+  .freshness-grid { grid-template-columns: 1fr; }
+}
+
 /* ── CTA ── */
 .cta-section {
   text-align: center;
@@ -1391,6 +1472,56 @@ footer p {
     </div>
     <div class="insulin-callout">
       <strong>3.5 &rarr; 13.9 mIU/L</strong> over 6 months. Each draw looked "normal" on its own. The trend told a different story. Insulin resistance shows up 10&ndash;15 years before a diabetes diagnosis — but only if you're tracking.
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- Freshness -->
+<section>
+  <div class="container">
+    <p class="section-label">Data freshness</p>
+    <h2>Your health data has a shelf life.</h2>
+    <div class="story-block">
+      <p>A blood draw from last January doesn't tell you what your cholesterol is <em>now</em>. A single hs-CRP reading can swing 40% between draws with no real change. And your summer Vitamin D level says almost nothing about where you stand in February.</p>
+      <p>Baseline tracks when your data was collected — and adjusts your coverage score as it ages. <strong>Fresh data gets full credit. Stale data decays.</strong> Not all at once, and not the same for every metric. Some biomarkers barely move (HbA1c, Lp(a)). Others are volatile enough that a single reading is only partial coverage.</p>
+    </div>
+
+    <div class="freshness-grid">
+      <div class="freshness-cell">
+        <div class="fc-label">Measure once</div>
+        <div class="fc-window">Lifetime</div>
+        <div class="fc-examples">Lp(a) — 80% genetic, barely changes<br>Family history — update if new diagnosis</div>
+      </div>
+      <div class="freshness-cell">
+        <div class="fc-label">Stable markers</div>
+        <div class="fc-window">6 months</div>
+        <div class="fc-examples">ApoB, LDL, HDL, HbA1c, hemoglobin, TSH, liver enzymes</div>
+      </div>
+      <div class="freshness-cell">
+        <div class="fc-label">Volatile markers</div>
+        <div class="fc-window">3 months</div>
+        <div class="fc-examples">Triglycerides, fasting glucose, fasting insulin, Vitamin D (seasonal)</div>
+      </div>
+    </div>
+
+    <div class="freshness-callout">
+      <strong>Wearable data is different.</strong> It doesn't expire — it's continuously fresh as long as you're wearing the device. Resting heart rate, HRV, sleep, steps: these stay current automatically. That's why wearable integration is the highest-ROI coverage play. Connect once, stay covered.
+
+      <div class="decay-visual">
+        <div class="decay-bar" style="background: var(--text); opacity: 0.9;"></div>
+        <div class="decay-bar" style="background: var(--text); opacity: 0.7;"></div>
+        <div class="decay-bar" style="background: var(--text); opacity: 0.5;"></div>
+        <div class="decay-bar" style="background: var(--text); opacity: 0.3;"></div>
+        <div class="decay-bar" style="background: var(--text); opacity: 0.15;"></div>
+        <div class="decay-bar" style="background: var(--text); opacity: 0.06;"></div>
+      </div>
+      <div class="decay-labels">
+        <span>Fresh (full credit)</span>
+        <span>6 months</span>
+        <span>12 months (stale)</span>
+      </div>
     </div>
   </div>
 </section>

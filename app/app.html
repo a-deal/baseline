@@ -645,6 +645,162 @@ footer p {
   line-height: 2;
 }
 
+/* ── Paste-to-parse ── */
+.paste-area {
+  width: 100%;
+  min-height: 160px;
+  padding: 16px;
+  background: var(--bg-elevated);
+  border: 1.5px dashed rgba(255,255,255,0.12);
+  border-radius: 6px;
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  line-height: 1.7;
+  resize: vertical;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.paste-area::placeholder { color: var(--text-dim); white-space: pre-line; }
+.paste-area:focus { border-color: rgba(255,255,255,0.25); }
+
+.parse-results {
+  margin-top: 16px;
+  display: none;
+}
+
+.parse-results.active { display: block; }
+
+.parse-summary {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin-bottom: 12px;
+  padding: 10px 14px;
+  background: var(--green-dim);
+  border-radius: 5px;
+  border: 1px solid rgba(60, 140, 92, 0.2);
+}
+
+.parse-summary .count { color: var(--green); font-weight: 500; }
+
+.parsed-values {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+
+.parsed-chip {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 4px;
+  font-size: 0.8rem;
+}
+
+.parsed-chip .name { color: var(--text-muted); }
+.parsed-chip .val { font-family: var(--font-mono); font-size: 0.78rem; color: var(--text); }
+
+.parse-btn {
+  margin-top: 12px;
+  padding: 10px 20px;
+  background: var(--text);
+  color: var(--bg);
+  border: none;
+  border-radius: 5px;
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.parse-btn:hover { opacity: 0.85; }
+
+.or-divider {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 28px 0;
+  color: var(--text-dim);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.or-divider::before, .or-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: rgba(255,255,255,0.06);
+}
+
+.manual-toggle {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px 0;
+  transition: color 0.15s;
+  letter-spacing: 0.03em;
+}
+
+.manual-toggle:hover { color: var(--text-muted); }
+
+.manual-fields {
+  display: none;
+  margin-top: 16px;
+}
+
+.manual-fields.open { display: block; }
+
+/* ── File upload zone ── */
+.upload-zone {
+  padding: 32px 20px;
+  background: var(--bg-elevated);
+  border: 1.5px dashed rgba(255,255,255,0.12);
+  border-radius: 6px;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.upload-zone:hover { border-color: rgba(255,255,255,0.25); background: rgba(255,255,255,0.03); }
+.upload-zone.dragover { border-color: var(--red); background: var(--red-dim); }
+
+.upload-zone .icon {
+  font-size: 1.8rem;
+  margin-bottom: 8px;
+  opacity: 0.3;
+}
+
+.upload-zone .uz-title {
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+
+.upload-zone .uz-hint {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--text-dim);
+}
+
+.upload-status {
+  margin-top: 12px;
+  display: none;
+}
+
+.upload-status.active { display: block; }
+
 /* ── Mobile ── */
 @media (max-width: 640px) {
   .container { padding: 0 20px; }
@@ -664,6 +820,7 @@ footer p {
   .gap-card { grid-template-columns: 1fr; }
   .option-group { flex-direction: column; }
   .result-actions { flex-direction: column; }
+  .parsed-values { grid-template-columns: 1fr; }
 }
 </style>
 </head>
@@ -732,63 +889,155 @@ footer p {
       <p class="skip-hint">Leave any field blank to skip it</p>
     </div>
 
-    <!-- Step 1: Blood Work -->
+    <!-- Step 1: Blood Work (paste-to-parse) -->
     <div class="step" data-step="1">
       <h2>Blood work</h2>
-      <p class="step-hint">Enter your actual values. Leave blank any you don't have — they'll show as gaps.</p>
+      <p class="step-hint">Paste your lab results below — copy them from your patient portal, lab PDF, or screenshot text. We'll extract the values automatically.</p>
 
       <div class="field-group">
-        <div class="field-label">Lipids</div>
+        <div class="field-label">When were these labs drawn?</div>
         <div class="field-row">
           <div class="field-col">
-            <input type="number" class="field-input" id="f-apob" placeholder="—" step="0.1">
-            <div class="field-unit">ApoB (mg/dL)</div>
+            <input type="month" class="field-input" id="f-lab-date" style="max-width:200px;">
+            <div class="field-hint">Month & year is fine — we'll check freshness</div>
           </div>
           <div class="field-col">
-            <input type="number" class="field-input" id="f-ldl" placeholder="—" step="0.1">
-            <div class="field-unit">LDL-C (mg/dL)</div>
-          </div>
-        </div>
-        <div class="field-row">
-          <div class="field-col">
-            <input type="number" class="field-input" id="f-hdl" placeholder="—" step="0.1">
-            <div class="field-unit">HDL-C (mg/dL)</div>
-          </div>
-          <div class="field-col">
-            <input type="number" class="field-input" id="f-trig" placeholder="—" step="0.1">
-            <div class="field-unit">Triglycerides (mg/dL)</div>
+            <div class="field-label" style="margin-bottom:8px;">Fasting blood draw?</div>
+            <div class="toggle-group" data-field="fasting">
+              <div class="toggle-btn" data-value="yes">Yes</div>
+              <div class="toggle-btn" data-value="no">No</div>
+              <div class="toggle-btn" data-value="unsure">Unsure</div>
+            </div>
           </div>
         </div>
       </div>
 
       <div class="field-group">
-        <div class="field-label">Metabolic</div>
-        <div class="field-row">
-          <div class="field-col">
-            <input type="number" class="field-input" id="f-glucose" placeholder="—" step="0.1">
-            <div class="field-unit">Fasting Glucose (mg/dL)</div>
-          </div>
-          <div class="field-col">
-            <input type="number" class="field-input" id="f-hba1c" placeholder="—" step="0.01">
-            <div class="field-unit">HbA1c (%)</div>
-          </div>
-          <div class="field-col">
-            <input type="number" class="field-input" id="f-insulin" placeholder="—" step="0.1">
-            <div class="field-unit">Fasting Insulin (µIU/mL)</div>
-          </div>
+        <div class="field-label">Paste lab results</div>
+        <textarea class="paste-area" id="lab-paste" placeholder="Paste here — any format works. Examples:
+
+LDL Cholesterol    128 mg/dL    [0-100]
+HDL Cholesterol     52 mg/dL    [>40]
+Triglycerides       95 mg/dL    [0-150]
+Glucose             92 mg/dL    [65-99]
+HbA1c              5.4 %
+
+Or even just: LDL 128, HDL 52, trig 95"></textarea>
+        <button class="parse-btn" onclick="parseLabText()">Extract values</button>
+
+        <div class="parse-results" id="parse-results">
+          <div class="parse-summary" id="parse-summary"></div>
+          <div class="parsed-values" id="parsed-values"></div>
         </div>
       </div>
 
-      <div class="field-group">
-        <div class="field-label">Special markers</div>
-        <div class="field-row">
-          <div class="field-col">
-            <input type="number" class="field-input" id="f-lpa" placeholder="—" step="0.1">
-            <div class="field-unit">Lp(a) (nmol/L)</div>
+      <div class="or-divider">or enter manually</div>
+
+      <button class="manual-toggle" onclick="toggleManualLabs()">Show individual fields &darr;</button>
+      <div class="manual-fields" id="manual-labs">
+        <div class="field-group">
+          <div class="field-label">Lipids</div>
+          <div class="field-row">
+            <div class="field-col">
+              <input type="number" class="field-input" id="f-apob" placeholder="—" step="0.1">
+              <div class="field-unit">ApoB (mg/dL)</div>
+            </div>
+            <div class="field-col">
+              <input type="number" class="field-input" id="f-ldl" placeholder="—" step="0.1">
+              <div class="field-unit">LDL-C (mg/dL)</div>
+            </div>
           </div>
-          <div class="field-col">
-            <input type="number" class="field-input" id="f-hscrp" placeholder="—" step="0.01">
-            <div class="field-unit">hs-CRP (mg/L)</div>
+          <div class="field-row">
+            <div class="field-col">
+              <input type="number" class="field-input" id="f-hdl" placeholder="—" step="0.1">
+              <div class="field-unit">HDL-C (mg/dL)</div>
+            </div>
+            <div class="field-col">
+              <input type="number" class="field-input" id="f-trig" placeholder="—" step="0.1">
+              <div class="field-unit">Triglycerides (mg/dL)</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <div class="field-label">Metabolic</div>
+          <div class="field-row">
+            <div class="field-col">
+              <input type="number" class="field-input" id="f-glucose" placeholder="—" step="0.1">
+              <div class="field-unit">Fasting Glucose (mg/dL)</div>
+            </div>
+            <div class="field-col">
+              <input type="number" class="field-input" id="f-hba1c" placeholder="—" step="0.01">
+              <div class="field-unit">HbA1c (%)</div>
+            </div>
+            <div class="field-col">
+              <input type="number" class="field-input" id="f-insulin" placeholder="—" step="0.1">
+              <div class="field-unit">Fasting Insulin (µIU/mL)</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <div class="field-label">Special markers</div>
+          <div class="field-row">
+            <div class="field-col">
+              <input type="number" class="field-input" id="f-lpa" placeholder="—" step="0.1">
+              <div class="field-unit">Lp(a) (nmol/L)</div>
+            </div>
+            <div class="field-col">
+              <input type="number" class="field-input" id="f-hscrp" placeholder="—" step="0.01">
+              <div class="field-unit">hs-CRP (mg/L)</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <div class="field-label">Liver enzymes</div>
+          <div class="field-row">
+            <div class="field-col">
+              <input type="number" class="field-input" id="f-alt" placeholder="—" step="0.1">
+              <div class="field-unit">ALT (U/L)</div>
+            </div>
+            <div class="field-col">
+              <input type="number" class="field-input" id="f-ggt" placeholder="—" step="0.1">
+              <div class="field-unit">GGT (U/L)</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <div class="field-label">CBC</div>
+          <div class="field-row">
+            <div class="field-col">
+              <input type="number" class="field-input" id="f-hemoglobin" placeholder="—" step="0.1">
+              <div class="field-unit">Hemoglobin (g/dL)</div>
+            </div>
+            <div class="field-col">
+              <input type="number" class="field-input" id="f-wbc" placeholder="—" step="0.1">
+              <div class="field-unit">WBC (K/µL)</div>
+            </div>
+            <div class="field-col">
+              <input type="number" class="field-input" id="f-platelets" placeholder="—" step="1">
+              <div class="field-unit">Platelets (K/µL)</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <div class="field-label">Thyroid & vitamins</div>
+          <div class="field-row">
+            <div class="field-col">
+              <input type="number" class="field-input" id="f-tsh" placeholder="—" step="0.01">
+              <div class="field-unit">TSH (mIU/L)</div>
+            </div>
+            <div class="field-col">
+              <input type="number" class="field-input" id="f-vitd" placeholder="—" step="0.1">
+              <div class="field-unit">Vitamin D (ng/mL)</div>
+            </div>
+            <div class="field-col">
+              <input type="number" class="field-input" id="f-ferritin" placeholder="—" step="0.1">
+              <div class="field-unit">Ferritin (ng/mL)</div>
+            </div>
           </div>
         </div>
       </div>
@@ -797,73 +1046,11 @@ footer p {
         <button class="nav-back" onclick="prevStep()">&larr; Back</button>
         <button class="nav-next" onclick="nextStep()">Next &rarr;</button>
       </div>
-      <p class="skip-hint">Leave any field blank to skip it</p>
+      <p class="skip-hint">Don't have labs? Skip — they'll show as gaps in your score.</p>
     </div>
 
-    <!-- Step 2: More Blood Work + Body -->
+    <!-- Step 2: Cardiovascular & Body -->
     <div class="step" data-step="2">
-      <h2>Labs continued</h2>
-      <p class="step-hint">Liver, CBC, thyroid, vitamins. Usually included in standard panels.</p>
-
-      <div class="field-group">
-        <div class="field-label">Liver enzymes</div>
-        <div class="field-row">
-          <div class="field-col">
-            <input type="number" class="field-input" id="f-alt" placeholder="—" step="0.1">
-            <div class="field-unit">ALT (U/L)</div>
-          </div>
-          <div class="field-col">
-            <input type="number" class="field-input" id="f-ggt" placeholder="—" step="0.1">
-            <div class="field-unit">GGT (U/L)</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="field-group">
-        <div class="field-label">CBC</div>
-        <div class="field-row">
-          <div class="field-col">
-            <input type="number" class="field-input" id="f-hemoglobin" placeholder="—" step="0.1">
-            <div class="field-unit">Hemoglobin (g/dL)</div>
-          </div>
-          <div class="field-col">
-            <input type="number" class="field-input" id="f-wbc" placeholder="—" step="0.1">
-            <div class="field-unit">WBC (K/µL)</div>
-          </div>
-          <div class="field-col">
-            <input type="number" class="field-input" id="f-platelets" placeholder="—" step="1">
-            <div class="field-unit">Platelets (K/µL)</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="field-group">
-        <div class="field-label">Thyroid & vitamins</div>
-        <div class="field-row">
-          <div class="field-col">
-            <input type="number" class="field-input" id="f-tsh" placeholder="—" step="0.01">
-            <div class="field-unit">TSH (mIU/L)</div>
-          </div>
-          <div class="field-col">
-            <input type="number" class="field-input" id="f-vitd" placeholder="—" step="0.1">
-            <div class="field-unit">Vitamin D (ng/mL)</div>
-          </div>
-          <div class="field-col">
-            <input type="number" class="field-input" id="f-ferritin" placeholder="—" step="0.1">
-            <div class="field-unit">Ferritin (ng/mL)</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="step-nav">
-        <button class="nav-back" onclick="prevStep()">&larr; Back</button>
-        <button class="nav-next" onclick="nextStep()">Next &rarr;</button>
-      </div>
-      <p class="skip-hint">Leave any field blank to skip it</p>
-    </div>
-
-    <!-- Step 3: Cardiovascular & Body -->
-    <div class="step" data-step="3">
       <h2>Cardiovascular & body</h2>
       <p class="step-hint">Blood pressure, heart rate, waist circumference.</p>
 
@@ -916,36 +1103,55 @@ footer p {
       <p class="skip-hint">Leave any field blank to skip it</p>
     </div>
 
-    <!-- Step 4: Activity & Sleep -->
-    <div class="step" data-step="4">
+    <!-- Step 3: Activity & Sleep (import-first) -->
+    <div class="step" data-step="3">
       <h2>Activity & sleep</h2>
-      <p class="step-hint">Wearable data, exercise, sleep patterns.</p>
+      <p class="step-hint">Import from your wearable — or enter a few numbers if you know them.</p>
 
       <div class="field-group">
-        <div class="field-label">Activity</div>
-        <div class="field-row">
-          <div class="field-col">
-            <input type="number" class="field-input" id="f-steps" placeholder="—" step="100">
-            <div class="field-unit">Avg daily steps</div>
-          </div>
-          <div class="field-col">
-            <input type="number" class="field-input" id="f-zone2" placeholder="—" step="1">
-            <div class="field-unit">Zone 2 min/week</div>
-          </div>
+        <div class="field-label">Import wearable data</div>
+        <div class="upload-zone" id="wearable-drop" onclick="document.getElementById('wearable-file').click()">
+          <div class="icon">&uarr;</div>
+          <div class="uz-title">Drop a Garmin CSV or Apple Health export here</div>
+          <div class="uz-hint">or click to browse &middot; we'll extract steps, sleep, HR automatically</div>
+        </div>
+        <input type="file" id="wearable-file" accept=".csv,.xml,.zip" style="display:none" onchange="handleWearableFile(event)">
+
+        <div class="upload-status" id="wearable-status">
+          <div class="parse-summary" id="wearable-summary"></div>
         </div>
       </div>
 
-      <div class="field-group">
-        <div class="field-label">Sleep</div>
-        <div class="field-row">
-          <div class="field-col">
-            <input type="number" class="field-input" id="f-sleep-hours" placeholder="—" step="0.1">
-            <div class="field-unit">Avg sleep (hours/night)</div>
+      <div class="or-divider">or enter manually</div>
+
+      <button class="manual-toggle" onclick="toggleManualWearable()">Show individual fields &darr;</button>
+      <div class="manual-fields" id="manual-wearable">
+        <div class="field-group">
+          <div class="field-label">Activity</div>
+          <div class="field-row">
+            <div class="field-col">
+              <input type="number" class="field-input" id="f-steps" placeholder="—" step="100">
+              <div class="field-unit">Avg daily steps</div>
+            </div>
+            <div class="field-col">
+              <input type="number" class="field-input" id="f-zone2" placeholder="—" step="1">
+              <div class="field-unit">Zone 2 min/week</div>
+            </div>
           </div>
-          <div class="field-col">
-            <input type="number" class="field-input" id="f-sleep-reg" placeholder="—" step="1">
-            <div class="field-unit">Bedtime variability (min std dev)</div>
-            <div class="field-hint">How much your bedtime varies night to night</div>
+        </div>
+
+        <div class="field-group">
+          <div class="field-label">Sleep</div>
+          <div class="field-row">
+            <div class="field-col">
+              <input type="number" class="field-input" id="f-sleep-hours" placeholder="—" step="0.1">
+              <div class="field-unit">Avg sleep (hours/night)</div>
+            </div>
+            <div class="field-col">
+              <input type="number" class="field-input" id="f-sleep-reg" placeholder="—" step="1">
+              <div class="field-unit">Bedtime variability (min std dev)</div>
+              <div class="field-hint">How much your bedtime varies night to night</div>
+            </div>
           </div>
         </div>
       </div>
@@ -954,11 +1160,11 @@ footer p {
         <button class="nav-back" onclick="prevStep()">&larr; Back</button>
         <button class="nav-next" onclick="nextStep()">Next &rarr;</button>
       </div>
-      <p class="skip-hint">Leave any field blank to skip it</p>
+      <p class="skip-hint">No wearable? Skip — it'll show as a gap.</p>
     </div>
 
-    <!-- Step 5: Context -->
-    <div class="step" data-step="5">
+    <!-- Step 4: Context -->
+    <div class="step" data-step="4">
       <h2>Context</h2>
       <p class="step-hint">A few yes/no items that complete the picture.</p>
 
@@ -1060,13 +1266,122 @@ import { scoreProfile, Standing } from './score.js';
 import { saveProfile, loadProfile, clearProfile } from './storage.js';
 
 // ── State ──
-const TOTAL_STEPS = 6;
+const TOTAL_STEPS = 5;
 let currentStep = 0;
+let parsedLabValues = {}; // field → value from paste-to-parse
+
+// ── Biomarker alias map (ported from parse_quest.py) ──
+const BIOMARKER_MAP = {
+  "apolipoprotein b": "apob", "apob": "apob", "apo b": "apob",
+  "ldl cholesterol calc": "ldl_c", "ldl chol calc": "ldl_c", "ldl cholesterol": "ldl_c",
+  "ldl-c": "ldl_c", "ldl direct": "ldl_c", "ldl": "ldl_c",
+  "hdl cholesterol": "hdl_c", "hdl-c": "hdl_c", "hdl": "hdl_c",
+  "triglycerides": "triglycerides", "triglyceride": "triglycerides", "trig": "triglycerides",
+  "total cholesterol": "total_cholesterol", "cholesterol, total": "total_cholesterol",
+  "glucose": "fasting_glucose", "fasting glucose": "fasting_glucose",
+  "hemoglobin a1c": "hba1c", "hba1c": "hba1c", "a1c": "hba1c", "glycohemoglobin": "hba1c",
+  "insulin": "fasting_insulin", "fasting insulin": "fasting_insulin",
+  "lipoprotein (a)": "lpa", "lipoprotein(a)": "lpa", "lp(a)": "lpa", "lp (a)": "lpa",
+  "c-reactive protein, cardiac": "hscrp", "hs-crp": "hscrp", "hscrp": "hscrp",
+  "c-reactive protein": "hscrp", "crp": "hscrp",
+  "tsh": "tsh", "thyrotropin": "tsh",
+  "free t4": "free_t4", "t4, free": "free_t4",
+  "free t3": "free_t3", "t3, free": "free_t3",
+  "vitamin d, 25-hydroxy": "vitamin_d", "vitamin d,25-hydroxy": "vitamin_d",
+  "25-hydroxyvitamin d": "vitamin_d", "vitamin d": "vitamin_d",
+  "ferritin": "ferritin",
+  "alt": "alt", "sgpt": "alt", "alanine aminotransferase": "alt",
+  "ast": "ast", "sgot": "ast", "aspartate aminotransferase": "ast",
+  "alkaline phosphatase": "alp", "alk phosphatase": "alp",
+  "ggt": "ggt", "gamma-glutamyl transferase": "ggt",
+  "wbc": "wbc", "white blood cell count": "wbc",
+  "rbc": "rbc", "red blood cell count": "rbc",
+  "hemoglobin": "hemoglobin", "hematocrit": "hematocrit",
+  "platelet count": "platelets", "platelets": "platelets",
+  "rdw": "rdw",
+  "creatinine": "creatinine",
+  "egfr": "egfr", "glomerular filtration rate": "egfr",
+  "bun": "bun",
+  "testosterone, total": "testosterone_total", "testosterone,total": "testosterone_total",
+  "testosterone total": "testosterone_total",
+  "testosterone, free": "testosterone_free", "testosterone,free": "testosterone_free",
+  "free testosterone": "testosterone_free",
+  "homocysteine": "homocysteine",
+  "vitamin b12": "vitamin_b12",
+  "folate": "folate",
+  "iron": "iron",
+  "tibc": "tibc",
+  "dhea-sulfate": "dhea_s", "dhea sulfate": "dhea_s",
+  "cortisol": "cortisol",
+  "uric acid": "uric_acid",
+};
+
+// Sort aliases longest-first to avoid partial matches
+const SORTED_ALIASES = Object.keys(BIOMARKER_MAP).sort((a, b) => b.length - a.length);
+
+// Human-readable names for parsed results display
+const FIELD_LABELS = {
+  apob: 'ApoB', ldl_c: 'LDL-C', hdl_c: 'HDL-C', triglycerides: 'Triglycerides',
+  total_cholesterol: 'Total Cholesterol', fasting_glucose: 'Fasting Glucose',
+  hba1c: 'HbA1c', fasting_insulin: 'Fasting Insulin', lpa: 'Lp(a)',
+  hscrp: 'hs-CRP', tsh: 'TSH', free_t4: 'Free T4', free_t3: 'Free T3',
+  vitamin_d: 'Vitamin D', ferritin: 'Ferritin', alt: 'ALT', ast: 'AST',
+  alp: 'Alk Phos', ggt: 'GGT', wbc: 'WBC', rbc: 'RBC', hemoglobin: 'Hemoglobin',
+  hematocrit: 'Hematocrit', platelets: 'Platelets', rdw: 'RDW',
+  creatinine: 'Creatinine', egfr: 'eGFR', bun: 'BUN',
+  testosterone_total: 'Testosterone (Total)', testosterone_free: 'Testosterone (Free)',
+  homocysteine: 'Homocysteine', vitamin_b12: 'Vitamin B12', folate: 'Folate',
+  iron: 'Iron', tibc: 'TIBC', dhea_s: 'DHEA-S', cortisol: 'Cortisol',
+  uric_acid: 'Uric Acid',
+};
+
+// Field → form input ID mapping for auto-fill
+const FIELD_TO_INPUT = {
+  apob: 'f-apob', ldl_c: 'f-ldl', hdl_c: 'f-hdl', triglycerides: 'f-trig',
+  fasting_glucose: 'f-glucose', hba1c: 'f-hba1c', fasting_insulin: 'f-insulin',
+  lpa: 'f-lpa', hscrp: 'f-hscrp', alt: 'f-alt', ggt: 'f-ggt',
+  hemoglobin: 'f-hemoglobin', wbc: 'f-wbc', platelets: 'f-platelets',
+  tsh: 'f-tsh', vitamin_d: 'f-vitd', ferritin: 'f-ferritin',
+};
+
+// ── Lab text parser ──
+function parseLabResults(text) {
+  const results = {};
+  const lines = text.split('\n');
+
+  for (const line of lines) {
+    const lower = line.toLowerCase().trim();
+    if (!lower) continue;
+
+    for (const alias of SORTED_ALIASES) {
+      const idx = lower.indexOf(alias);
+      if (idx === -1) continue;
+
+      const field = BIOMARKER_MAP[alias];
+      if (results[field]) continue; // first match wins
+
+      // Extract numeric value after the alias
+      const afterAlias = line.substring(idx + alias.length);
+      // Remove H/L/A flags, ref ranges in brackets, units
+      const numMatch = afterAlias.match(/[:\s]*([<>]?\s*[\d.]+)/);
+      if (numMatch) {
+        let val = numMatch[1].replace(/[<>\s]/g, '');
+        const num = parseFloat(val);
+        if (!isNaN(num)) {
+          results[field] = num;
+        }
+      }
+      break; // matched this line, move to next
+    }
+  }
+  return results;
+}
 
 // ── Init ──
 await loadNhanes();
 initProgressBar();
 initToggleButtons();
+initDragDrop();
 checkReturnVisit();
 
 function initProgressBar() {
@@ -1168,19 +1483,29 @@ function buildProfile() {
   const fhAnswer = toggleVal('family-history');
   const medsAnswer = toggleVal('medications');
   const phq9Answer = toggleVal('phq9');
+  const fastingAnswer = toggleVal('fasting');
+
+  // Lab draw date
+  const labDateEl = document.getElementById('f-lab-date');
+  const labDate = labDateEl?.value || null; // "YYYY-MM" format
+
+  // Helper: prefer form input, fall back to parsed lab value
+  const pv = (inputId, parsedField) => val(inputId) ?? parsedLabValues[parsedField] ?? null;
 
   return {
     demographics: { age, sex, ethnicity: 'white' },
+    lab_draw_date: labDate,
+    fasting: fastingAnswer === 'yes' ? true : (fastingAnswer === 'no' ? false : null),
     systolic: val('f-sbp'),
     diastolic: val('f-dbp'),
-    ldl_c: val('f-ldl'),
-    hdl_c: val('f-hdl'),
-    total_cholesterol: null,
-    triglycerides: val('f-trig'),
-    apob: val('f-apob'),
-    fasting_glucose: val('f-glucose'),
-    hba1c: val('f-hba1c'),
-    fasting_insulin: val('f-insulin'),
+    ldl_c: pv('f-ldl', 'ldl_c'),
+    hdl_c: pv('f-hdl', 'hdl_c'),
+    total_cholesterol: parsedLabValues.total_cholesterol ?? null,
+    triglycerides: pv('f-trig', 'triglycerides'),
+    apob: pv('f-apob', 'apob'),
+    fasting_glucose: pv('f-glucose', 'fasting_glucose'),
+    hba1c: pv('f-hba1c', 'hba1c'),
+    fasting_insulin: pv('f-insulin', 'fasting_insulin'),
     has_family_history: fhAnswer === 'yes' ? true : (fhAnswer === 'no' ? false : null),
     sleep_regularity_stddev: val('f-sleep-reg'),
     sleep_duration_avg: val('f-sleep-hours'),
@@ -1188,21 +1513,21 @@ function buildProfile() {
     resting_hr: val('f-rhr'),
     waist_circumference: val('f-waist'),
     has_medication_list: medsAnswer === 'yes' ? true : (medsAnswer === 'no' ? false : null),
-    lpa: val('f-lpa'),
-    hscrp: val('f-hscrp'),
-    alt: val('f-alt'),
-    ast: null,
-    ggt: val('f-ggt'),
-    tsh: val('f-tsh'),
-    vitamin_d: val('f-vitd'),
-    ferritin: val('f-ferritin'),
-    hemoglobin: val('f-hemoglobin'),
-    wbc: val('f-wbc'),
-    platelets: val('f-platelets'),
+    lpa: pv('f-lpa', 'lpa'),
+    hscrp: pv('f-hscrp', 'hscrp'),
+    alt: pv('f-alt', 'alt'),
+    ast: parsedLabValues.ast ?? null,
+    ggt: pv('f-ggt', 'ggt'),
+    tsh: pv('f-tsh', 'tsh'),
+    vitamin_d: pv('f-vitd', 'vitamin_d'),
+    ferritin: pv('f-ferritin', 'ferritin'),
+    hemoglobin: pv('f-hemoglobin', 'hemoglobin'),
+    wbc: pv('f-wbc', 'wbc'),
+    platelets: pv('f-platelets', 'platelets'),
     vo2_max: val('f-vo2'),
     hrv_rmssd_avg: val('f-hrv'),
     weight_lbs: weightLbs,
-    phq9_score: phq9Answer === 'yes' ? 0 : null,  // "yes" means they've done screening
+    phq9_score: phq9Answer === 'yes' ? 0 : null,
     zone2_min_per_week: val('f-zone2'),
     has_supplement_list: null,
     _bmi: bmi,
@@ -1418,6 +1743,11 @@ function populateForm(p) {
   setToggle('family-history', p.has_family_history);
   setToggle('medications', p.has_medication_list);
   setToggle('phq9', p.phq9_score != null ? true : null);
+  setToggle('fasting', p.fasting);
+
+  if (p.lab_draw_date) {
+    document.getElementById('f-lab-date').value = p.lab_draw_date;
+  }
 }
 
 window.startOver = function() {
@@ -1428,13 +1758,194 @@ window.startOver = function() {
 
 window.clearAndRestart = function() {
   clearProfile();
+  parsedLabValues = {};
   document.getElementById('results').classList.remove('active');
   document.getElementById('questionnaire').style.display = 'block';
   // Clear all inputs
   document.querySelectorAll('.field-input').forEach(i => i.value = '');
   document.querySelectorAll('.opt-btn, .toggle-btn').forEach(b => b.classList.remove('selected'));
+  document.getElementById('lab-paste').value = '';
+  document.getElementById('parse-results').classList.remove('active');
+  document.querySelectorAll('.manual-fields').forEach(f => f.classList.remove('open'));
   showStep(0);
 };
+
+// ── Paste-to-parse ──
+window.parseLabText = function() {
+  const text = document.getElementById('lab-paste').value;
+  if (!text.trim()) return;
+
+  const results = parseLabResults(text);
+  parsedLabValues = results;
+  const count = Object.keys(results).length;
+
+  // Try to auto-extract draw date from pasted text
+  const dateEl = document.getElementById('f-lab-date');
+  if (dateEl && !dateEl.value) {
+    const dateMatch = text.match(/(?:collected|collection|drawn|date|specimen)\s*(?:date)?[:\s]*(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{2,4})/i);
+    if (dateMatch) {
+      const month = dateMatch[1].padStart(2, '0');
+      const year = dateMatch[3].length === 2 ? '20' + dateMatch[3] : dateMatch[3];
+      dateEl.value = `${year}-${month}`;
+    }
+  }
+
+  const summaryEl = document.getElementById('parse-summary');
+  const valuesEl = document.getElementById('parsed-values');
+  const containerEl = document.getElementById('parse-results');
+
+  if (count === 0) {
+    summaryEl.innerHTML = 'No biomarkers found. Try pasting more text, or use the manual fields below.';
+    summaryEl.style.background = 'var(--red-dim)';
+    summaryEl.style.borderColor = 'rgba(200, 60, 60, 0.2)';
+    valuesEl.innerHTML = '';
+    containerEl.classList.add('active');
+    return;
+  }
+
+  summaryEl.innerHTML = `<span class="count">${count} biomarker${count > 1 ? 's' : ''}</span> extracted from your text`;
+  summaryEl.style.background = '';
+  summaryEl.style.borderColor = '';
+
+  let chips = '';
+  for (const [field, value] of Object.entries(results)) {
+    const label = FIELD_LABELS[field] || field;
+    chips += `<div class="parsed-chip"><span class="name">${label}</span><span class="val">${value}</span></div>`;
+  }
+  valuesEl.innerHTML = chips;
+  containerEl.classList.add('active');
+
+  // Auto-fill the manual fields too (so buildProfile picks them up)
+  for (const [field, value] of Object.entries(results)) {
+    const inputId = FIELD_TO_INPUT[field];
+    if (inputId) {
+      const el = document.getElementById(inputId);
+      if (el) el.value = value;
+    }
+  }
+};
+
+window.toggleManualLabs = function() {
+  const el = document.getElementById('manual-labs');
+  el.classList.toggle('open');
+  const btn = el.previousElementSibling;
+  if (el.classList.contains('open')) {
+    btn.textContent = 'Hide individual fields \u2191';
+  } else {
+    btn.textContent = 'Show individual fields \u2193';
+  }
+};
+
+window.toggleManualWearable = function() {
+  const el = document.getElementById('manual-wearable');
+  el.classList.toggle('open');
+  const btn = el.previousElementSibling;
+  if (el.classList.contains('open')) {
+    btn.textContent = 'Hide individual fields \u2191';
+  } else {
+    btn.textContent = 'Show individual fields \u2193';
+  }
+};
+
+// ── Wearable file handling ──
+window.handleWearableFile = function(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  parseWearableFile(file);
+};
+
+function initDragDrop() {
+  const zone = document.getElementById('wearable-drop');
+  if (!zone) return;
+
+  zone.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    zone.classList.add('dragover');
+  });
+  zone.addEventListener('dragleave', () => zone.classList.remove('dragover'));
+  zone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    zone.classList.remove('dragover');
+    const file = e.dataTransfer.files[0];
+    if (file) parseWearableFile(file);
+  });
+}
+
+function parseWearableFile(file) {
+  const statusEl = document.getElementById('wearable-status');
+  const summaryEl = document.getElementById('wearable-summary');
+
+  if (file.name.endsWith('.csv')) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const data = parseGarminCSV(e.target.result);
+      if (data) {
+        fillWearableFields(data);
+        summaryEl.innerHTML = `<span class="count">Garmin data imported</span> — ${Object.keys(data).filter(k => data[k] != null).length} metrics extracted from ${file.name}`;
+        statusEl.classList.add('active');
+      } else {
+        summaryEl.innerHTML = 'Could not parse CSV. Try the Garmin Connect daily summary export.';
+        summaryEl.style.background = 'var(--red-dim)';
+        statusEl.classList.add('active');
+      }
+    };
+    reader.readAsText(file);
+  } else {
+    summaryEl.innerHTML = `${file.name} — XML/ZIP parsing coming soon. For now, enter values manually below.`;
+    summaryEl.style.background = 'var(--red-dim)';
+    statusEl.classList.add('active');
+    // Show manual fields as fallback
+    document.getElementById('manual-wearable').classList.add('open');
+  }
+}
+
+function parseGarminCSV(text) {
+  const lines = text.split('\n').filter(l => l.trim());
+  if (lines.length < 2) return null;
+
+  const headers = lines[0].split(',').map(h => h.trim().toLowerCase());
+  const stepsIdx = headers.findIndex(h => h.includes('step'));
+  const sleepIdx = headers.findIndex(h => h.includes('sleep') && h.includes('hour'));
+  const hrIdx = headers.findIndex(h => h.includes('resting') && h.includes('heart'));
+
+  if (stepsIdx === -1 && sleepIdx === -1 && hrIdx === -1) return null;
+
+  let totalSteps = 0, totalSleep = 0, totalHR = 0;
+  let stepsCount = 0, sleepCount = 0, hrCount = 0;
+
+  for (let i = 1; i < lines.length; i++) {
+    const cols = lines[i].split(',').map(c => c.trim().replace(/"/g, ''));
+
+    if (stepsIdx >= 0) {
+      const v = parseFloat(cols[stepsIdx]);
+      if (!isNaN(v) && v > 0) { totalSteps += v; stepsCount++; }
+    }
+    if (sleepIdx >= 0) {
+      const v = parseFloat(cols[sleepIdx]);
+      if (!isNaN(v) && v > 0) { totalSleep += v; sleepCount++; }
+    }
+    if (hrIdx >= 0) {
+      const v = parseFloat(cols[hrIdx]);
+      if (!isNaN(v) && v > 0) { totalHR += v; hrCount++; }
+    }
+  }
+
+  return {
+    steps: stepsCount > 0 ? Math.round(totalSteps / stepsCount) : null,
+    sleepHours: sleepCount > 0 ? Math.round((totalSleep / sleepCount) * 10) / 10 : null,
+    restingHR: hrCount > 0 ? Math.round(totalHR / hrCount) : null,
+  };
+}
+
+function fillWearableFields(data) {
+  if (data.steps != null) document.getElementById('f-steps').value = data.steps;
+  if (data.sleepHours != null) document.getElementById('f-sleep-hours').value = data.sleepHours;
+  if (data.restingHR != null) document.getElementById('f-rhr').value = data.restingHR;
+  // Auto-open manual fields so user can see what was filled
+  document.getElementById('manual-wearable').classList.add('open');
+  const btn = document.getElementById('manual-wearable').previousElementSibling;
+  btn.textContent = 'Hide individual fields \u2191';
+}
 </script>
 </body>
 </html>
