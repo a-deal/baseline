@@ -582,4 +582,320 @@ function scoreProfile(profile) {
   };
 }
 
-export { scoreProfile, Standing, ageBucket, TIER1_WEIGHTS, TIER2_WEIGHTS };
+// ---------------------------------------------------------------------------
+// Freshness — plateau + linear decay per metric
+// ---------------------------------------------------------------------------
+
+const FRESHNESS_WINDOWS = {
+  // Labs: fresh (months), stale (months)
+  apob:                { fresh: 6, stale: 12 },
+  ldl_c:               { fresh: 6, stale: 12 },
+  hdl_c:               { fresh: 6, stale: 12 },
+  triglycerides:        { fresh: 3, stale: 9 },
+  fasting_glucose:      { fresh: 3, stale: 9 },
+  fasting_insulin:      { fresh: 3, stale: 9 },
+  hba1c:               { fresh: 6, stale: 12 },
+  lpa:                 { fresh: 120, stale: 240 },  // lifetime
+  hscrp:               { fresh: 6, stale: 12 },
+  tsh:                 { fresh: 6, stale: 12 },
+  vitamin_d:           { fresh: 4, stale: 10 },
+  ferritin:            { fresh: 6, stale: 12 },
+  hemoglobin:          { fresh: 12, stale: 24 },
+  alt:                 { fresh: 6, stale: 12 },
+  ggt:                 { fresh: 6, stale: 12 },
+  wbc:                 { fresh: 12, stale: 24 },
+  platelets:           { fresh: 12, stale: 24 },
+  systolic:            { fresh: 3, stale: 6 },
+  diastolic:           { fresh: 3, stale: 6 },
+  // Wearable: measured in months but much shorter windows
+  resting_hr:          { fresh: 0.5, stale: 1 },
+  sleep_duration_avg:  { fresh: 0.5, stale: 1 },
+  sleep_regularity_stddev: { fresh: 0.5, stale: 1 },
+  daily_steps_avg:     { fresh: 1, stale: 2 },
+  vo2_max:             { fresh: 1, stale: 3 },
+  hrv_rmssd_avg:       { fresh: 0.5, stale: 1 },
+  // Manual / static
+  has_family_history:  { fresh: 120, stale: 240 },
+  has_medication_list: { fresh: 3, stale: 6 },
+  waist_circumference: { fresh: 3, stale: 6 },
+  weight_lbs:          { fresh: 1, stale: 3 },
+  zone2_min_per_week:  { fresh: 1, stale: 3 },
+  phq9_score:          { fresh: 3, stale: 6 },
+  smoking_status:      { fresh: 6, stale: 12 },
+};
+
+function monthsBetween(d1, d2) {
+  return (d2.getFullYear() - d1.getFullYear()) * 12 + (d2.getMonth() - d1.getMonth())
+    + (d2.getDate() - d1.getDate()) / 30;
+}
+
+function getFreshness(metric, drawDate, now) {
+  if (!drawDate) return 0.5; // legacy data with no date: half credit
+
+  const monthsAgo = monthsBetween(new Date(drawDate), now || new Date());
+  const windows = FRESHNESS_WINDOWS[metric];
+  if (!windows) return 1.0; // unknown metric = full credit
+
+  if (monthsAgo <= windows.fresh) return 1.0;
+  if (monthsAgo >= windows.stale) return 0.0;
+  return 1.0 - (monthsAgo - windows.fresh) / (windows.stale - windows.fresh);
+}
+
+// ---------------------------------------------------------------------------
+// Reliability — measurement quality multiplier
+// ---------------------------------------------------------------------------
+
+function getReliability(metric, observations, imports) {
+  // hs-CRP: single reading = 60% reliability (CVI is 42%)
+  if (metric === 'hscrp') {
+    return observations.length >= 2 ? 1.0 : 0.6;
+  }
+
+  // Fasting-sensitive metrics: check if the import was fasting
+  if (['triglycerides', 'fasting_glucose', 'fasting_insulin'].includes(metric)) {
+    const latest = observations[0];
+    if (latest?.import_id && imports) {
+      const imp = imports.find(i => i.id === latest.import_id);
+      if (imp?.fasting === false) return 0.7;
+    }
+  }
+
+  return 1.0;
+}
+
+// ---------------------------------------------------------------------------
+// Trend Detection — using Reference Change Values (RCV)
+// ---------------------------------------------------------------------------
+
+// RCV thresholds (%) — minimum change that exceeds biological + analytical variation
+// RCV = 2.77 × sqrt(CVI² + CVA²)
+const RCV_THRESHOLDS = {
+  apob: 15,
+  ldl_c: 23,
+  hdl_c: 20,
+  triglycerides: 35,
+  fasting_glucose: 14,
+  fasting_insulin: 40,
+  hba1c: 9,
+  hscrp: 120,  // extremely variable
+  tsh: 30,
+  vitamin_d: 25,
+  ferritin: 30,
+  hemoglobin: 8,
+  alt: 35,
+  ggt: 28,
+  resting_hr: 12,
+  weight_lbs: 5,
+};
+
+function detectTrend(metric, observations) {
+  if (observations.length < 2) return null;
+
+  const newest = observations[0];
+  const oldest = observations[observations.length - 1];
+
+  if (newest.value == null || oldest.value == null) return null;
+  if (!newest.date || !oldest.date) return null;
+
+  const pctChange = ((newest.value - oldest.value) / oldest.value) * 100;
+  const spanMonths = monthsBetween(new Date(oldest.date), new Date(newest.date));
+
+  const rcv = RCV_THRESHOLDS[metric];
+  const significant = rcv ? Math.abs(pctChange) >= rcv : Math.abs(pctChange) >= 20;
+
+  return {
+    direction: Math.abs(pctChange) < 2 ? 'stable' : pctChange > 0 ? 'rising' : 'falling',
+    pctChange: Math.round(pctChange * 10) / 10,
+    significant,
+    spanMonths: Math.round(spanMonths),
+    dataPoints: observations.length,
+    newest: { value: newest.value, date: newest.date },
+    oldest: { value: oldest.value, date: oldest.date },
+  };
+}
+
+// ---------------------------------------------------------------------------
+// Score a time-series profile (v2)
+// ---------------------------------------------------------------------------
+
+// Maps metric field names to the scoring category they belong to
+const METRIC_TO_CATEGORY = {
+  systolic: 'blood_pressure', diastolic: 'blood_pressure',
+  apob: 'lipid_apob', ldl_c: 'lipid_apob', hdl_c: 'lipid_apob', triglycerides: 'lipid_apob',
+  fasting_glucose: 'metabolic', hba1c: 'metabolic', fasting_insulin: 'metabolic',
+  has_family_history: 'family_history',
+  sleep_duration_avg: 'sleep', sleep_regularity_stddev: 'sleep',
+  daily_steps_avg: 'steps',
+  resting_hr: 'resting_hr',
+  waist_circumference: 'waist',
+  has_medication_list: 'medications',
+  lpa: 'lpa',
+  vo2_max: 'vo2_max',
+  hrv_rmssd_avg: 'hrv',
+  hscrp: 'hscrp',
+  alt: 'liver', ggt: 'liver',
+  hemoglobin: 'cbc', wbc: 'cbc', platelets: 'cbc',
+  tsh: 'thyroid',
+  vitamin_d: 'vitamin_d_ferritin', ferritin: 'vitamin_d_ferritin',
+  weight_lbs: 'weight_trends',
+  phq9_score: 'phq9',
+  zone2_min_per_week: 'zone2',
+};
+
+/**
+ * Score a v2 time-series profile.
+ * Input: { demographics, observations: { metric: [...] }, imports: [...] }
+ * Adapts observations to the flat format scoreProfile() expects,
+ * then enriches results with freshness, reliability, and trends.
+ */
+function scoreTimeSeriesProfile(tsProfile) {
+  const now = new Date();
+  const obs = tsProfile.observations || {};
+  const imports = tsProfile.imports || [];
+
+  // Build a flat profile for backward-compatible scoring
+  const flat = { demographics: tsProfile.demographics };
+
+  // Helper: get latest value for a metric
+  function latest(metric) {
+    const arr = obs[metric];
+    if (!arr || arr.length === 0) return null;
+    return arr[0]?.value ?? null;
+  }
+
+  // Map all metrics to flat profile
+  flat.systolic = latest('systolic');
+  flat.diastolic = latest('diastolic');
+  flat.apob = latest('apob');
+  flat.ldl_c = latest('ldl_c');
+  flat.hdl_c = latest('hdl_c');
+  flat.triglycerides = latest('triglycerides');
+  flat.fasting_glucose = latest('fasting_glucose');
+  flat.hba1c = latest('hba1c');
+  flat.fasting_insulin = latest('fasting_insulin');
+  flat.has_family_history = latest('has_family_history');
+  flat.sleep_regularity_stddev = latest('sleep_regularity_stddev');
+  flat.sleep_duration_avg = latest('sleep_duration_avg');
+  flat.daily_steps_avg = latest('daily_steps_avg');
+  flat.resting_hr = latest('resting_hr');
+  flat.waist_circumference = latest('waist_circumference');
+  flat.has_medication_list = latest('has_medication_list');
+  flat.lpa = latest('lpa');
+  flat.vo2_max = latest('vo2_max');
+  flat.hrv_rmssd_avg = latest('hrv_rmssd_avg');
+  flat.hscrp = latest('hscrp');
+  flat.alt = latest('alt');
+  flat.ggt = latest('ggt');
+  flat.hemoglobin = latest('hemoglobin');
+  flat.wbc = latest('wbc');
+  flat.platelets = latest('platelets');
+  flat.tsh = latest('tsh');
+  flat.vitamin_d = latest('vitamin_d');
+  flat.ferritin = latest('ferritin');
+  flat.weight_lbs = latest('weight_lbs');
+  flat.phq9_score = latest('phq9_score');
+  flat.zone2_min_per_week = latest('zone2_min_per_week');
+  flat.smoking_status = latest('smoking_status');
+
+  // Run base scoring
+  const baseResult = scoreProfile(flat);
+
+  // Enrich each result with freshness, reliability, and trends
+  const metricFreshness = {};
+  const metricTrends = {};
+
+  for (const [metric, metricObs] of Object.entries(obs)) {
+    if (metricObs.length === 0) continue;
+
+    const latestObs = metricObs[0];
+    const freshness = getFreshness(metric, latestObs.date, now);
+    const reliability = getReliability(metric, metricObs, imports);
+    const trend = detectTrend(metric, metricObs);
+
+    const cat = METRIC_TO_CATEGORY[metric];
+    if (cat) {
+      // Store the worst freshness for this category (if multiple metrics map to same category)
+      if (metricFreshness[cat] == null || freshness < metricFreshness[cat].freshness) {
+        metricFreshness[cat] = { freshness, reliability, metric };
+      }
+      if (trend && trend.significant) {
+        if (!metricTrends[cat]) metricTrends[cat] = [];
+        metricTrends[cat].push({ metric, ...trend });
+      }
+    }
+  }
+
+  // Apply freshness to results
+  for (const result of baseResult.results) {
+    const catKey = Object.entries({ ...TIER1_WEIGHTS, ...TIER2_WEIGHTS })
+      .find(([, w]) => w === result.weight && result.name);
+
+    // Match result to category by name
+    const catMap = {
+      'Blood Pressure': 'blood_pressure',
+      'Lipid Panel + ApoB': 'lipid_apob',
+      'Metabolic Panel': 'metabolic',
+      'Family History': 'family_history',
+      'Sleep Regularity': 'sleep',
+      'Daily Steps': 'steps',
+      'Resting Heart Rate': 'resting_hr',
+      'Waist Circumference': 'waist',
+      'Medication List': 'medications',
+      'Lp(a)': 'lpa',
+      'VO2 Max': 'vo2_max',
+      'HRV (7-day avg)': 'hrv',
+      'hs-CRP': 'hscrp',
+      'Liver Enzymes': 'liver',
+      'CBC': 'cbc',
+      'Thyroid (TSH)': 'thyroid',
+      'Vitamin D + Ferritin': 'vitamin_d_ferritin',
+      'Weight Trends': 'weight_trends',
+      'PHQ-9 (Depression)': 'phq9',
+      'Zone 2 Cardio': 'zone2',
+    };
+
+    const cat = catMap[result.name];
+    if (cat && metricFreshness[cat]) {
+      result.freshness = metricFreshness[cat].freshness;
+      result.reliability = metricFreshness[cat].reliability;
+      result.effectiveWeight = result.weight * result.freshness * result.reliability;
+    } else {
+      result.freshness = result.hasData ? 1.0 : 0;
+      result.reliability = 1.0;
+      result.effectiveWeight = result.hasData ? result.weight : 0;
+    }
+
+    result.trends = metricTrends[cat] || [];
+  }
+
+  // Recompute coverage using effective weights (freshness-adjusted)
+  const allWeights = { ...TIER1_WEIGHTS, ...TIER2_WEIGHTS };
+  const totalWeight = Object.values(allWeights).reduce((a, b) => a + b, 0);
+
+  const effectiveCoveredWeight = baseResult.results
+    .reduce((sum, r) => sum + (r.effectiveWeight || 0), 0);
+  const freshnessAdjustedCoverage = Math.round(effectiveCoveredWeight / totalWeight * 100);
+
+  return {
+    ...baseResult,
+    freshnessAdjustedCoverage,
+    rawCoverage: baseResult.coverageScore,
+    coverageScore: freshnessAdjustedCoverage,
+    importCount: imports.length,
+    observationMetrics: Object.keys(obs).filter(m => obs[m].length > 0),
+  };
+}
+
+export {
+  scoreProfile,
+  scoreTimeSeriesProfile,
+  Standing,
+  ageBucket,
+  TIER1_WEIGHTS,
+  TIER2_WEIGHTS,
+  FRESHNESS_WINDOWS,
+  getFreshness,
+  getReliability,
+  detectTrend,
+  RCV_THRESHOLDS,
+};

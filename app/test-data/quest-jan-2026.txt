@@ -1,0 +1,59 @@
+QUEST DIAGNOSTICS
+Patient: Test Patient
+DOB: 03/15/1991
+Specimen Collected: 01/15/2026
+Specimen Received: 01/16/2026
+Report Status: Final
+
+Fasting: Yes
+
+COMPREHENSIVE METABOLIC PANEL
+Glucose                          92    mg/dL        65-99
+BUN                              18    mg/dL        6-24
+Creatinine                       1.05  mg/dL        0.76-1.27
+eGFR                             >60   mL/min/1.73  >59
+
+LIPID PANEL
+Cholesterol, Total               198   mg/dL        100-199
+Triglycerides                    105   mg/dL        0-149
+HDL Cholesterol                  48    mg/dL        >39
+VLDL Cholesterol Cal             21    mg/dL        5-40
+LDL Chol Calc (NIH)             129   mg/dL        0-99      H
+
+HEMOGLOBIN A1c
+Hemoglobin A1c                   5.4   %            4.8-5.6
+
+INSULIN, FASTING
+Insulin                          8.2   uIU/mL       2.6-24.9
+
+APOLIPOPROTEIN B
+Apolipoprotein B                 98    mg/dL        <90       H
+
+C-REACTIVE PROTEIN, CARDIAC
+C-Reactive Protein, Cardiac      0.8   mg/L         0.0-3.0
+
+LIPOPROTEIN (A)
+Lipoprotein (a)                  42    nmol/L       0-75
+
+THYROID STIMULATING HORMONE
+TSH                              2.1   uIU/mL       0.45-4.5
+
+VITAMIN D, 25-HYDROXY
+Vitamin D, 25-Hydroxy            38    ng/mL        30-100
+
+FERRITIN
+Ferritin                         112   ng/mL        30-400
+
+CBC WITH DIFFERENTIAL/PLATELET
+WBC                              5.8   x10E3/uL     3.4-10.8
+RBC                              5.12  x10E6/uL     4.14-5.80
+Hemoglobin                       15.2  g/dL         12.6-17.7
+Hematocrit                       44.8  %            37.5-51.0
+Platelet Count                   228   x10E3/uL     150-379
+RDW                              12.8  %            11.6-15.4
+
+LIVER PANEL
+AST (SGOT)                       22    U/L          0-40
+ALT (SGPT)                       28    U/L          0-44
+Alkaline Phosphatase             62    U/L          44-121
+GGT                              24    U/L          0-65

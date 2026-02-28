@@ -325,6 +325,8 @@ For users who don't want to manually export, OAuth API connections provide live 
 
 ### Wearable Platform Details
 
+> **See also:** [Platform Coverage Strategy](platform-coverage-strategy.md) for market share data, integration priorities, and the decision rationale behind which platforms we build first.
+
 | Platform | Export Format | Auth Model | Key Metrics | 1-Year Size | Server? |
 |----------|-------------|------------|-------------|-------------|---------|
 | **Apple Health** | XML in ZIP | File export only (no web API) | Steps, HR, HRV, VO2max, sleep stages, SpO2, 150+ types | 50-200MB ZIP | No |

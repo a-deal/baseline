@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE HealthData [
+<!ATTLIST Record type CDATA #REQUIRED>
+<!ATTLIST Record sourceName CDATA #REQUIRED>
+<!ATTLIST Record unit CDATA #IMPLIED>
+<!ATTLIST Record value CDATA #IMPLIED>
+<!ATTLIST Record startDate CDATA #REQUIRED>
+<!ATTLIST Record endDate CDATA #REQUIRED>
+]>
+<HealthData locale="en_US">
+ <ExportDate value="2026-02-27 14:00:00 -0500"/>
+ <Me HKCharacteristicTypeIdentifierDateOfBirth="1991-03-15" HKCharacteristicTypeIdentifierBiologicalSex="HKBiologicalSexMale" HKCharacteristicTypeIdentifierBloodType="HKBloodTypeOPositive" HKCharacteristicTypeIdentifierFitzpatrickSkinType="HKFitzpatrickSkinTypeIII"/>
+
+ <!-- Resting Heart Rate - 90 days -->
+ <Record type="HKQuantityTypeIdentifierRestingHeartRate" sourceName="Apple Watch" unit="count/min" value="52" startDate="2026-02-27 06:00:00 -0500" endDate="2026-02-27 06:00:00 -0500"/>
+ <Record type="HKQuantityTypeIdentifierRestingHeartRate" sourceName="Apple Watch" unit="count/min" value="51" startDate="2026-02-26 06:00:00 -0500" endDate="2026-02-26 06:00:00 -0500"/>
+ <Record type="HKQuantityTypeIdentifierRestingHeartRate" sourceName="Apple Watch" unit="count/min" value="53" startDate="2026-02-25 06:00:00 -0500" endDate="2026-02-25 06:00:00 -0500"/>
+ <Record type="HKQuantityTypeIdentifierRestingHeartRate" sourceName="Apple Watch" unit="count/min" value="50" startDate="2026-02-24 06:00:00 -0500" endDate="2026-02-24 06:00:00 -0500"/>
+ <Record type="HKQuantityTypeIdentifierRestingHeartRate" sourceName="Apple Watch" unit="count/min" value="54" startDate="2026-02-23 06:00:00 -0500" endDate="2026-02-23 06:00:00 -0500"/>
+
+ <!-- Step Count -->
+ <Record type="HKQuantityTypeIdentifierStepCount" sourceName="Apple Watch" unit="count" value="8542" startDate="2026-02-27 00:00:00 -0500" endDate="2026-02-27 23:59:59 -0500"/>
+ <Record type="HKQuantityTypeIdentifierStepCount" sourceName="Apple Watch" unit="count" value="10231" startDate="2026-02-26 00:00:00 -0500" endDate="2026-02-26 23:59:59 -0500"/>
+ <Record type="HKQuantityTypeIdentifierStepCount" sourceName="Apple Watch" unit="count" value="7823" startDate="2026-02-25 00:00:00 -0500" endDate="2026-02-25 23:59:59 -0500"/>
+ <Record type="HKQuantityTypeIdentifierStepCount" sourceName="Apple Watch" unit="count" value="11045" startDate="2026-02-24 00:00:00 -0500" endDate="2026-02-24 23:59:59 -0500"/>
+ <Record type="HKQuantityTypeIdentifierStepCount" sourceName="Apple Watch" unit="count" value="6234" startDate="2026-02-23 00:00:00 -0500" endDate="2026-02-23 23:59:59 -0500"/>
+
+ <!-- Sleep Analysis -->
+ <Record type="HKCategoryTypeIdentifierSleepAnalysis" sourceName="Apple Watch" value="HKCategoryValueSleepAnalysisAsleepCore" startDate="2026-02-27 00:15:00 -0500" endDate="2026-02-27 06:45:00 -0500"/>
+ <Record type="HKCategoryTypeIdentifierSleepAnalysis" sourceName="Apple Watch" value="HKCategoryValueSleepAnalysisAsleepDeep" startDate="2026-02-27 01:30:00 -0500" endDate="2026-02-27 03:00:00 -0500"/>
+ <Record type="HKCategoryTypeIdentifierSleepAnalysis" sourceName="Apple Watch" value="HKCategoryValueSleepAnalysisAsleepREM" startDate="2026-02-27 04:00:00 -0500" endDate="2026-02-27 05:30:00 -0500"/>
+
+ <!-- Heart Rate Variability -->
+ <Record type="HKQuantityTypeIdentifierHeartRateVariabilitySDNN" sourceName="Apple Watch" unit="ms" value="42" startDate="2026-02-27 06:00:00 -0500" endDate="2026-02-27 06:00:00 -0500"/>
+ <Record type="HKQuantityTypeIdentifierHeartRateVariabilitySDNN" sourceName="Apple Watch" unit="ms" value="38" startDate="2026-02-26 06:00:00 -0500" endDate="2026-02-26 06:00:00 -0500"/>
+ <Record type="HKQuantityTypeIdentifierHeartRateVariabilitySDNN" sourceName="Apple Watch" unit="ms" value="45" startDate="2026-02-25 06:00:00 -0500" endDate="2026-02-25 06:00:00 -0500"/>
+
+ <!-- VO2 Max -->
+ <Record type="HKQuantityTypeIdentifierVO2Max" sourceName="Apple Watch" unit="mL/min·kg" value="44.2" startDate="2026-02-20 16:30:00 -0500" endDate="2026-02-20 16:30:00 -0500"/>
+
+ <!-- Blood Pressure (from a connected BP cuff) -->
+ <Record type="HKQuantityTypeIdentifierBloodPressureSystolic" sourceName="Omron Connect" unit="mmHg" value="118" startDate="2026-02-15 08:00:00 -0500" endDate="2026-02-15 08:00:00 -0500"/>
+ <Record type="HKQuantityTypeIdentifierBloodPressureDiastolic" sourceName="Omron Connect" unit="mmHg" value="76" startDate="2026-02-15 08:00:00 -0500" endDate="2026-02-15 08:00:00 -0500"/>
+
+ <!-- Body Mass -->
+ <Record type="HKQuantityTypeIdentifierBodyMass" sourceName="Withings" unit="lb" value="175.4" startDate="2026-02-27 07:00:00 -0500" endDate="2026-02-27 07:00:00 -0500"/>
+ <Record type="HKQuantityTypeIdentifierBodyMass" sourceName="Withings" unit="lb" value="176.1" startDate="2026-02-26 07:00:00 -0500" endDate="2026-02-26 07:00:00 -0500"/>
+
+ <!-- SpO2 -->
+ <Record type="HKQuantityTypeIdentifierOxygenSaturation" sourceName="Apple Watch" unit="%" value="0.98" startDate="2026-02-27 03:00:00 -0500" endDate="2026-02-27 03:00:00 -0500"/>
+
+ <!-- Workout (for zone 2 detection) -->
+ <Workout workoutActivityType="HKWorkoutActivityTypeRunning" duration="45.5" durationUnit="min" sourceName="Apple Watch" startDate="2026-02-26 17:00:00 -0500" endDate="2026-02-26 17:45:30 -0500">
+  <WorkoutStatistics type="HKQuantityTypeIdentifierHeartRate" average="138" unit="count/min"/>
+  <WorkoutStatistics type="HKQuantityTypeIdentifierActiveEnergyBurned" sum="420" unit="kcal"/>
+ </Workout>
+ <Workout workoutActivityType="HKWorkoutActivityTypeCycling" duration="62.0" durationUnit="min" sourceName="Apple Watch" startDate="2026-02-24 07:00:00 -0500" endDate="2026-02-24 08:02:00 -0500">
+  <WorkoutStatistics type="HKQuantityTypeIdentifierHeartRate" average="128" unit="count/min"/>
+  <WorkoutStatistics type="HKQuantityTypeIdentifierActiveEnergyBurned" sum="380" unit="kcal"/>
+ </Workout>
+
+</HealthData>

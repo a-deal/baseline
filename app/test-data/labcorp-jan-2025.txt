@@ -1,0 +1,28 @@
+LabCorp
+Test Results for: Test Patient
+Date of Birth: 03/15/1991
+
+Specimen Collection Date: 01/10/2025
+Report Date: 01/12/2025
+Fasting Status: Fasting
+
+Lipid Panel
+  Cholesterol, Total            232    mg/dL       100-199     H
+  Triglycerides                 148    mg/dL       0-149
+  HDL-C                         42     mg/dL       >39
+  LDL Cholesterol               160    mg/dL       0-99        H
+
+HbA1c
+  Hemoglobin A1c                5.7    %           4.8-5.6     H
+
+Insulin
+  Fasting Insulin               13.9   uIU/mL      2.6-24.9
+
+Glucose
+  Glucose                       101    mg/dL       74-106
+
+CBC
+  Hemoglobin                    14.8   g/dL        12.6-17.7
+  WBC                           5.5    x10E3/uL    3.4-10.8
+
+ALT                             35     U/L         0-44
