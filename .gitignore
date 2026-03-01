@@ -27,6 +27,7 @@ app/dist/
 
 # Wrangler
 app/.wrangler/
+worker/.wrangler/
 
 # OS
 .DS_Store
@@ -35,3 +36,6 @@ app/.wrangler/
 # Personal data logs
 daily_habits.csv
 meal_log.csv
+skincare_log.csv
+# Wrangler local secrets
+worker/.dev.vars
