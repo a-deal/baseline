@@ -21,6 +21,7 @@ import {
   generateImportId,
   deleteObservationsBySource,
 } from './db.js';
+import { schedulePush } from './src/sync.js';
 
 const V1_STORAGE_KEY = 'baseline_profile';
 
@@ -193,6 +194,7 @@ async function saveDemographics(demographics) {
       schema_version: 2,
     },
   });
+  schedulePush();
 }
 
 /**
@@ -237,6 +239,7 @@ async function addImportWithObservations(importMeta, observations) {
     },
   });
 
+  schedulePush();
   return importId;
 }
 

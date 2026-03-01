@@ -295,13 +295,21 @@ async function exportAll() {
     getAllImports(),
   ]);
 
-  return {
+  const data = {
     schema_version: 2,
     exported_at: new Date().toISOString(),
     profile,
     observations,
     imports,
   };
+
+  // Embed encryption key for device transfer
+  const encKey = localStorage.getItem('baseline_encryption_key');
+  if (encKey) {
+    data.encryption_key = encKey;
+  }
+
+  return data;
 }
 
 /**
@@ -310,6 +318,11 @@ async function exportAll() {
 async function importAll(data) {
   if (data.schema_version !== 2) {
     throw new Error(`Unsupported schema version: ${data.schema_version}`);
+  }
+
+  // Restore encryption key if present (device transfer)
+  if (data.encryption_key) {
+    localStorage.setItem('baseline_encryption_key', data.encryption_key);
   }
 
   const db = await openDB();
