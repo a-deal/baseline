@@ -2,6 +2,8 @@
 draws/
 profiles/
 garmin_latest.json
+garmin_daily_burn.json
+garmin_workouts.json
 weight_log.csv
 strength_log.csv
 .garmin_tokens/
