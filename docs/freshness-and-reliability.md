@@ -223,6 +223,118 @@ The transition from landing page to app should feel like going from a rough esti
 
 ---
 
+## Measurement Protocols — Per Metric
+
+Not all metrics are "get one reading and done." Some require specific protocols to produce clinically meaningful data. This matters for both accuracy and how we prompt users.
+
+### Blood Pressure — The Protocol Metric
+
+BP is the highest-protocol metric in our stack. A single reading is nearly meaningless clinically.
+
+**Gold standard (AHA/ESH guidelines):**
+1. **Initial baseline:** 2x daily (morning + evening) for 7 consecutive days
+   - Same time each day, seated 5 min rest, feet flat, arm supported at heart level
+   - Discard day 1 (acclimation effect). Average days 2-7.
+   - This 7-day average is the clinical-grade value
+2. **Ongoing monitoring:** 2-3x per week, same conditions
+3. **Before clinical decisions:** Repeat the 7-day protocol
+
+**Why this matters for Baseline:**
+- Single BP CVI is 6-8% systolic, 8-10% diastolic
+- A 7-day average reduces effective CVI to ~2-3% (√n averaging)
+- **A 7-day average is worth 3-4x more coverage credit than a single reading**
+
+**Proposed scoring:**
+| Input Type | Reliability Multiplier | Effective Weight |
+|---|---|---|
+| Single reading | 0.5 | Half credit |
+| 3-day average | 0.75 | Three-quarter credit |
+| 7-day average (protocol) | 1.0 | Full credit |
+| Continuous (cuff or wearable) | 1.0 | Full credit, always fresh |
+
+**UX implications:**
+- When user enters BP: ask "Is this a single reading or an average?"
+- If single: "For a more accurate score, measure morning + evening for 7 days. We'll average it."
+- Proactive nudge: "Start your BP week" — 7-day guided protocol with daily reminders
+
+**Andrew's protocol (starting week of 2026-03-01):**
+- 7 consecutive days, 2x/day (AM + PM)
+- Home cuff, seated 5 min rest
+- Log in Baseline time-series
+- Result: clinical-grade BP baseline for scoring
+
+### Weight / BMI — Trivially Fresh
+
+- Weigh daily, use 7-day rolling average (smooths water/food fluctuations)
+- CVI of daily weight: ~1-2% (mostly water)
+- 7-day average CVI: <0.5%
+- Protocol: same scale, same time (morning, post-bathroom, pre-food), nude or consistent clothing
+- **This should be the lowest-friction metric to keep fresh** — nudge: "Step on the scale"
+
+### Waist Circumference — Monthly
+
+- Measure at navel, end of normal exhale
+- Monthly is sufficient (changes slowly)
+- >2cm change needed to exceed measurement noise
+- Protocol: same tape, same landmark, same time of day
+
+### hs-CRP — The Multi-Draw Metric
+
+- Single reading: max 60% reliability (42% CVI)
+- Two readings 2+ weeks apart, averaged: full reliability
+- Reading during illness: discard
+- Protocol: "Get two draws, 2-4 weeks apart. We'll average them."
+
+---
+
+## Proactive Nudge System — "What to Do Next"
+
+The real product unlock: Baseline knows what you have, what's missing, what's stale, and what's cheap to fix. It should **tell you what to do and when.**
+
+### Nudge Categories
+
+**1. Measurement nudges** (free, immediate)
+- "Time for your weekly BP check" (if monitoring)
+- "Step on the scale" (daily weight tracking)
+- "Measure your waist this month"
+- Triggered by: freshness decay approaching threshold
+
+**2. Re-test nudges** (low cost, periodic)
+- "Your lipid panel is 9 months old — a re-test would recover 4 coverage points"
+- "Your Vitamin D was drawn in July — a winter re-test gives the full picture"
+- Triggered by: freshness decay past 50% of window
+
+**3. New acquisition nudges** (one-time, highest ROI)
+- "Get ApoB tested (~$30) → +6 points. Ask your doctor to add it to your next panel."
+- "Lp(a) is a one-time test (~$30). 20% of people have elevated levels."
+- Triggered by: gap analysis, sorted by points-per-dollar
+
+**4. Protocol nudges** (guided multi-day)
+- "Start your BP week" — 7-day guided protocol with daily check-ins
+- "hs-CRP confirmation draw" — reminder 2-4 weeks after first draw
+- Triggered by: single-reading metrics that benefit from averaging
+
+**5. Life event triggers**
+- Annual: "Any new diagnoses in your immediate family?"
+- Medication change: "You added a statin — your pre-statin lipids are now historical. Get a new panel in 6-8 weeks."
+- Seasonal: Vitamin D re-test prompt in opposite season from last draw
+
+### Delivery Channels
+
+- **In-app:** Next time they open Baseline, top card is "Your next move"
+- **Push notification:** If they've opted in (PWA or native)
+- **Email digest:** Weekly or monthly "Your Baseline update" — score trend, upcoming nudges, one insight
+- **Calendar integration:** "Add BP reminder to calendar" button
+
+### Implementation Priority
+
+1. **In-app "Next move" card** — already have gap analysis, just needs freshness-aware re-test logic
+2. **Email digest** — Formspree captures emails already. Simple periodic send.
+3. **Push notifications** — requires PWA service worker. Medium effort.
+4. **Calendar integration** — nice-to-have. Google Calendar API or .ics download.
+
+---
+
 ## Open Questions for Future Research
 
 1. **What's the right floor for decayed data?** Should a 3-year-old LDL contribute *something* (say 10%) or truly zero? Argument for non-zero: it still tells you *something* about this person. Argument for zero: we don't want to create false confidence.

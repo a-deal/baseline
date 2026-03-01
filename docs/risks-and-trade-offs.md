@@ -147,3 +147,34 @@ Garmin, Oura, Whoop APIs can change terms, require re-approval, or shut down. Fi
 | 10 | Claude API cost | Low | Low (at current scale) | Monitor |
 | 11 | HIPAA | Low | Low (local-first avoids) | Track for future |
 | 12 | Platform API changes | Low | Medium | File import as foundation |
+| 13 | Browser ML disruption | Medium | High | Watch + prepare (see below) |
+
+---
+
+## Emerging: Browser ML as Strategic Risk
+
+**What:** WebGPU and ONNX Runtime Web are enabling meaningful ML inference in the browser. Small models (2-4B parameters) can run on consumer hardware. The pace of improvement is fast — model quality at a given size roughly doubles yearly.
+
+**Why it matters for Baseline:**
+- Our Cloudflare Worker exists because client-side regex can't reliably parse natural language. If browser models get good enough for structured extraction (12-18 months?), the Worker becomes unnecessary for this use case.
+- Competitors could ship fully local health data parsing — zero server, zero privacy concern, zero cost. That undercuts our "local-first" positioning if we're the ones with a server dependency.
+- Conversely, if we're early to browser ML for health data, it's a strong moat — "the only health app that runs entirely in your browser, with AI."
+
+**Current state (Feb 2026):**
+- WebGPU adoption: Chrome stable, Firefox/Safari behind flags
+- Practical browser models: Phi-3 mini (3.8B, ~2GB), Gemma 2B (~1.5GB), TinyLlama (1.1B, ~700MB)
+- Quality for structured extraction: not good enough yet. Small models hallucinate fields, miss values, produce malformed JSON. Haiku-class quality requires 8B+ params, which is too large for browser.
+- Transcription: Whisper base runs well in-browser via Transformers.js (~75MB). Quality is good.
+
+**What to watch:**
+1. **WebGPU adoption in Safari** — once Safari ships, browser ML reaches all users
+2. **Structured output quality in small models** — when a 2B model can reliably fill a JSON schema from messy text, the game changes
+3. **Quantization improvements** — 4-bit and lower quantization makes larger models fit in browser memory
+4. **Anthropic/OpenAI client-side SDKs** — if they ship browser-native inference, our Worker pattern becomes a commodity
+5. **Fine-tuning for health NER** — a purpose-built 500MB model for health entity extraction could outperform a general 2B model
+
+**Action items:**
+- Quarterly check: test latest small models against our voice transcript test set
+- Keep the Worker stateless so it can be removed cleanly if browser ML catches up
+- Design the extraction interface (`transcript → structured JSON`) so the implementation (regex, Worker, browser model) is swappable
+- If/when browser ML is viable: ship it as the default, keep the Worker as fallback for low-end devices
