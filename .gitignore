@@ -17,6 +17,19 @@ __pycache__/
 # Automerge artifacts
 *.automerge
 
+# Node
+node_modules/
+
+# Build output
+app/dist/
+
+# Wrangler
+app/.wrangler/
+
 # OS
 .DS_Store
 .env
+
+# Personal data logs
+daily_habits.csv
+meal_log.csv
