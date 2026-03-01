@@ -387,6 +387,22 @@ class MetricResult:
     cost_to_close: str = ""
     note: str = ""
 
+    def to_dict(self) -> dict:
+        """Serialize to a JSON-compatible dict."""
+        return {
+            "name": self.name,
+            "tier": self.tier,
+            "rank": self.rank,
+            "has_data": self.has_data,
+            "value": self.value,
+            "unit": self.unit,
+            "standing": self.standing.value,
+            "percentile_approx": self.percentile_approx,
+            "coverage_weight": self.coverage_weight,
+            "cost_to_close": self.cost_to_close,
+            "note": self.note,
+        }
+
 
 def percentile_to_standing(pct: float) -> Standing:
     """Map a continuous percentile to a Standing tier."""

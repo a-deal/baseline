@@ -13,6 +13,7 @@ Outputs a JSON dict compatible with the scoring engine's profile fields:
   - zone2_min_per_week (7-day total)
 """
 
+import csv
 import json
 import os
 import statistics
@@ -24,6 +25,24 @@ from pathlib import Path
 from garminconnect import Garmin
 
 TOKEN_DIR = Path(__file__).parent / ".garmin_tokens"
+STRENGTH_LOG = Path(__file__).parent / "strength_log.csv"
+WORKOUTS_JSON = Path(__file__).parent / "garmin_workouts.json"
+DAILY_BURN_JSON = Path(__file__).parent / "garmin_daily_burn.json"
+
+# Map Garmin exercise names → strength_log.csv keys
+EXERCISE_NAME_MAP = {
+    "barbell deadlift": "deadlift",
+    "sumo deadlift": "deadlift",
+    "deadlift": "deadlift",
+    "barbell bench press": "bench_press",
+    "dumbbell bench press": "bench_press",
+    "bench press": "bench_press",
+    "barbell back squat": "squat",
+    "back squat": "squat",
+    "belt squat": "squat",
+    "squat": "squat",
+    "barbell squat": "squat",
+}
 
 
 def get_client():
@@ -49,9 +68,10 @@ def get_client():
     password = os.environ.get("GARMIN_PASSWORD")
 
     if not email or not password:
-        print("Error: Set GARMIN_EMAIL and GARMIN_PASSWORD environment variables.")
-        print("(Only needed for first login — tokens are cached after that.)")
-        sys.exit(1)
+        raise RuntimeError(
+            "Set GARMIN_EMAIL and GARMIN_PASSWORD environment variables. "
+            "(Only needed for first login — tokens are cached after that.)"
+        )
 
     print("Logging in to Garmin Connect...")
     client = Garmin(email, password)
@@ -314,6 +334,211 @@ def pull_daily_series(client, days=90):
     return series
 
 
+def normalize_exercise(name):
+    """Map Garmin exercise name to strength_log.csv key."""
+    lower = name.strip().lower()
+    if lower in EXERCISE_NAME_MAP:
+        return EXERCISE_NAME_MAP[lower]
+    return lower.replace(" ", "_")
+
+
+def pull_workouts(client, days=7):
+    """Pull recent activities and extract workout details."""
+    today = date.today()
+    start = today - timedelta(days=days)
+
+    print(f"\n  Pulling activities from {start} to {today}...")
+    try:
+        activities = client.get_activities_by_date(
+            start.isoformat(), today.isoformat()
+        )
+    except Exception as e:
+        print(f"  Error fetching activities: {e}")
+        return []
+
+    if not activities:
+        print("  No activities found.")
+        return []
+
+    workouts = []
+    for act in activities:
+        activity_id = act.get("activityId")
+        activity_type = act.get("activityType", {})
+        type_key = activity_type.get("typeKey", "unknown") if isinstance(activity_type, dict) else str(activity_type)
+        act_name = act.get("activityName", type_key)
+        start_local = act.get("startTimeLocal", "")
+        act_date = start_local[:10] if start_local else today.isoformat()
+        duration_secs = act.get("duration", 0)
+        calories = act.get("calories", 0)
+        avg_hr = act.get("averageHR")
+
+        workout = {
+            "activity_id": activity_id,
+            "date": act_date,
+            "name": act_name,
+            "type": type_key,
+            "duration_min": round(duration_secs / 60, 1) if duration_secs else 0,
+            "calories": calories,
+            "avg_hr": avg_hr,
+            "strength_sets": [],
+        }
+
+        # Try pulling exercise sets for any activity — type is unreliable
+        if activity_id:
+            try:
+                sets_data = client.get_activity_exercise_sets(activity_id)
+                if not sets_data:
+                    raise ValueError("no data")
+                exercises = sets_data.get("exerciseSets", []) if isinstance(sets_data, dict) else sets_data if isinstance(sets_data, list) else []
+                for s in exercises:
+                    if not isinstance(s, dict):
+                        continue
+                    # Skip rest periods and non-exercise entries
+                    set_type = s.get("setType")
+                    if set_type == "REST":
+                        continue
+                    ex_name = s.get("exerciseName") or s.get("exercises", [{}])[0].get("exerciseName", "") if s.get("exercises") else ""
+                    if not ex_name:
+                        ex_category = s.get("exerciseCategory", "")
+                        ex_name = ex_category if ex_category else "unknown"
+                    weight = s.get("weight")  # grams from Garmin
+                    reps = s.get("repetitionCount") or s.get("reps")
+                    rpe = s.get("rpe")
+
+                    # Convert weight from grams to lbs if present
+                    weight_lbs = None
+                    if weight and isinstance(weight, (int, float)) and weight > 0:
+                        weight_lbs = round(weight / 453.592, 1)
+
+                    workout["strength_sets"].append({
+                        "exercise": ex_name,
+                        "exercise_normalized": normalize_exercise(ex_name),
+                        "weight_lbs": weight_lbs,
+                        "reps": reps,
+                        "rpe": rpe,
+                    })
+                time.sleep(0.3)
+            except Exception:
+                pass  # No exercise set data for this activity
+
+        workouts.append(workout)
+        set_count = len(workout["strength_sets"])
+        if set_count:
+            print(f"    {act_date} {act_name}: {set_count} sets")
+        else:
+            print(f"    {act_date} {act_name} ({type_key})")
+
+    print(f"  Found {len(workouts)} activities.")
+    return workouts
+
+
+def append_strength_log(workouts):
+    """Append new strength sets to strength_log.csv, deduplicating."""
+    # Read existing entries for dedup
+    existing = set()
+    if STRENGTH_LOG.exists():
+        with open(STRENGTH_LOG) as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                key = (row["date"], row["exercise"], row["weight_lbs"], row["reps"])
+                existing.add(key)
+
+    new_rows = []
+    for w in workouts:
+        for s in w["strength_sets"]:
+            # Skip bodyweight exercises (no weight data)
+            if not s["weight_lbs"]:
+                continue
+            row = {
+                "date": w["date"],
+                "exercise": s["exercise_normalized"],
+                "weight_lbs": str(s["weight_lbs"]),
+                "reps": str(s["reps"] or ""),
+                "rpe": str(s["rpe"] or ""),
+                "notes": f"garmin:{w['activity_id']}",
+            }
+            key = (row["date"], row["exercise"], row["weight_lbs"], row["reps"])
+            if key not in existing:
+                new_rows.append(row)
+                existing.add(key)
+
+    if not new_rows:
+        print("\n  No new strength entries to add.")
+        return 0
+
+    # Append to CSV
+    write_header = not STRENGTH_LOG.exists()
+    with open(STRENGTH_LOG, "a", newline="") as f:
+        writer = csv.DictWriter(f, fieldnames=["date", "exercise", "weight_lbs", "reps", "rpe", "notes"])
+        if write_header:
+            writer.writeheader()
+        writer.writerows(new_rows)
+
+    print(f"\n  Added {len(new_rows)} new entries to {STRENGTH_LOG.name}:")
+    for r in new_rows:
+        rpe_str = f" RPE {r['rpe']}" if r["rpe"] else ""
+        print(f"    {r['date']} {r['exercise']} {r['weight_lbs']}lbs x{r['reps']}{rpe_str}")
+    return len(new_rows)
+
+
+def save_workouts_json(workouts):
+    """Save full workout details to garmin_workouts.json."""
+    # Merge with existing data to avoid losing older pulls
+    existing = []
+    if WORKOUTS_JSON.exists():
+        try:
+            with open(WORKOUTS_JSON) as f:
+                existing = json.load(f)
+        except (json.JSONDecodeError, IOError):
+            pass
+
+    existing_ids = {w["activity_id"] for w in existing if "activity_id" in w}
+    for w in workouts:
+        if w["activity_id"] not in existing_ids:
+            existing.append(w)
+
+    # Sort by date descending
+    existing.sort(key=lambda w: w.get("date", ""), reverse=True)
+
+    with open(WORKOUTS_JSON, "w") as f:
+        json.dump(existing, f, indent=2)
+    print(f"  Saved {len(existing)} workouts to {WORKOUTS_JSON.name}")
+
+
+def pull_daily_burn(client, days=7):
+    """Pull daily calorie burn (BMR + active) for recent days."""
+    today = date.today()
+    burns = []
+
+    print(f"\n  Pulling daily calorie burn ({days} days)...")
+    for i in range(days):
+        d = today - timedelta(days=i)
+        d_str = d.isoformat()
+        try:
+            stats = client.get_stats(d_str)
+            if stats:
+                entry = {
+                    "date": d_str,
+                    "bmr": stats.get("bmrKilocalories"),
+                    "active": stats.get("activeKilocalories") or stats.get("wellnessActiveKilocalories"),
+                    "total": stats.get("totalKilocalories") or stats.get("wellnessKilocalories"),
+                }
+                burns.append(entry)
+                total = entry["total"] or 0
+                active = entry["active"] or 0
+                print(f"    {d_str}: {total:.0f} cal total ({active:.0f} active)")
+        except Exception:
+            pass
+        time.sleep(0.3)
+
+    burns.sort(key=lambda x: x["date"])
+
+    with open(DAILY_BURN_JSON, "w") as f:
+        json.dump(burns, f, indent=2)
+    print(f"  Saved to {DAILY_BURN_JSON.name}")
+    return burns
+
+
 def main():
     import argparse
     parser = argparse.ArgumentParser(description="Pull Garmin health metrics")
@@ -321,6 +546,10 @@ def main():
                         help="Also pull 90-day daily RHR + HRV series")
     parser.add_argument("--history-days", type=int, default=90,
                         help="Number of days for history pull (default: 90)")
+    parser.add_argument("--workouts", action="store_true",
+                        help="Pull recent workouts and append strength sets to strength_log.csv")
+    parser.add_argument("--workout-days", type=int, default=7,
+                        help="Number of days to pull workouts (default: 7)")
     args = parser.parse_args()
 
     client = get_client()
@@ -358,6 +587,16 @@ def main():
     missing = [k for k, v in garmin_data.items() if v is None]
     if missing:
         print(f"Missing: {', '.join(missing)}")
+
+    # Daily calorie burn (always pull — feeds nutrition page)
+    pull_daily_burn(client)
+
+    # Workouts
+    if args.workouts:
+        workouts = pull_workouts(client, days=args.workout_days)
+        if workouts:
+            append_strength_log(workouts)
+            save_workouts_json(workouts)
 
     # Historical daily series
     if args.history:
