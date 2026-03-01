@@ -1,7 +1,15 @@
 # Cut Tracker — Agent Handoff
 
 ## What This Is
-A single-file HTML dashboard that tracks Andrew's active cut (caloric deficit) in real time. It shows today's macros remaining-to-hit, meal log, weight trend chart, recovery markers (Garmin), and strength tracking. Served via `python3 -m http.server 8787` from the baseline project root, accessible at `http://localhost:8787/dashboard/cut_tracker.html`.
+A multi-page dashboard that tracks Andrew's active cut (caloric deficit) in real time. Split into two pages:
+- **Monitoring dashboard** (`cut_tracker.html`) — weight trend, KPIs, recovery markers (Garmin), strength tracking, protocol reference, daily check-in
+- **Nutrition page** (`nutrition.html`) — today's macros remaining-to-hit, meal log, daily meal template, daily totals
+
+Both share `shared.css` (styles) and `shared.js` (constants + utilities). Served by a persistent `launchd` agent (`com.baseline.dashboard`) running `python3 -m http.server 8787` from the baseline project root. Always available at:
+- `http://localhost:8787/dashboard/cut_tracker.html`
+- `http://localhost:8787/dashboard/nutrition.html`
+
+No build step — edit any file, refresh browser, see changes immediately.
 
 ## Owner
 Andrew Deal, 35M. Former personal trainer + gym owner. 20 years lifting experience. Android + Garmin (no iOS/Apple Health).
@@ -47,7 +55,6 @@ Andrew logs 4 things daily (~30 seconds):
 ## Tracker UX Preferences
 - **Show remaining-to-hit**, not cumulative eaten. Andrew wants to see "71g protein remaining" not "119g protein eaten." The remaining view tells him exactly what to eat for the rest of the day.
 - Meal log shows eaten meals at full opacity, planned/upcoming meals dimmed (opacity 0.4)
-- Projected EOD row shows what totals look like if the dinner plan is followed
 - Training status in header: "Training Day" or "Rest Day (activity type)"
 
 ## Key Files
@@ -55,14 +62,70 @@ All paths relative to `/Users/adeal/src/baseline/`:
 
 | File | Description |
 |------|-------------|
-| `dashboard/cut_tracker.html` | The dashboard (this is the main artifact) |
+| `dashboard/cut_tracker.html` | Monitoring dashboard — weight, recovery, strength, protocol |
+| `dashboard/nutrition.html` | Nutrition page — macros, meal log, daily template, daily totals |
+| `dashboard/shared.css` | Shared styles — CSS variables, fonts, all component classes |
+| `dashboard/shared.js` | Shared JS — `CUT` constants, `parseCSV`, `dayIndex`, `dayToX`, `weightToY`, `fmtDate`, `todayStr`, `est1RM`, `safeFetch` (all on `window.*`) |
 | `dashboard/CLAUDE.md` | This handoff doc |
-| `weight_log.csv` | Daily weigh-ins (date, weight_lbs, source) — 24 entries from Jan 25 to present |
-| `strength_log.csv` | Lift entries (date, exercise, weight_lbs, reps, rpe, notes) — 3 entries |
+| `weight_log.csv` | Daily weigh-ins (date, weight_lbs, source) |
+| `meal_log.csv` | Meal entries (date, time_of_day, description, protein_g, carbs_g, fat_g, calories) |
+| `strength_log.csv` | Lift entries (date, exercise, weight_lbs, reps, rpe, notes) |
 | `garmin_latest.json` | Latest Garmin metrics snapshot (RHR, HRV, sleep, steps, VO2 max) |
 | `garmin_import.py` | Python script to pull Garmin Connect API data (`python3 garmin_import.py` or `--history` for 90-day series) |
 | `.garmin_tokens/` | OAuth tokens for Garmin API (auto-managed) |
 | `.env` | Garmin credentials (GARMIN_EMAIL, GARMIN_PASSWORD) |
+
+## Page Architecture
+
+### Monitoring dashboard (`cut_tracker.html`)
+- Header with nav link to nutrition page (`Nutrition →`)
+- KPI strip (current weight, 7-day avg, total lost, to target, weekly rate, ETA)
+- Compact nutrition summary strip (one-liner: `119/190g P · 118/180g C · ...`) — links to nutrition page
+- Weight chart (SVG, daily dots + 7-day rolling avg + projection to target)
+- Rate of loss (weekly bars, color-coded by safe zone)
+- Recovery markers (RHR, HRV, sleep duration, sleep regularity) — from `garmin_latest.json`
+- Cut timeline (progress bar with NOW marker)
+- Strength section (DOTS score, lift bars vs all-time, recent lifts table)
+- Protocol reference (medications, nutrition strategy, watch signals)
+- Daily check-in format
+- Fetches: `weight_log.csv`, `meal_log.csv` (summary only), `garmin_latest.json`, `strength_log.csv`
+
+### Nutrition page (`nutrition.html`)
+- Header with nav link back to dashboard (`← Dashboard`)
+- Protein hero (remaining-to-hit, progress bar)
+- Macro grid (carbs/fat/calories remaining)
+- Meal log table (today's meals from `meal_log.csv`)
+- Daily template (4-column Meal 1–4 cards)
+- Daily totals (training day vs rest day)
+- Fetches: `meal_log.csv` only
+
+### Shared utilities (`shared.js`)
+All exported as `window.*` globals (no build step):
+- `CUT` — cut parameters (dates, weights, peaks, macro targets)
+- `LIFT_COLORS` — color map for lift types
+- `parseCSV(text)` — CSV string → array of objects
+- `dayIndex(dateStr)` — days since cut start
+- `dayToX(d)` / `weightToY(w)` — SVG coordinate helpers
+- `todayStr()` — today as YYYY-MM-DD
+- `fmtDate(dateStr)` — "Feb 27" format
+- `est1RM(weight, reps, rpe)` — RPE-based 1RM estimation
+- `safeFetch(url, json)` — fetch with error handling
+
+## Dev Server
+Always running via `launchd` agent `com.baseline.dashboard`:
+- Plist: `~/Library/LaunchAgents/com.baseline.dashboard.plist`
+- Port: 8787 (shared with Baseline web app at `/app/`)
+- Logs: `~/.local/log/baseline-dashboard.log`
+- Auto-starts on login, auto-restarts on crash
+- No hot reload needed — serves from disk on every request, just refresh browser
+- Control: `launchctl unload/load ~/Library/LaunchAgents/com.baseline.dashboard.plist`
+
+## How to Update
+Both pages fetch CSV/JSON data dynamically on page load. To update:
+1. Edit the relevant CSV file (`weight_log.csv`, `meal_log.csv`, `strength_log.csv`) or run `garmin_import.py`
+2. Refresh the browser — new data appears immediately
+
+The weight chart SVG coordinates use: Y-axis 204 lbs at top (y=20) to 188 lbs at bottom (y=240), scale = 13.75px per lb. X-axis spans Jan 25 to Apr 7.
 
 ## Recovery Markers (Garmin, as of Feb 26)
 - RHR: 49.3 bpm (excellent)
@@ -94,14 +157,3 @@ All paths relative to `/Users/adeal/src/baseline/`:
 - The Baseline scoring engine / web app (separate workstream in `app/`)
 - Post-cut planning (reverse diet, lean bulk) — see memory files
 - Peptide/TRT decisions — deferred to mid-2026
-
-## How to Update the Tracker
-The tracker is a single self-contained HTML file. All data is hardcoded inline (no external data fetches). To update for a new day:
-1. Update the date/day in the header
-2. Update the weight trend if new weigh-in provided
-3. Reset the meal log for the new day
-4. Recalculate remaining macros based on meals reported
-5. Update recovery markers if new Garmin data available
-6. Update training status and any lift entries
-
-The weight chart SVG coordinates use: Y-axis 204 lbs at top (y=20) to 188 lbs at bottom (y=240), scale = 13.75px per lb. X-axis spans Jan 25 to Apr 7.
