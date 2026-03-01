@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=512">
+<title>Baseline Logo</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    width: 512px;
+    height: 512px;
+    overflow: hidden;
+    background: #08080a;
+  }
+
+  .logo-wrap {
+    width: 512px;
+    height: 512px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 28px;
+  }
+
+  .mark svg {
+    width: 160px;
+    height: 160px;
+  }
+
+  .wordmark {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 48px;
+    letter-spacing: -0.5px;
+    text-transform: lowercase;
+    color: rgba(240, 240, 240, 0.85);
+    line-height: 1;
+  }
+
+  .wordmark .period {
+    color: #c83c3c;
+  }
+</style>
+</head>
+<body>
+<div class="logo-wrap">
+  <div class="mark">
+    <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <line x1="2" y1="24" x2="34" y2="24" stroke="rgba(255,255,255,0.25)" stroke-width="1.5"/>
+      <polyline points="6,24 12,24 16,20 20,14 24,10" stroke="rgba(255,255,255,0.5)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      <circle cx="24" cy="10" r="3" fill="#c83c3c" opacity="0.9"/>
+      <circle cx="24" cy="10" r="6" fill="#c83c3c" opacity="0.15"/>
+    </svg>
+  </div>
+  <span class="wordmark">baseline<span class="period">.</span></span>
+</div>
+</body>
+</html>

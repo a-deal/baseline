@@ -1,0 +1,189 @@
+import Anthropic from '@anthropic-ai/sdk';
+import { VOICE_EXTRACTION_TOOL, LAB_EXTRACTION_TOOL } from './schema';
+
+interface Env {
+  ANTHROPIC_API_KEY: string;
+  ALLOWED_ORIGIN: string;
+  LOGS: KVNamespace;
+}
+
+// CORS headers for preflight and responses
+function corsHeaders(origin: string, allowedOrigin: string): HeadersInit {
+  // Allow localhost during development
+  const isAllowed =
+    origin === allowedOrigin ||
+    origin.startsWith('http://localhost:') ||
+    origin.startsWith('http://127.0.0.1:');
+
+  return {
+    'Access-Control-Allow-Origin': isAllowed ? origin : '',
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type',
+    'Access-Control-Max-Age': '86400',
+  };
+}
+
+// Log transcript + extraction to KV with 30-day TTL
+async function logExtraction(
+  kv: KVNamespace,
+  endpoint: string,
+  input: string,
+  output: unknown,
+  durationMs: number,
+) {
+  const id = `${endpoint}/${Date.now()}-${crypto.randomUUID().slice(0, 8)}`;
+  await kv.put(
+    id,
+    JSON.stringify({
+      endpoint,
+      input: input.slice(0, 2000), // cap input size
+      output,
+      duration_ms: durationMs,
+      timestamp: new Date().toISOString(),
+    }),
+    { expirationTtl: 30 * 24 * 60 * 60 }, // 30 days
+  );
+}
+
+// Parse voice transcript → structured health data
+async function parseVoice(
+  client: Anthropic,
+  transcript: string,
+): Promise<Record<string, unknown>> {
+  const response = await client.messages.create({
+    model: 'claude-haiku-4-5-20251001',
+    max_tokens: 1024,
+    tools: [VOICE_EXTRACTION_TOOL],
+    tool_choice: { type: 'tool', name: 'extract_health_data' },
+    messages: [
+      {
+        role: 'user',
+        content: `Extract health data from this spoken transcript. The person is describing their health profile for a coverage score assessment.
+
+CRITICAL RULES:
+- Only extract values that are EXPLICITLY and CLEARLY stated as health information.
+- Do NOT infer health data from ambiguous context. If something could be a health value OR something else, do NOT extract it.
+- "30 seconds" is NOT age 30. "5 minutes" is NOT height 5 feet. Numbers must be clearly about health.
+- Explicit negations count: "no medications" → has_medications=false, "no labs" → has_labs=false.
+- If the transcript is not about health at all (e.g., casual conversation, technical discussion), return empty/null for all fields.
+- When in doubt, leave a field null rather than guessing.
+
+Transcript: "${transcript}"`,
+      },
+    ],
+  });
+
+  // Extract the tool use result
+  for (const block of response.content) {
+    if (block.type === 'tool_use' && block.name === 'extract_health_data') {
+      return block.input as Record<string, unknown>;
+    }
+  }
+
+  return {};
+}
+
+// Parse lab report text → structured biomarkers
+async function parseLab(
+  client: Anthropic,
+  text: string,
+  formatHint?: string,
+): Promise<Record<string, unknown>> {
+  const response = await client.messages.create({
+    model: 'claude-sonnet-4-20250514',
+    max_tokens: 1024,
+    tools: [LAB_EXTRACTION_TOOL],
+    tool_choice: { type: 'tool', name: 'extract_lab_results' },
+    messages: [
+      {
+        role: 'user',
+        content: `Extract all biomarker values from this lab report text. The text was extracted from a PDF and may have formatting artifacts.${formatHint ? ` This appears to be from ${formatHint}.` : ''}
+
+Lab report text:
+${text}`,
+      },
+    ],
+  });
+
+  for (const block of response.content) {
+    if (block.type === 'tool_use' && block.name === 'extract_lab_results') {
+      return block.input as Record<string, unknown>;
+    }
+  }
+
+  return {};
+}
+
+export default {
+  async fetch(request: Request, env: Env): Promise<Response> {
+    const origin = request.headers.get('Origin') || '';
+    const headers = corsHeaders(origin, env.ALLOWED_ORIGIN);
+
+    // Handle preflight
+    if (request.method === 'OPTIONS') {
+      return new Response(null, { status: 204, headers });
+    }
+
+    const url = new URL(request.url);
+    const path = url.pathname;
+
+    // Health check — allow GET
+    if (request.method === 'GET' && (path === '/' || path === '/health')) {
+      return Response.json({ status: 'ok', endpoints: ['/parse-voice', '/parse-lab'] }, { headers });
+    }
+
+    if (request.method !== 'POST') {
+      return new Response('Method not allowed', { status: 405, headers });
+    }
+
+    // Validate origin (skip for localhost dev)
+    if (
+      !origin.startsWith('http://localhost:') &&
+      !origin.startsWith('http://127.0.0.1:') &&
+      origin !== env.ALLOWED_ORIGIN
+    ) {
+      return new Response('Forbidden', { status: 403, headers });
+    }
+
+    const client = new Anthropic({ apiKey: env.ANTHROPIC_API_KEY });
+
+    try {
+      if (path === '/parse-voice') {
+        const body = (await request.json()) as { transcript: string };
+        if (!body.transcript?.trim()) {
+          return Response.json({ error: 'transcript required' }, { status: 400, headers });
+        }
+
+        const start = Date.now();
+        const extracted = await parseVoice(client, body.transcript);
+        const duration = Date.now() - start;
+
+        // Log for quality monitoring
+        await logExtraction(env.LOGS, 'parse-voice', body.transcript, extracted, duration);
+
+        return Response.json({ extracted, duration_ms: duration }, { headers });
+      }
+
+      if (path === '/parse-lab') {
+        const body = (await request.json()) as { text: string; format_hint?: string };
+        if (!body.text?.trim()) {
+          return Response.json({ error: 'text required' }, { status: 400, headers });
+        }
+
+        const start = Date.now();
+        const extracted = await parseLab(client, body.text, body.format_hint);
+        const duration = Date.now() - start;
+
+        await logExtraction(env.LOGS, 'parse-lab', body.text, extracted, duration);
+
+        return Response.json({ extracted, duration_ms: duration }, { headers });
+      }
+
+      return Response.json({ error: 'not found' }, { status: 404, headers });
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Unknown error';
+      console.error('Worker error:', message);
+      return Response.json({ error: 'internal error' }, { status: 500, headers });
+    }
+  },
+};
