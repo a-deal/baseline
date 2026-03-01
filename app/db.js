@@ -194,6 +194,29 @@ async function deleteObservationsByImport(importId) {
 }
 
 /**
+ * Delete all observations with a specific source (e.g., 'manual').
+ * Used to make saveManualObservations idempotent — clear before re-adding.
+ */
+async function deleteObservationsBySource(source) {
+  const db = await openDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction('observations', 'readwrite');
+    const store = tx.objectStore('observations');
+    const index = store.index('source');
+    const req = index.openCursor(source);
+    req.onsuccess = (e) => {
+      const cursor = e.target.result;
+      if (cursor) {
+        cursor.delete();
+        cursor.continue();
+      }
+    };
+    tx.oncomplete = () => resolve();
+    tx.onerror = () => reject(tx.error);
+  });
+}
+
+/**
  * Count total observations.
  */
 async function countObservations() {
@@ -385,6 +408,7 @@ export {
   getAllObservations,
   getObservationsByImport,
   deleteObservationsByImport,
+  deleteObservationsBySource,
   countObservations,
   saveImport,
   getImport,

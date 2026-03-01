@@ -292,12 +292,19 @@ function scoreProfile(profile) {
   } else {
     lip = { standing: Standing.UNKNOWN, percentile: null, value: null, unit: '' };
   }
+  // Sub-metric breakdown for composite panels
+  const lipidSubs = [];
+  if (profile.apob != null) { const a = assess(profile.apob, 'apob', demo, 'apob'); lipidSubs.push({ name: 'ApoB', value: profile.apob, unit: 'mg/dL', standing: a.standing, percentile: a.percentile }); }
+  if (profile.ldl_c != null) { const a = assess(profile.ldl_c, 'ldl_c', demo, 'ldl_c'); lipidSubs.push({ name: 'LDL-C', value: profile.ldl_c, unit: 'mg/dL', standing: a.standing, percentile: a.percentile }); }
+  if (profile.hdl_c != null) { const a = assess(profile.hdl_c, 'hdl_c', demo, 'hdl_c'); lipidSubs.push({ name: 'HDL-C', value: profile.hdl_c, unit: 'mg/dL', standing: a.standing, percentile: a.percentile }); }
+  if (profile.triglycerides != null) { const a = assess(profile.triglycerides, 'triglycerides', demo, 'triglycerides'); lipidSubs.push({ name: 'Triglycerides', value: profile.triglycerides, unit: 'mg/dL', standing: a.standing, percentile: a.percentile }); }
   results.push({
     name: 'Lipid Panel + ApoB', tier: 1, rank: 2, hasData: lipidHas || apobHas,
     value: lip.value, unit: lip.unit, standing: lip.standing, percentile: lip.percentile,
     weight: TIER1_WEIGHTS.lipid_apob,
     costToClose: '$30-50/yr (Quest lipid + ApoB add-on)',
     note: !apobHas && lipidHas ? 'ApoB > LDL-C for risk prediction' : '',
+    subMetrics: lipidSubs.length > 1 ? lipidSubs : null,
   });
 
   // --- Metabolic Panel ---
@@ -315,12 +322,17 @@ function scoreProfile(profile) {
   } else {
     met = { standing: Standing.UNKNOWN, percentile: null, value: null, unit: '' };
   }
+  const metSubs = [];
+  if (profile.fasting_glucose != null) { const a = assess(profile.fasting_glucose, 'fasting_glucose', demo, 'fasting_glucose'); metSubs.push({ name: 'Fasting Glucose', value: profile.fasting_glucose, unit: 'mg/dL', standing: a.standing, percentile: a.percentile }); }
+  if (profile.hba1c != null) { const a = assess(profile.hba1c, 'hba1c', demo, 'hba1c'); metSubs.push({ name: 'HbA1c', value: profile.hba1c, unit: '%', standing: a.standing, percentile: a.percentile }); }
+  if (profile.fasting_insulin != null) { const a = assess(profile.fasting_insulin, 'fasting_insulin', demo, 'fasting_insulin'); metSubs.push({ name: 'Fasting Insulin', value: profile.fasting_insulin, unit: 'µIU/mL', standing: a.standing, percentile: a.percentile }); }
   results.push({
     name: 'Metabolic Panel', tier: 1, rank: 3, hasData: metHas,
     value: met.value, unit: met.unit, standing: met.standing, percentile: met.percentile,
     weight: TIER1_WEIGHTS.metabolic,
     costToClose: '$40-60/yr (glucose + HbA1c + insulin)',
     note: profile.fasting_insulin == null && metHas ? 'Fasting insulin catches IR 10-15 yrs before diagnosis' : '',
+    subMetrics: metSubs.length > 1 ? metSubs : null,
   });
 
   // --- Family History ---
@@ -451,12 +463,16 @@ function scoreProfile(profile) {
   } else {
     liver = { standing: Standing.UNKNOWN, percentile: null, value: null, unit: '' };
   }
+  const liverSubs = [];
+  if (profile.alt != null) { const a = assess(profile.alt, 'alt', demo, 'alt'); liverSubs.push({ name: 'ALT', value: profile.alt, unit: 'U/L', standing: a.standing, percentile: a.percentile }); }
+  if (profile.ggt != null) { const a = assess(profile.ggt, 'ggt', demo, 'ggt'); liverSubs.push({ name: 'GGT', value: profile.ggt, unit: 'U/L', standing: a.standing, percentile: a.percentile }); }
   results.push({
     name: 'Liver Enzymes', tier: 2, rank: 14, hasData: liverHas,
     value: liver.value, unit: liver.unit, standing: liver.standing, percentile: liver.percentile,
     weight: TIER2_WEIGHTS.liver,
     costToClose: 'Usually included in standard panels',
     note: !liverHas ? 'GGT independently predicts CV mortality + diabetes' : '',
+    subMetrics: liverSubs.length > 1 ? liverSubs : null,
   });
 
   // --- Tier 2: CBC ---
@@ -468,12 +484,17 @@ function scoreProfile(profile) {
   } else {
     cbc = { standing: Standing.UNKNOWN, percentile: null, value: null, unit: '' };
   }
+  const cbcSubs = [];
+  if (profile.hemoglobin != null) { const a = assess(profile.hemoglobin, 'hemoglobin', demo, 'hemoglobin'); cbcSubs.push({ name: 'Hemoglobin', value: profile.hemoglobin, unit: 'g/dL', standing: a.standing, percentile: a.percentile }); }
+  if (profile.wbc != null) { const a = assess(profile.wbc, 'wbc', demo, 'wbc'); cbcSubs.push({ name: 'WBC', value: profile.wbc, unit: 'K/µL', standing: a.standing, percentile: a.percentile }); }
+  if (profile.platelets != null) { const a = assess(profile.platelets, 'platelets', demo, 'platelets'); cbcSubs.push({ name: 'Platelets', value: profile.platelets, unit: 'K/µL', standing: a.standing, percentile: a.percentile }); }
   results.push({
     name: 'CBC', tier: 2, rank: 15, hasData: cbcHas,
     value: cbc.value, unit: cbc.unit, standing: cbc.standing, percentile: cbc.percentile,
     weight: TIER2_WEIGHTS.cbc,
     costToClose: 'Usually included in standard panels',
     note: !cbcHas ? 'Safety net screening — RDW predicts all-cause mortality' : '',
+    subMetrics: cbcSubs.length > 1 ? cbcSubs : null,
   });
 
   // --- Tier 2: Thyroid (TSH) ---
@@ -507,12 +528,16 @@ function scoreProfile(profile) {
   } else {
     vdFer = { standing: Standing.UNKNOWN, percentile: null, value: null, unit: '' };
   }
+  const vdFerSubs = [];
+  if (profile.vitamin_d != null) { const a = assess(profile.vitamin_d, 'vitamin_d', demo, 'vitamin_d'); vdFerSubs.push({ name: 'Vitamin D', value: profile.vitamin_d, unit: 'ng/mL', standing: a.standing, percentile: a.percentile }); }
+  if (profile.ferritin != null) { const a = assess(profile.ferritin, 'ferritin', demo, 'ferritin'); vdFerSubs.push({ name: 'Ferritin', value: profile.ferritin, unit: 'ng/mL', standing: a.standing, percentile: a.percentile }); }
   results.push({
     name: 'Vitamin D + Ferritin', tier: 2, rank: 17, hasData: vdFerHas,
     value: vdFer.value, unit: vdFer.unit, standing: vdFer.standing, percentile: vdFer.percentile,
     weight: TIER2_WEIGHTS.vitamin_d_ferritin,
     costToClose: '$40-60 baseline lab add-on',
     note: !vdFerHas ? '42% of US adults Vit D deficient. Cheap to fix.' : '',
+    subMetrics: vdFerSubs.length > 1 ? vdFerSubs : null,
   });
 
   // --- Tier 2: Weight Trends ---
@@ -703,6 +728,12 @@ function detectTrend(metric, observations) {
   const rcv = RCV_THRESHOLDS[metric];
   const significant = rcv ? Math.abs(pctChange) >= rcv : Math.abs(pctChange) >= 20;
 
+  // All points chronological (oldest → newest) for sparkline rendering
+  const points = observations
+    .filter(o => o.value != null && o.date)
+    .sort((a, b) => new Date(a.date) - new Date(b.date))
+    .map(o => ({ value: o.value, date: o.date }));
+
   return {
     direction: Math.abs(pctChange) < 2 ? 'stable' : pctChange > 0 ? 'rising' : 'falling',
     pctChange: Math.round(pctChange * 10) / 10,
@@ -711,6 +742,7 @@ function detectTrend(metric, observations) {
     dataPoints: observations.length,
     newest: { value: newest.value, date: newest.date },
     oldest: { value: oldest.value, date: oldest.date },
+    points,
   };
 }
 
@@ -858,6 +890,7 @@ function scoreTimeSeriesProfile(tsProfile) {
     if (cat && metricFreshness[cat]) {
       result.freshness = metricFreshness[cat].freshness;
       result.reliability = metricFreshness[cat].reliability;
+      result.freshnessMetric = metricFreshness[cat].metric; // for UI window lookup
       result.effectiveWeight = result.weight * result.freshness * result.reliability;
     } else {
       result.freshness = result.hasData ? 1.0 : 0;

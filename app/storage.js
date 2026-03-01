@@ -19,6 +19,7 @@ import {
   clearAll,
   requestPersistence,
   generateImportId,
+  deleteObservationsBySource,
 } from './db.js';
 
 const V1_STORAGE_KEY = 'baseline_profile';
@@ -200,12 +201,23 @@ async function saveDemographics(demographics) {
  */
 async function addImportWithObservations(importMeta, observations) {
   const importId = importMeta.id || generateImportId();
-  const taggedObs = observations.map(obs => ({
-    ...obs,
-    import_id: importId,
-  }));
 
-  await addObservations(taggedObs);
+  // Dedup: skip observations that already exist (same metric + date + value)
+  const existing = await getAllObservations();
+  const taggedObs = observations
+    .filter(obs => {
+      const group = existing[obs.metric];
+      if (!group) return true;
+      return !group.some(e => e.date === obs.date && e.value === obs.value);
+    })
+    .map(obs => ({
+      ...obs,
+      import_id: importId,
+    }));
+
+  if (taggedObs.length > 0) {
+    await addObservations(taggedObs);
+  }
 
   await saveImport({
     ...importMeta,
@@ -246,6 +258,10 @@ async function saveManualObservations(fields) {
   }
 
   if (observations.length > 0) {
+    // Clear previous manual observations to prevent duplicate accumulation.
+    // Each "See my score" click replaces manual entries, not appends.
+    await deleteObservationsBySource('manual');
+
     return addImportWithObservations({
       source_type: 'manual',
       filename: null,
