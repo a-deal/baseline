@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Privacy Policy — baseline.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700&family=DM+Sans:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --bg: #08080a;
+  --border: #181820;
+  --text: #f0f0f0;
+  --text-muted: #7a7a88;
+  --text-dim: #3e3e4a;
+  --red: #c83c3c;
+  --font-display: 'Barlow Condensed', sans-serif;
+  --font-body: 'DM Sans', -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+}
+.container {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 64px 24px;
+}
+a { color: var(--red); text-decoration: none; }
+a:hover { text-decoration: underline; }
+.logo {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text);
+  text-transform: lowercase;
+  letter-spacing: -0.02em;
+}
+.logo .period { color: var(--red); }
+h1 {
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  margin: 48px 0 8px;
+}
+h2 {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: var(--text);
+  margin: 36px 0 12px;
+}
+p, li {
+  font-size: 0.92rem;
+  color: var(--text-muted);
+  margin-bottom: 12px;
+}
+ul { padding-left: 20px; }
+li { margin-bottom: 8px; }
+.updated {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-dim);
+}
+footer {
+  margin-top: 64px;
+  padding-top: 32px;
+  border-top: 1px solid var(--border);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-dim);
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+<a href="../" class="logo">baseline<span class="period">.</span></a>
+
+<h1>Privacy Policy</h1>
+<p class="updated">Last updated: March 2, 2026</p>
+
+<h2>What Baseline is</h2>
+<p>Baseline is a personal health analytics tool that scores your health data against US population benchmarks (NHANES). It helps you understand where you stand and what to focus on.</p>
+
+<h2>Your data stays on your device</h2>
+<p>All health data you enter — lab results, vitals, wearable metrics, medications, demographics — is stored locally in your browser using IndexedDB. Your health data is never transmitted to or stored on our servers.</p>
+<ul>
+  <li>No health data is sent to any server, cloud, or third party</li>
+  <li>No account creation required</li>
+  <li>No cookies are used for tracking</li>
+  <li>Clearing your browser data removes all stored health information</li>
+</ul>
+
+<h2>Voice transcription</h2>
+<p>If you use the voice input feature, your speech is processed by your browser's built-in speech recognition (Web Speech API). The transcript may be sent to our AI extraction service to parse health values from natural language. Only the transcript text is sent — no audio is transmitted. Transcripts are not stored after processing.</p>
+
+<h2>Wearable data</h2>
+<p>If you connect a wearable device (Garmin, Apple Health, Oura, or others), data is imported with your explicit consent. Imported data is processed client-side and stored locally in your browser, the same as manually entered data. We do not store, sell, or share your wearable data.</p>
+<ul>
+  <li><strong>Garmin:</strong> If you connect via Garmin Connect, we request read-only access to your daily health summaries (steps, sleep, heart rate, HRV, VO2 max). We do not modify your Garmin data.</li>
+  <li><strong>Apple Health:</strong> Data is imported via file export or iOS bridge. No data is sent to our servers.</li>
+  <li><strong>Oura:</strong> If you connect via Oura, we request read-only access to your sleep, activity, and readiness data.</li>
+</ul>
+
+<h2>What we do collect</h2>
+<p>We may collect anonymous, non-health usage data to improve the product:</p>
+<ul>
+  <li>Page views and feature usage (e.g., which sections are used most)</li>
+  <li>Error logs for debugging (no health data included)</li>
+  <li>Discovery form responses (optional product feedback you choose to submit)</li>
+</ul>
+
+<h2>Third-party services</h2>
+<ul>
+  <li><strong>Formspree:</strong> Handles optional email signup and feedback form submissions</li>
+  <li><strong>Cloudflare Workers:</strong> Powers voice transcript parsing and AI extraction</li>
+  <li><strong>Anthropic (Claude):</strong> Used for AI-assisted data extraction from voice transcripts. Only transcript text is sent, never raw health data</li>
+</ul>
+
+<h2>Data deletion</h2>
+<p>Since your data is stored locally, you control it completely. Use the "Start fresh" option in the app to clear all stored data, or clear your browser's site data for this domain.</p>
+
+<h2>Changes to this policy</h2>
+<p>We may update this policy as the product evolves. The "last updated" date at the top reflects the most recent revision.</p>
+
+<h2>Contact</h2>
+<p>Questions about your privacy? Reach out: <a href="https://x.com/a_e_deal" target="_blank" rel="noopener">@a_e_deal</a></p>
+
+<footer>
+  <a href="../">baseline.</a> &middot; Local-first. Your health data never touches our servers.
+</footer>
+
+</div>
+</body>
+</html>
