@@ -80,11 +80,17 @@ export function renderResults(output, profile) {
 
   // Context — framing line that tells the user what the score means
   const gapCount = output.gaps.length;
+  // R-W3: Classify gaps as wearable vs lab for CTA framing
+  const wearableGapCount = output.gaps.filter(g => /wearable|watch/i.test(g.costToClose || '')).length;
+  const labGapCount = gapCount - wearableGapCount;
+  const mostGapsAreLabs = gapCount > 0 && labGapCount > wearableGapCount;
+
   let ctx = '';
   if (output.coverageScore >= 90) ctx = "Near-complete picture. Keep it fresh.";
   else if (output.coverageScore < 30) ctx = `We're working with a rough sketch — ${gapCount} gaps to fill.`;
   else if (output.coverageScore < 50) ctx = `You're missing more than half the picture. ${gapCount} gaps to close.`;
   else if (output.coverageScore < 70) ctx = `Solid start — ${gapCount} gap${gapCount !== 1 ? 's' : ''} left to sharpen your score.`;
+  else if (gapCount > 0 && mostGapsAreLabs) ctx = `Your wearable data is flowing. ${labGapCount} lab${labGapCount !== 1 ? 's' : ''} left to complete the picture.`;
   else if (gapCount > 0) ctx = `${gapCount} gap${gapCount !== 1 ? 's' : ''} in your coverage.`;
   else ctx = "All metrics covered.";
   document.getElementById('r-context').innerHTML = ctx;
@@ -123,34 +129,7 @@ export function renderResults(output, profile) {
     healthRing.style.display = 'none';
   }
 
-  // Tier bars
-  setTimeout(() => {
-    document.getElementById('r-t1-fill').style.width = output.tier1Pct + '%';
-    document.getElementById('r-t2-fill').style.width = output.tier2Pct + '%';
-  }, 100);
-  document.getElementById('r-t1-pct').textContent = `${output.tier1Pct}%`;
-  document.getElementById('r-t2-pct').textContent = `${output.tier2Pct}%`;
-
-  // Action plan
-  const devices = (profile._devices || []).filter(d => d !== 'none');
-  renderMoves(output.gaps, output.coverageScore, output.results, devices);
-
-  // BP tracker — render into inline slot (inside moves) if available, else standalone
-  const bpInline = document.getElementById('bp-tracker-inline');
-  const bpSlot = document.getElementById('bp-tracker-slot');
-  if (bpInline) {
-    renderBpTracker(bpInline, devices);
-    if (bpSlot) bpSlot.innerHTML = '';
-  } else if (bpSlot) {
-    renderBpTracker(bpSlot, devices);
-  }
-
-  // "Start tracking today" — skip items already merged into gap cards
-  const movesEl = document.getElementById('r-moves');
-  const mergedDevices = movesEl?._mergedTrackingDevices || new Set();
-  renderTrackingToday(profile, mergedDevices);
-
-  // Test coverage heading above tier bars
+  // ACT 1: Tier bars — staggered after rings
   const tierSummary = document.querySelector('.tier-summary');
   if (tierSummary && !tierSummary.querySelector('.tier-summary-heading')) {
     const heading = document.createElement('div');
@@ -158,6 +137,28 @@ export function renderResults(output, profile) {
     heading.textContent = 'Test coverage';
     tierSummary.prepend(heading);
   }
+  setTimeout(() => {
+    document.getElementById('r-t1-fill').style.width = output.tier1Pct + '%';
+    document.getElementById('r-t2-fill').style.width = output.tier2Pct + '%';
+  }, 600);
+  document.getElementById('r-t1-pct').textContent = `${output.tier1Pct}%`;
+  document.getElementById('r-t2-pct').textContent = `${output.tier2Pct}%`;
+
+  // ACT 1: Health flags (rendered into dedicated slot, above moves)
+  const results_ = output.results || [];
+  renderHealthFlags(results_, document.getElementById('health-flags-slot'));
+
+  // ACT 2: Action plan (moves)
+  const devices = (profile._devices || []).filter(d => d !== 'none');
+  renderMoves(output.gaps, output.coverageScore, output.results, devices);
+
+  // BP tracker — only render inline (inside moves) when BP is a top-3 gap
+  const bpInline = document.getElementById('bp-tracker-inline');
+  if (bpInline) {
+    renderBpTracker(bpInline, devices);
+  }
+  const bpSlot = document.getElementById('bp-tracker-slot');
+  if (bpSlot) bpSlot.innerHTML = '';
 
   // Metric tables
   renderTier('r-tier1', 'Core tests', output.results.filter(r => r.tier === 1));
@@ -336,9 +337,63 @@ function equipmentAwareCost(gap, deviceSet) {
   return gap.costToClose;
 }
 
+/** Determine gap category for tag display */
+function gapCategory(gap) {
+  const cost = (gap.costToClose || '').toLowerCase();
+  const name = (gap.name || '').toLowerCase();
+  if (/wearable|watch|garmin|oura|apple/i.test(cost)) return 'wearable';
+  if (/sleep|hrv|heart rate variab|resting.hr|steps|vo2/i.test(name)) return 'wearable';
+  if (/cuff|scale|tape|measure/i.test(cost)) return 'equipment';
+  if (/phq|zone.*2|cardio|depression/i.test(name)) return 'lifestyle';
+  if (/\$|lab|panel|test|blood/i.test(cost)) return 'lab';
+  return 'lab';
+}
+
+const CATEGORY_LABELS = { lab: 'Lab', wearable: 'Wearable', equipment: 'Equipment', lifestyle: 'Lifestyle' };
+
+/** ACT 1: Health flags — rendered above the moves section */
+function renderHealthFlags(results, container) {
+  if (!container) return;
+  const flags = results.filter(r =>
+    r.hasData && (r.standing === 'Below Average' || r.standing === 'Concerning')
+  );
+
+  if (flags.length > 0) {
+    const concerning = flags.filter(r => r.standing === 'Concerning').length;
+    const watching = flags.length - concerning;
+    const summaryParts = [];
+    if (concerning > 0) summaryParts.push(`${concerning} flagged`);
+    if (watching > 0) summaryParts.push(`${watching} to watch`);
+
+    let html = `<div class="health-flags-act1">`;
+    html += `<div class="moves-section-label">Health <span class="moves-section-meta">${summaryParts.join(', ')}</span></div>`;
+    flags.forEach(r => {
+      const color = r.standing === 'Concerning' ? 'var(--red)' : '#e08850';
+      html += `<div class="move-card health-flag-card">
+        <div class="move-body">
+          <h4>${r.name}</h4>
+          <p class="move-detail">${r.standing === 'Concerning' ? 'Needs attention' : 'Room to improve'} — ${ordinal(r.percentile)} percentile${r.value != null ? ` (${r.value})` : ''}</p>
+        </div>
+        <div class="move-tag" style="background:${color}20;color:${color};">${r.standing === 'Concerning' ? 'Flag' : 'Watch'}</div>
+      </div>`;
+    });
+    html += `</div>`;
+    container.innerHTML = html;
+  } else {
+    const assessedCount = results.filter(r => r.hasData && r.percentile != null).length;
+    if (assessedCount >= 5) {
+      container.innerHTML = `<div class="health-flags-act1">
+        <div class="moves-section-label">Health</div>
+        <p style="color:var(--text-muted);font-size:0.88rem;margin:8px 0 4px;">All clear — ${assessedCount} metrics assessed, no flags.</p>
+      </div>`;
+    } else {
+      container.innerHTML = '';
+    }
+  }
+}
+
 export function renderMoves(gaps, currentScore, results, devices) {
   const el = document.getElementById('r-moves');
-  const results_ = results || [];
   const deviceSet = new Set(devices || []);
 
   const top3 = gaps.slice(0, 3);
@@ -346,23 +401,24 @@ export function renderMoves(gaps, currentScore, results, devices) {
   const top3Pts = top3.reduce((sum, g) => sum + g.weight, 0);
   const projectedScore = Math.min(100, currentScore + Math.round(top3Pts / 85 * 100));
 
-  const healthFlags = results_.filter(r =>
-    r.hasData && (r.standing === 'Below Average' || r.standing === 'Concerning')
-  );
-
-  // Track which tracking device keys got merged into gap cards
-  const mergedTrackingDevices = new Set();
-
   let html = `<div class="action-plan">`;
   html += `<h3>Your next moves</h3>`;
 
   if (gaps.length > 0) {
+    // Estimate total cost from top-3 costToClose strings
+    let totalCost = 0;
+    top3.forEach(g => {
+      const m = (g.costToClose || '').match(/\$(\d+)/);
+      if (m) totalCost += parseInt(m[1], 10);
+    });
+    const costNote = totalCost > 0 ? ` · ~$${totalCost}` : '';
+
     html += `<div class="moves-section-label">Coverage <span class="moves-section-meta">${gaps.length} gap${gaps.length !== 1 ? 's' : ''}</span></div>`;
     html += `<div class="moves-projection">
       <span class="proj-current">${currentScore}%</span>
       <span class="proj-arrow">&rarr;</span>
       <span class="proj-target">${projectedScore}%</span>
-      <span class="proj-label">projected with these ${top3.length}</span>
+      <span class="proj-label">projected with these ${top3.length}${costNote}</span>
     </div>`;
 
     top3.forEach((g, i) => {
@@ -371,19 +427,20 @@ export function renderMoves(gaps, currentScore, results, devices) {
       const trackingKey = gapTrackingDevice(g);
       const trackingSugg = trackingKey ? TRACKING_SUGGESTIONS[trackingKey] : null;
       const hasDevice = trackingKey && deviceSet.has(trackingKey);
+      const cat = gapCategory(g);
 
       // Inline tracking instruction when user has the device
       let trackingInline = '';
       if (hasDevice && trackingSugg) {
-        mergedTrackingDevices.add(trackingKey);
         trackingInline = `<p class="move-tracking">${trackingSugg.instruction}</p>`;
       }
 
       html += `<div class="move-card">
         <div class="move-num">${i + 1}</div>
         <div class="move-body">
+          <span class="move-category move-cat-${cat}">${CATEGORY_LABELS[cat]}</span>
           <h4>${g.name}</h4>
-          <p class="move-detail">${g.note ? `<strong>${g.note}</strong> ` : ''}${detail}</p>
+          <p class="move-detail">${detail}</p>
           ${trackingInline}
         </div>
         <div class="move-tag">+${g.weight} pts</div>
@@ -395,27 +452,18 @@ export function renderMoves(gaps, currentScore, results, devices) {
       }
     });
 
-    // Fold line — signals "you got the snapshot, details below are optional"
-    if (remaining.length > 0 || healthFlags.length > 0) {
-      html += `<div class="moves-fold">
-        <div class="moves-fold-line"></div>
-        <div class="moves-fold-text">That's your snapshot. Details below.</div>
-      </div>`;
-    }
-
     if (remaining.length > 0) {
       const totalRemaining = remaining.reduce((s, g) => s + g.weight, 0);
       const rgId = 'remaining-gaps-toggle';
-      html += `<div class="remaining-gaps" id="${rgId}">`;
+      html += `<div class="remaining-gaps${remaining.length <= 5 ? ' open' : ''}" id="${rgId}">`;
       html += `<div class="remaining-gaps-label" onclick="document.getElementById('${rgId}').classList.toggle('open')">Remaining ${remaining.length} gaps · +${totalRemaining} pts</div>`;
       html += `<div class="remaining-gap-rows"><div>`;
       remaining.forEach(g => {
         const detail = equipmentAwareCost(g, deviceSet);
         const needsEquip = detail !== g.costToClose;
-        const trackingKey = gapTrackingDevice(g);
-        if (trackingKey && deviceSet.has(trackingKey)) mergedTrackingDevices.add(trackingKey);
+        const rCat = gapCategory(g);
         html += `<div class="remaining-gap-row">
-          <span>${g.name}${needsEquip ? `<span class="remaining-gap-equip">${detail}</span>` : ''}</span>
+          <span><span class="move-category move-cat-${rCat}" style="font-size:0.6rem;padding:1px 6px;vertical-align:middle;margin-right:6px;">${CATEGORY_LABELS[rCat]}</span>${g.name}${needsEquip ? `<span class="remaining-gap-equip">${detail}</span>` : ''}</span>
           <span class="gap-pts">+${g.weight}</span>
         </div>`;
       });
@@ -426,37 +474,8 @@ export function renderMoves(gaps, currentScore, results, devices) {
     html += `<p style="color:var(--text-muted);font-size:0.88rem;margin:8px 0 20px;">Fully covered — all 20 metrics have data.</p>`;
   }
 
-  if (healthFlags.length > 0) {
-    html += `<div class="moves-divider"></div>`;
-    const hfId = 'health-flags-toggle';
-    const concerning = healthFlags.filter(r => r.standing === 'Concerning').length;
-    const summaryParts = [];
-    if (concerning > 0) summaryParts.push(`${concerning} flagged`);
-    const watching = healthFlags.length - concerning;
-    if (watching > 0) summaryParts.push(`${watching} to watch`);
-    html += `<div class="remaining-gaps" id="${hfId}">`;
-    html += `<div class="remaining-gaps-label" onclick="document.getElementById('${hfId}').classList.toggle('open')">Health · ${summaryParts.join(', ')}</div>`;
-    html += `<div class="remaining-gap-rows"><div>`;
-
-    healthFlags.forEach(r => {
-      const color = r.standing === 'Concerning' ? 'var(--red)' : '#e08850';
-      html += `<div class="move-card health-flag-card">
-        <div class="move-body">
-          <h4>${r.name}</h4>
-          <p class="move-detail">${r.standing === 'Concerning' ? 'Needs attention' : 'Room to improve'} — ${ordinal(r.percentile)} percentile${r.value != null ? ` (${r.value})` : ''}</p>
-        </div>
-        <div class="move-tag" style="background:${color}20;color:${color};">${r.standing === 'Concerning' ? 'Flag' : 'Watch'}</div>
-      </div>`;
-    });
-
-    html += `</div></div></div>`;
-  }
-
   html += `</div>`;
   el.innerHTML = html;
-
-  // Store merged set for renderTrackingToday to reference
-  el._mergedTrackingDevices = mergedTrackingDevices;
 }
 
 // ── "Start tracking today" — personalized from equipment selections ──
@@ -478,31 +497,6 @@ const TRACKING_SUGGESTIONS = {
   },
 };
 
-function renderTrackingToday(profile, mergedDevices) {
-  const el = document.getElementById('tracking-today');
-  if (!el) return;
-  const devices = (profile._devices || []).filter(d => d !== 'none');
-  // Only show tracking items not already merged into gap cards
-  const unmerged = devices.filter(d => !mergedDevices?.has(d));
-  if (unmerged.length === 0) { el.innerHTML = ''; return; }
-
-  let html = '<div class="mb-8">';
-  html += '<div class="font-mono text-[0.72rem] font-medium text-text-dim tracking-wider uppercase mb-5">Start tracking today</div>';
-  html += '<div class="flex flex-col gap-3">';
-  for (const d of unmerged) {
-    const s = TRACKING_SUGGESTIONS[d];
-    if (!s) continue;
-    html += `<div class="tracking-suggestion-card">
-      <div class="text-xl opacity-40 shrink-0">${s.icon}</div>
-      <div>
-        <div class="text-[0.88rem] text-text-muted font-medium">${s.name}</div>
-        <div class="text-[0.8rem] text-text-dim leading-relaxed mt-0.5">${s.instruction}</div>
-      </div>
-    </div>`;
-  }
-  html += '</div></div>';
-  el.innerHTML = html;
-}
 
 // ── Insights carousel ──
 const INSIGHTS = [
@@ -584,13 +578,15 @@ export function renderInsights(output, profile) {
   const shown = scored.slice(0, 6);
 
   const insId = 'insights-toggle';
-  let html = `<div class="remaining-gaps" id="${insId}">`;
+  let html = `<div class="remaining-gaps open" id="${insId}">`;
   html += `<div class="remaining-gaps-label" onclick="document.getElementById('${insId}').classList.toggle('open')">The evidence · ${shown.length} studies</div>`;
   html += `<div class="remaining-gap-rows"><div>`;
   html += `<div class="insights-grid">`;
   shown.forEach(ins => {
+    const relevanceLabel = ins.relevance === 2 ? 'Closes a gap' : ins.relevance === 1 ? 'Matches your data' : '';
+    const relevanceBadge = relevanceLabel ? `<span class="insight-relevance insight-rel-${ins.relevance === 2 ? 'gap' : 'match'}">${relevanceLabel}</span>` : '';
     html += `<div class="insight-card">
-      <div class="insight-tag">${ins.tag}</div>
+      <div class="insight-tag">${ins.tag}${relevanceBadge}</div>
       <div class="insight-stat">${ins.stat}</div>
       <div class="insight-body">${ins.body}</div>
       <div class="insight-source">${ins.source}</div>

@@ -6,6 +6,7 @@
  */
 
 import { getPercentile } from './nhanes.js';
+import { getDeviceCapabilities } from './src/device-db.js';
 
 // ---------------------------------------------------------------------------
 // Standings
@@ -131,6 +132,10 @@ const CUTOFF_TABLES = {
     lower_is_better: true,
     cutoffs: { universal: [30, 75, 125, 200] },
   },
+  sleep_duration: {
+    lower_is_better: false,
+    cutoffs: { universal: [6.0, 7.0, 8.0, 9.5] },
+  },
   sleep_regularity: {
     lower_is_better: true,
     cutoffs: { universal: [15, 30, 45, 60] },
@@ -237,7 +242,8 @@ const TIER1_WEIGHTS = {
   lipid_apob: 8,
   metabolic: 8,
   family_history: 6,
-  sleep: 5,
+  sleep_duration: 3,
+  sleep_regularity: 2,
   steps: 4,
   resting_hr: 4,
   waist: 5,
@@ -259,12 +265,62 @@ const TIER2_WEIGHTS = {
 };
 
 // ---------------------------------------------------------------------------
+// Device-aware costToClose helper
+// ---------------------------------------------------------------------------
+
+function deviceAwareCost(metricKey, defaultCost, deviceCaps, modelName, hasData) {
+  if (!deviceCaps) return defaultCost;
+
+  switch (metricKey) {
+    case 'sleep_duration':
+      if (deviceCaps.sleep_duration) return hasData ? `Covered by your ${modelName}` : `Available from your ${modelName}`;
+      return `Not available from ${modelName} — try a different export method`;
+
+    case 'sleep_regularity':
+      if (deviceCaps.sleep_stages) return `Computable from your ${modelName} sleep data — needs multi-night export`;
+      return `Not available from ${modelName} — requires raw sleep stage timestamps`;
+
+    case 'hrv':
+      if (deviceCaps.hrv) return hasData ? `Covered by your ${modelName}` : `Available from your ${modelName}`;
+      return `${modelName} doesn't support HRV export. Consider a model with HRV support.`;
+
+    case 'vo2max':
+      if (deviceCaps.vo2max) return hasData ? `Covered by your ${modelName}` : `Available from your ${modelName}`;
+      return `Not available from ${modelName}. Requires GPS-enabled outdoor workouts on a compatible device.`;
+
+    case 'steps':
+      if (deviceCaps.steps) return hasData ? `Covered by your ${modelName}` : `Available from your ${modelName}`;
+      return defaultCost;
+
+    case 'resting_hr':
+      if (deviceCaps.resting_hr) return hasData ? `Covered by your ${modelName}` : `Available from your ${modelName}`;
+      return defaultCost;
+
+    case 'zone2':
+      if (deviceCaps.resting_hr) return hasData ? `Covered by your ${modelName}` : `Available from your ${modelName} with HR zones`;
+      return defaultCost;
+
+    default:
+      return defaultCost;
+  }
+}
+
+// ---------------------------------------------------------------------------
 // Score a profile — full port of score_profile()
 // ---------------------------------------------------------------------------
 
 function scoreProfile(profile) {
   const demo = profile.demographics;
   const results = [];
+
+  // Read selected device for device-aware gap card recommendations
+  const selectedDevice = typeof window !== 'undefined' && window.__selectedDevice;
+  const deviceCaps = selectedDevice
+    ? getDeviceCapabilities(selectedDevice.brand, selectedDevice.model)
+    : null;
+  const modelName = selectedDevice
+    ? (selectedDevice.model || { apple: 'Apple Watch', garmin: 'Garmin', oura: 'Oura', fitbit: 'Fitbit', polar: 'Polar', whoop: 'Whoop', samsung: 'Samsung' }[selectedDevice.brand] || 'your device')
+    : null;
 
   // --- Blood Pressure ---
   const bpHas = profile.systolic != null;
@@ -345,27 +401,39 @@ function scoreProfile(profile) {
     note: !fhHas ? 'One-time. Parental CVD <60 doubles risk.' : '',
   });
 
-  // --- Sleep ---
-  const sleepHas = profile.sleep_regularity_stddev != null || profile.sleep_duration_avg != null;
-  const sleep = assess(profile.sleep_regularity_stddev, 'sleep_regularity', demo, null);
+  // --- Sleep Duration ---
+  const sleepDurHas = profile.sleep_duration_avg != null;
+  const sleepDur = assess(profile.sleep_duration_avg, 'sleep_duration', demo, null);
   results.push({
-    name: 'Sleep Regularity', tier: 1, rank: 5, hasData: sleepHas,
+    name: 'Sleep Duration', tier: 1, rank: 5, hasData: sleepDurHas,
+    value: profile.sleep_duration_avg, unit: 'hrs/night',
+    standing: sleepDur.standing, percentile: sleepDur.percentile,
+    weight: TIER1_WEIGHTS.sleep_duration,
+    costToClose: deviceAwareCost('sleep_duration', 'Free with any wearable', deviceCaps, modelName, sleepDurHas),
+    note: !sleepDurHas ? 'Average nightly sleep hours' : '',
+  });
+
+  // --- Sleep Regularity ---
+  const sleepRegHas = profile.sleep_regularity_stddev != null;
+  const sleepReg = assess(profile.sleep_regularity_stddev, 'sleep_regularity', demo, null);
+  results.push({
+    name: 'Sleep Regularity', tier: 1, rank: 6, hasData: sleepRegHas,
     value: profile.sleep_regularity_stddev, unit: 'min std dev',
-    standing: sleep.standing, percentile: sleep.percentile,
-    weight: TIER1_WEIGHTS.sleep,
-    costToClose: 'Free with any wearable',
-    note: !sleepHas ? 'Regularity predicts mortality > duration' : '',
+    standing: sleepReg.standing, percentile: sleepReg.percentile,
+    weight: TIER1_WEIGHTS.sleep_regularity,
+    costToClose: deviceAwareCost('sleep_regularity', 'Computed from 7-14 nights of raw sleep data', deviceCaps, modelName, sleepRegHas),
+    note: !sleepRegHas ? 'Regularity predicts mortality > duration' : '',
   });
 
   // --- Daily Steps ---
   const stepsHas = profile.daily_steps_avg != null;
   const steps = assess(profile.daily_steps_avg, 'daily_steps', demo, null);
   results.push({
-    name: 'Daily Steps', tier: 1, rank: 6, hasData: stepsHas,
+    name: 'Daily Steps', tier: 1, rank: 7, hasData: stepsHas,
     value: profile.daily_steps_avg, unit: 'steps/day',
     standing: steps.standing, percentile: steps.percentile,
     weight: TIER1_WEIGHTS.steps,
-    costToClose: 'Free with phone',
+    costToClose: deviceAwareCost('steps', 'Free with phone', deviceCaps, modelName, stepsHas),
     note: !stepsHas ? 'Each +1K steps = ~15% lower mortality' : '',
   });
 
@@ -373,11 +441,11 @@ function scoreProfile(profile) {
   const rhrHas = profile.resting_hr != null;
   const rhr = assess(profile.resting_hr, 'rhr', demo, 'rhr');
   results.push({
-    name: 'Resting Heart Rate', tier: 1, rank: 7, hasData: rhrHas,
+    name: 'Resting Heart Rate', tier: 1, rank: 8, hasData: rhrHas,
     value: profile.resting_hr, unit: 'bpm',
     standing: rhr.standing, percentile: rhr.percentile,
     weight: TIER1_WEIGHTS.resting_hr,
-    costToClose: 'Free with wearable',
+    costToClose: deviceAwareCost('resting_hr', 'Free with wearable', deviceCaps, modelName, rhrHas),
     note: '',
   });
 
@@ -385,7 +453,7 @@ function scoreProfile(profile) {
   const waistHas = profile.waist_circumference != null;
   const waist = assess(profile.waist_circumference, 'waist', demo, 'waist');
   results.push({
-    name: 'Waist Circumference', tier: 1, rank: 8, hasData: waistHas,
+    name: 'Waist Circumference', tier: 1, rank: 9, hasData: waistHas,
     value: profile.waist_circumference, unit: 'inches',
     standing: waist.standing, percentile: waist.percentile,
     weight: TIER1_WEIGHTS.waist,
@@ -396,7 +464,7 @@ function scoreProfile(profile) {
   // --- Medication List ---
   const medsHas = profile.has_medication_list != null;
   results.push({
-    name: 'Medication List', tier: 1, rank: 9, hasData: medsHas,
+    name: 'Medication List', tier: 1, rank: 10, hasData: medsHas,
     value: null, unit: '', standing: medsHas ? Standing.GOOD : Standing.UNKNOWN, percentile: null,
     weight: TIER1_WEIGHTS.medications,
     costToClose: 'Free — 5 min entry',
@@ -407,7 +475,7 @@ function scoreProfile(profile) {
   const lpaHas = profile.lpa != null;
   const lpa = assess(profile.lpa, 'lpa', demo, 'lpa');
   results.push({
-    name: 'Lp(a)', tier: 1, rank: 10, hasData: lpaHas,
+    name: 'Lp(a)', tier: 1, rank: 11, hasData: lpaHas,
     value: profile.lpa, unit: 'nmol/L',
     standing: lpa.standing, percentile: lpa.percentile,
     weight: TIER1_WEIGHTS.lpa,
@@ -419,11 +487,11 @@ function scoreProfile(profile) {
   const vo2Has = profile.vo2_max != null;
   const vo2 = assess(profile.vo2_max, 'vo2_max', demo, null);
   results.push({
-    name: 'VO2 Max', tier: 2, rank: 11, hasData: vo2Has,
+    name: 'VO2 Max', tier: 2, rank: 12, hasData: vo2Has,
     value: profile.vo2_max, unit: 'mL/kg/min',
     standing: vo2.standing, percentile: vo2.percentile,
     weight: TIER2_WEIGHTS.vo2_max,
-    costToClose: 'Free with Garmin/Apple Watch (estimate)',
+    costToClose: deviceAwareCost('vo2max', 'Free with Garmin or Apple Watch (estimate)', deviceCaps, modelName, vo2Has),
     note: !vo2Has ? 'Strongest modifiable predictor of all-cause mortality' : '',
   });
 
@@ -431,11 +499,11 @@ function scoreProfile(profile) {
   const hrvHas = profile.hrv_rmssd_avg != null;
   const hrv = assess(profile.hrv_rmssd_avg, 'hrv_rmssd', demo, null);
   results.push({
-    name: 'HRV (7-day avg)', tier: 2, rank: 12, hasData: hrvHas,
+    name: 'HRV (7-day avg)', tier: 2, rank: 13, hasData: hrvHas,
     value: profile.hrv_rmssd_avg, unit: 'ms RMSSD',
     standing: hrv.standing, percentile: hrv.percentile,
     weight: TIER2_WEIGHTS.hrv,
-    costToClose: 'Free with wearable',
+    costToClose: deviceAwareCost('hrv', 'Free with most wearables', deviceCaps, modelName, hrvHas),
     note: !hrvHas ? 'Use 7-day rolling avg, not single readings' : '',
   });
 
@@ -443,7 +511,7 @@ function scoreProfile(profile) {
   const crpHas = profile.hscrp != null;
   const crp = assess(profile.hscrp, 'hscrp', demo, 'hscrp');
   results.push({
-    name: 'hs-CRP', tier: 2, rank: 13, hasData: crpHas,
+    name: 'hs-CRP', tier: 2, rank: 14, hasData: crpHas,
     value: profile.hscrp, unit: 'mg/L',
     standing: crp.standing, percentile: crp.percentile,
     weight: TIER2_WEIGHTS.hscrp,
@@ -467,7 +535,7 @@ function scoreProfile(profile) {
   if (profile.alt != null) { const a = assess(profile.alt, 'alt', demo, 'alt'); liverSubs.push({ name: 'ALT', value: profile.alt, unit: 'U/L', standing: a.standing, percentile: a.percentile }); }
   if (profile.ggt != null) { const a = assess(profile.ggt, 'ggt', demo, 'ggt'); liverSubs.push({ name: 'GGT', value: profile.ggt, unit: 'U/L', standing: a.standing, percentile: a.percentile }); }
   results.push({
-    name: 'Liver Enzymes', tier: 2, rank: 14, hasData: liverHas,
+    name: 'Liver Enzymes', tier: 2, rank: 15, hasData: liverHas,
     value: liver.value, unit: liver.unit, standing: liver.standing, percentile: liver.percentile,
     weight: TIER2_WEIGHTS.liver,
     costToClose: 'Usually included in standard panels',
@@ -489,7 +557,7 @@ function scoreProfile(profile) {
   if (profile.wbc != null) { const a = assess(profile.wbc, 'wbc', demo, 'wbc'); cbcSubs.push({ name: 'WBC', value: profile.wbc, unit: 'K/µL', standing: a.standing, percentile: a.percentile }); }
   if (profile.platelets != null) { const a = assess(profile.platelets, 'platelets', demo, 'platelets'); cbcSubs.push({ name: 'Platelets', value: profile.platelets, unit: 'K/µL', standing: a.standing, percentile: a.percentile }); }
   results.push({
-    name: 'CBC', tier: 2, rank: 15, hasData: cbcHas,
+    name: 'CBC', tier: 2, rank: 16, hasData: cbcHas,
     value: cbc.value, unit: cbc.unit, standing: cbc.standing, percentile: cbc.percentile,
     weight: TIER2_WEIGHTS.cbc,
     costToClose: 'Usually included in standard panels',
@@ -508,7 +576,7 @@ function scoreProfile(profile) {
     thyroid = assess(profile.tsh, 'tsh', demo, 'tsh');
   }
   results.push({
-    name: 'Thyroid (TSH)', tier: 2, rank: 16, hasData: thyroidHas,
+    name: 'Thyroid (TSH)', tier: 2, rank: 17, hasData: thyroidHas,
     value: profile.tsh, unit: 'mIU/L',
     standing: thyroid.standing, percentile: thyroid.percentile,
     weight: TIER2_WEIGHTS.thyroid,
@@ -532,7 +600,7 @@ function scoreProfile(profile) {
   if (profile.vitamin_d != null) { const a = assess(profile.vitamin_d, 'vitamin_d', demo, 'vitamin_d'); vdFerSubs.push({ name: 'Vitamin D', value: profile.vitamin_d, unit: 'ng/mL', standing: a.standing, percentile: a.percentile }); }
   if (profile.ferritin != null) { const a = assess(profile.ferritin, 'ferritin', demo, 'ferritin'); vdFerSubs.push({ name: 'Ferritin', value: profile.ferritin, unit: 'ng/mL', standing: a.standing, percentile: a.percentile }); }
   results.push({
-    name: 'Vitamin D + Ferritin', tier: 2, rank: 17, hasData: vdFerHas,
+    name: 'Vitamin D + Ferritin', tier: 2, rank: 18, hasData: vdFerHas,
     value: vdFer.value, unit: vdFer.unit, standing: vdFer.standing, percentile: vdFer.percentile,
     weight: TIER2_WEIGHTS.vitamin_d_ferritin,
     costToClose: '$40-60 baseline lab add-on',
@@ -543,7 +611,7 @@ function scoreProfile(profile) {
   // --- Tier 2: Weight Trends ---
   const weightHas = profile.weight_lbs != null;
   results.push({
-    name: 'Weight Trends', tier: 2, rank: 18, hasData: weightHas,
+    name: 'Weight Trends', tier: 2, rank: 19, hasData: weightHas,
     value: null, unit: '', standing: weightHas ? Standing.GOOD : Standing.UNKNOWN, percentile: null,
     weight: TIER2_WEIGHTS.weight_trends,
     costToClose: '$20-50 (smart scale)',
@@ -563,7 +631,7 @@ function scoreProfile(profile) {
     else              { phq9Standing = Standing.CONCERNING;  phq9Pct = 5; }
   }
   results.push({
-    name: 'PHQ-9 (Depression)', tier: 2, rank: 19, hasData: phq9Has,
+    name: 'PHQ-9 (Depression)', tier: 2, rank: 20, hasData: phq9Has,
     value: phq9Has ? profile.phq9_score : null, unit: '/27',
     standing: phq9Standing, percentile: phq9Pct,
     weight: TIER2_WEIGHTS.phq9,
@@ -574,10 +642,10 @@ function scoreProfile(profile) {
   // --- Tier 2: Zone 2 Cardio ---
   const z2Has = profile.zone2_min_per_week != null;
   results.push({
-    name: 'Zone 2 Cardio', tier: 2, rank: 20, hasData: z2Has,
+    name: 'Zone 2 Cardio', tier: 2, rank: 21, hasData: z2Has,
     value: null, unit: '', standing: z2Has ? Standing.GOOD : Standing.UNKNOWN, percentile: null,
     weight: TIER2_WEIGHTS.zone2,
-    costToClose: 'Free with HR wearable',
+    costToClose: deviceAwareCost('zone2', 'Free with HR wearable', deviceCaps, modelName, z2Has),
     note: !z2Has ? '150-300 min/week = largest mortality reduction' : '',
   });
 
@@ -767,7 +835,7 @@ const METRIC_TO_CATEGORY = {
   apob: 'lipid_apob', ldl_c: 'lipid_apob', hdl_c: 'lipid_apob', triglycerides: 'lipid_apob',
   fasting_glucose: 'metabolic', hba1c: 'metabolic', fasting_insulin: 'metabolic',
   has_family_history: 'family_history',
-  sleep_duration_avg: 'sleep', sleep_regularity_stddev: 'sleep',
+  sleep_duration_avg: 'sleep_duration', sleep_regularity_stddev: 'sleep_regularity',
   daily_steps_avg: 'steps',
   resting_hr: 'resting_hr',
   waist_circumference: 'waist',
@@ -879,7 +947,8 @@ function scoreTimeSeriesProfile(tsProfile) {
       'Lipid Panel + ApoB': 'lipid_apob',
       'Metabolic Panel': 'metabolic',
       'Family History': 'family_history',
-      'Sleep Regularity': 'sleep',
+      'Sleep Duration': 'sleep_duration',
+      'Sleep Regularity': 'sleep_regularity',
       'Daily Steps': 'steps',
       'Resting Heart Rate': 'resting_hr',
       'Waist Circumference': 'waist',

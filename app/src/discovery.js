@@ -2,7 +2,7 @@
 // Stores responses locally in IndexedDB, sends to Formspree for collection
 
 const DISCOVERY_OPTIONS = [
-  { id: 'garmin', label: 'Garmin / wearable sync', description: 'Auto-import steps, sleep, heart rate from your watch' },
+  { id: 'garmin', label: 'Auto-import wearable data', description: 'Sync steps, sleep, heart rate directly from your watch' },
   { id: 'trends', label: 'Track changes over time', description: 'See how your numbers move between lab draws' },
   { id: 'family', label: 'Family / household profiles', description: 'Score your partner or kids alongside yours' },
   { id: 'action-plans', label: 'Personalized action plans', description: 'Step-by-step protocols based on your gaps' },
@@ -20,7 +20,7 @@ export function renderDiscoveryForm(container) {
   }
 
   const discId = 'discovery-toggle';
-  let html = `<div class="remaining-gaps" id="${discId}">`;
+  let html = `<div class="remaining-gaps open" id="${discId}">`;
   html += `<div class="remaining-gaps-label" onclick="document.getElementById('${discId}').classList.toggle('open')">Help us build · give feedback</div>`;
   html += `<div class="remaining-gap-rows"><div>`;
   html += `<div class="discovery-form">
