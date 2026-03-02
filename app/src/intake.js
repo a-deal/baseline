@@ -156,6 +156,14 @@ function revalidateChecklist(haikuEx, regexCheck) {
   }
 }
 
+// ── Submit gate — disabled while any checklist item is still processing ──
+function updateSubmitGate() {
+  const btn = document.getElementById('voice-submit-btn');
+  if (!btn) return;
+  const hasPending = document.querySelectorAll('.voice-checklist-item.pending').length > 0;
+  btn.disabled = hasPending;
+}
+
 // ── Checklist updates ──
 export function updateVoiceChecklist(extracted, source = 'live') {
   const check = (id, condition) => {
@@ -212,6 +220,8 @@ export function updateVoiceChecklist(extracted, source = 'live') {
   if (checklistLocked.size >= 4) {
     collapseTranscript();
   }
+
+  updateSubmitGate();
 }
 
 let transcriptCollapsed = false;
@@ -413,6 +423,8 @@ export function toggleFullVoice() {
     status.textContent = 'Listening...';
     status.classList.add('active');
     fullVoiceRecognition = recognition;
+    const submitBtn = document.getElementById('voice-submit-btn');
+    if (submitBtn) submitBtn.disabled = true;
     updateVoiceGuide({});
   };
 
@@ -428,9 +440,6 @@ export function toggleFullVoice() {
     }
     textarea.value = fullVoiceTranscript + (interim ? interim : '');
     textarea.scrollTop = textarea.scrollHeight;
-
-    const submitBtn = document.getElementById('voice-submit-btn');
-    if (submitBtn && submitBtn.disabled) submitBtn.disabled = false;
 
     // Context-aware yes/no
     let latestWords = (interim || '').trim().toLowerCase();
@@ -476,7 +485,14 @@ export function toggleFullVoice() {
     if (textarea.value.trim()) {
       const finalExtracted = parseVoiceIntake(textarea.value);
       updateVoiceChecklist(finalExtracted, 'ai');
-      submitVoiceIntake();
+      // Don't auto-submit — gate handles button state.
+      // If no pending items, button is enabled and user can tap.
+      // If haiku bounce is in-flight, button stays disabled until it resolves.
+      if (!document.querySelectorAll('.voice-checklist-item.pending').length) {
+        status.textContent = 'Ready — tap Next to continue';
+      } else {
+        status.textContent = 'Finishing up...';
+      }
     } else {
       status.textContent = 'Tap to start';
       const idleEl = document.getElementById('voice-idle');
