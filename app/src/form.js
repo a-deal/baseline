@@ -1,6 +1,6 @@
 // form.js — Form step navigation, profile building, form population
 
-import { getSelectedMeds } from './meds.js';
+import { getSelectedMeds, addMedByName } from './meds.js';
 import { getPhq9Score } from './phq9.js';
 import { createLogger } from './logger.js';
 const log = createLogger('form');
@@ -136,7 +136,13 @@ export function buildProfile() {
   const pv = (inputId, parsedField) => val(inputId) ?? _parsedLabValues[parsedField] ?? null;
 
   return {
-    demographics: { age, sex, ethnicity: 'white' },
+    demographics: {
+      age, sex, ethnicity: 'white',
+      height_ft: heightFt,
+      height_in: heightIn,
+      medications: meds.length > 0 ? meds : null,
+      devices: _selectedDevices.length > 0 ? [..._selectedDevices] : null,
+    },
     lab_draw_date: labDate,
     fasting: fastingAnswer === 'yes' ? true : (fastingAnswer === 'no' ? false : null),
     systolic: val('f-sbp'),
@@ -190,6 +196,9 @@ export function populateForm(p) {
       b.classList.toggle('selected', b.dataset.value === p.demographics.sex);
     });
   }
+  // G1: Restore height
+  setVal('f-height-ft', p.demographics?.height_ft);
+  setVal('f-height-in', p.demographics?.height_in);
 
   setVal('f-weight', p.weight_lbs);
   setVal('f-apob', p.apob);
@@ -242,6 +251,26 @@ export function populateForm(p) {
 
   if (p.lab_draw_date) {
     document.getElementById('f-lab-date').value = p.lab_draw_date;
+  }
+
+  // G3: Restore device card selections
+  if (p.demographics?.devices) {
+    _selectedDevices = [];
+    document.querySelectorAll('.device-card').forEach(c => c.classList.remove('selected'));
+    for (const device of p.demographics.devices) {
+      const card = document.querySelector(`.device-card[data-device="${device}"]`);
+      if (card) {
+        card.classList.add('selected');
+        _selectedDevices.push(device);
+      }
+    }
+  }
+
+  // G2: Restore medication tags
+  if (p.demographics?.medications) {
+    for (const name of p.demographics.medications) {
+      addMedByName(name);
+    }
   }
 }
 
