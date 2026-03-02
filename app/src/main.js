@@ -478,13 +478,34 @@ window.clearSaved = async function() {
 };
 
 window.startOver = function() {
+  sessionStorage.clear();
+  resetState();
+  resetPhq9();
   document.getElementById('results').classList.remove('active');
   document.getElementById('questionnaire').style.display = 'block';
   document.getElementById('phase1').style.display = 'block';
   document.getElementById('phase2').style.display = 'none';
+  // Reset all form inputs
+  document.querySelectorAll('.field-input').forEach(i => i.value = '');
+  document.querySelectorAll('.opt-btn, .toggle-btn').forEach(b => b.classList.remove('selected'));
+  // Clear lab state
+  document.getElementById('lab-paste').value = '';
+  document.getElementById('parse-results').classList.remove('active');
+  document.getElementById('lab-file-list').innerHTML = '';
+  const labSummary = document.getElementById('lab-import-summary');
+  if (labSummary) labSummary.textContent = '';
+  const parseSummary = document.getElementById('parse-summary');
+  if (parseSummary) parseSummary.textContent = '';
+  document.querySelectorAll('.manual-fields').forEach(f => f.classList.remove('open'));
+  // Clear device selections
+  document.querySelectorAll('.device-card').forEach(c => c.classList.remove('selected'));
+  // Clear meds module state + DOM
+  resetMeds();
+  const medSearch = document.getElementById('med-search');
+  if (medSearch) medSearch.value = '';
+  // Reset voice state
   document.getElementById('voice-hero').style.display = '';
   document.getElementById('intake-tabs').style.display = '';
-  switchIntakeTab('voice');
   document.getElementById('voice-idle').style.display = '';
   document.getElementById('voice-active').classList.remove('show');
   document.getElementById('voice-full-transcript').value = '';
@@ -493,6 +514,31 @@ window.startOver = function() {
   resetVoiceState();
   const guide = document.getElementById('voice-guide');
   if (guide) { const n = guide.querySelector('#guide-nudges'); if (n) n.innerHTML = ''; }
+  switchIntakeTab('voice');
+  // Clear PHQ-9 questionnaire state
+  document.querySelectorAll('.phq9-radio').forEach(r => r.classList.remove('selected'));
+  const phq9Input = document.getElementById('phq9-direct-input');
+  if (phq9Input) phq9Input.value = '';
+  const phq9Display = document.getElementById('phq9-score-display');
+  if (phq9Display) { phq9Display.classList.remove('active'); phq9Display.innerHTML = ''; }
+  // Reset carousel stepper + slides
+  _currentEnrichStep = 0;
+  document.querySelectorAll('.stepper-step').forEach((s, i) => {
+    s.classList.remove('active', 'touched');
+    if (i === 0) s.classList.add('active');
+  });
+  document.querySelectorAll('.stepper-status').forEach(s => s.textContent = '');
+  document.querySelectorAll('.enrich-slide').forEach((s, i) => {
+    s.classList.remove('active');
+    if (i === 0) s.classList.add('active');
+  });
+  const skipEl = document.querySelector('.phase2-skip-wrap');
+  if (skipEl) { skipEl.classList.remove('revealed'); skipEl.style.display = ''; }
+  const revealEl = document.getElementById('score-reveal');
+  if (revealEl) revealEl.classList.remove('active');
+  const contBtn = document.getElementById('stepper-continue');
+  if (contBtn) contBtn.classList.remove('has-data');
+  log.info('started over (UI reset, data preserved)');
 };
 
 window.clearAndRestart = async function() {
