@@ -17,6 +17,10 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/app.css">
+<script>
+// Apply saved theme before first paint to prevent flash
+(function(){var t=localStorage.getItem('theme');if(t){document.documentElement.setAttribute('data-theme',t)}})();
+</script>
 </head>
 <body>
 
@@ -24,7 +28,10 @@
   <!-- Header -->
   <div class="app-header">
     <a href="../landing/" class="logo">baseline<span class="period">.</span></a>
-    <a href="../landing/" class="back-to-landing">about</a>
+    <div class="header-right">
+      <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle theme">&#9790;</button>
+      <a href="../landing/" class="back-to-landing">about</a>
+    </div>
   </div>
 
   <!-- Questionnaire: 3-Phase Converged Intake -->

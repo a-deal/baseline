@@ -44,6 +44,28 @@ if (!hasSpeechSupport() || window._forceFormMode) {
   addBreadcrumb('init', `form-mode: speech=${hasSpeechSupport()}, flag=${!!window._forceFormMode}`);
 }
 
+// ── Theme toggle ──
+function initThemeToggle() {
+  const btn = document.getElementById('theme-toggle');
+  if (!btn) return;
+  const update = () => {
+    const current = document.documentElement.getAttribute('data-theme')
+      || (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+    btn.textContent = current === 'light' ? '\u2600' : '\u263E';
+    btn.setAttribute('aria-label', current === 'light' ? 'Switch to dark mode' : 'Switch to light mode');
+  };
+  update();
+  btn.addEventListener('click', () => {
+    const current = document.documentElement.getAttribute('data-theme')
+      || (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+    const next = current === 'light' ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('theme', next);
+    update();
+  });
+}
+initThemeToggle();
+
 log.info('baseline app ready');
 
 // ── Service worker — DISABLED during active development ──
