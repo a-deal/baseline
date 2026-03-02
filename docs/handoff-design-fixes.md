@@ -2,62 +2,64 @@
 
 Priority UX issues from screenshot review and user testing. These need to land before Push 1 (shipping to 5-10 people).
 
-## 1. Phase 2 Navigation — Tab Bar vs Continue
+## Done
 
-**Problem:** Two competing navigation patterns. The top tab bar (Labs → Equip → Meds → PHQ-9) and the "Continue →" button both advance the flow. User doesn't know which to use — clicks tabs, clicks Continue, gets confused.
+### 1. Phase 2 Navigation — Tab Bar vs Continue ✓
+Stepper tabs are now read-only `<div>` progress indicators. No click handlers. Forward navigation only via Continue button. Committed in `eac265b`.
 
-**Fix:** Make the tabs read-only indicators (show progress, don't navigate). Continue is the only forward action. Tapping a completed tab could allow going back to review, but forward movement is always via Continue.
+### 2. Continue Button — Progressive Disclosure ✓
+Continue is inline in the stepper strip (last element in the row). Starts muted (0.45 opacity). Activates with red accent when `_slideHasData()` detects input on current step. Committed in `eac265b`.
 
-## 2. Continue Button — Progressive Disclosure
+### 3. Equipment-Aware Recommendations ✓
+Remaining gap rows now call `equipmentAwareCost()` and show equipment-aware detail text (e.g., "Get a BP cuff (~$40, Omron)"). Top 3 gap cards already had this. bp-tracker.js `buildPromptHtml()` already branched on `hasCuff`. Committed in `eac265b`.
 
-**Problem:** Continue is always visible and static. It doesn't respond to user input — same appearance whether you've entered data or not.
+### Discovery form ✓
+"What should we build next?" embedded in results. `src/discovery.js`. Committed in `67e7e83`.
 
-**Fix:** Continue starts dormant/muted. Once the user enters any data on the current step (checks an equipment box, types in the meds field, enters a PHQ-9 score), the button activates — color change, subtle glow, maybe a micro-animation. This pulls the user forward naturally. On steps where skipping is valid (all of Phase 2), keep a secondary "Skip" affordance but make Continue the hero once there's input.
+---
 
-## 3. Recommendations Ignore Equipment Inputs
+## Remaining — Ordered Queue
 
-**Problem:** User selects "None yet" for equipment in Phase 2, then results say "Track your blood pressure" and "Start your 7-day BP protocol." The app told you to do something it knows you can't do yet — you don't have a cuff.
+### Wave 1 (parallel — no file conflicts)
 
-**Fix:** The gap cards and tracking suggestions need to read `profile._devices`. Logic:
-- If user has a BP cuff → "Start your 7-day BP protocol"
-- If user does NOT have a BP cuff → "Get a BP cuff (~$40, Omron) — then start your 7-day protocol"
-- Same pattern for scale (weight tracking) and tape measure (waist tracking)
+#### 6. Results Page Density
+**Problem:** Desktop results is a wall: score rings → next moves → health flags → BP protocol → tracking today → metric tables → evidence cards → discovery form → utility buttons. Overwhelming for a first visit.
 
-The `renderTrackingToday()` function in `render.js:378` already filters by devices, but the gap cards in `renderMoves()` don't. The gap card `costToClose` text and the BP tracker card need to be equipment-aware.
+**Fix:** Progressive reveal. Show score + top 3 moves above the fold. Everything else collapsed or in tabs. First visit should feel like a payoff, not a data dump.
 
-**Files:** `src/render.js` (renderMoves, renderTrackingToday), `src/bp-tracker.js`
+**Files:** `src/render.js`, `index.html`
 
-## 4. State Management — Start Fresh / Previous Visit
+#### Light Mode
+**Problem:** Token system handles 80% of light mode, but several components have hardcoded dark values that don't flip.
 
-**Problem:** "Start fresh" doesn't properly clear state. Loading a previous visit doesn't hydrate the form. The app doesn't feel like it remembers you.
+**Known issues:**
+1. BP tracker card — dark bg sticks out
+2. Continue `.has-data` — `#e8a0a0` too light on light bg
+3. Score ring glow — calibrated for dark
+4. `rgba(20, 20, 24, 1)` hardcoded at line 1077
+5. `rgba(0,0,0,0.4)` shadows at lines 1161/1176
+6. `color: #fff` on continue hover (line 901) — should be `var(--color-text)`
+7. `<meta theme-color="#08080a">` — needs light variant
+
+**Files:** `css/app.css`, `index.html` (meta tag only)
+
+### Wave 2 (sequential — touches main.js)
+
+#### 4. State Management — Start Fresh / Previous Visit
+**Problem:** "Start fresh" doesn't properly clear state. Loading a previous visit doesn't hydrate the form.
 
 **Fix:**
-- `clearAndRestart()` needs to clear IndexedDB profile + sessionStorage + reset all form fields to defaults
-- `loadSavedProfile()` needs to hydrate every form field from the stored profile (age, sex, height, weight, BP, waist, family history, devices, meds)
-- After hydration, the form should visually reflect the loaded state (selected sex button highlighted, values in fields)
-- Return banner should show a preview: "Welcome back. Last visit: March 1 — 47% coverage, 75th percentile."
+- `clearAndRestart()` — clear IndexedDB + sessionStorage + reset form fields
+- `loadSavedProfile()` — hydrate every field from stored profile
+- Return banner — "Welcome back. Last visit: March 1 — 47% coverage, 75th percentile."
 
-**Files:** `src/main.js` (loadSavedProfile, clearSaved, startOver, clearAndRestart), `index.html` (return-banner)
+**Files:** `src/main.js`, `index.html` (return-banner)
 
-## 5. Score Reveal Moment
+### Wave 3 (sequential — touches main.js + app.css)
 
-**Problem:** "Score with what I have →" is a flat button. The transition from intake to results feels like submitting a form, not getting a result. The payoff moment is undersold.
+#### 5. Score Reveal Moment
+**Problem:** Transition from intake to results is undersold. Flat button, no payoff.
 
-**Fix:** This is the lightbulb moment — treat it like one. Ideas:
-- Brief loading state with a message ("Crunching your numbers..." or "Comparing against 15,000 NHANES profiles...")
-- Score rings animate in (already partly there with the count-up animation)
-- The button itself could transform — grow, change color, pulse — as a "your score is ready" moment
-- Consider a brief interstitial before results render (500-800ms) that builds anticipation
+**Fix:** Loading interstitial ("Crunching your numbers..."), score rings animate in, button transforms. 500-800ms anticipation beat.
 
-**Files:** `css/app.css` (score-cta styling, transition states), `src/main.js` (computeResults flow)
-
-## Already Done
-
-- **Discovery form** — "What should we build next?" form is now embedded in results, between evidence cards and utility buttons. New file: `src/discovery.js`. Wired into `render.js`. Sends to Formspree + stores locally.
-
-## Files to Avoid
-
-These were just modified by another agent — coordinate before touching:
-- `src/discovery.js` (new)
-- The discovery-related CSS at the bottom of `css/app.css`
-- The `#discovery-slot` div in `index.html` (line ~607)
+**Files:** `css/app.css`, `src/main.js`
