@@ -8,13 +8,15 @@
     "build": "vite build",
     "preview": "vite preview",
     "test": "vitest run",
-    "test:legacy": "node voice.test.js"
+    "test:legacy": "node voice.test.js",
+    "screenshot": "pnpm build && node screenshots/capture.mjs"
   },
   "packageManager": "pnpm@10.30.3",
   "dependencies": {
     "@simplewebauthn/browser": "^13.1.0"
   },
   "devDependencies": {
+    "@playwright/test": "^1.58.2",
     "@tailwindcss/vite": "^4.2.1",
     "tailwindcss": "^4.2.1",
     "vite": "^7.3.1",

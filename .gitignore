@@ -25,6 +25,9 @@ node_modules/
 # Build output
 app/dist/
 
+# Screenshot captures (ephemeral)
+app/screenshots/output/
+
 # Wrangler
 app/.wrangler/
 worker/.wrangler/
