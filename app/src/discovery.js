@@ -19,7 +19,11 @@ export function renderDiscoveryForm(container) {
     return;
   }
 
-  let html = `<div class="discovery-form">
+  const discId = 'discovery-toggle';
+  let html = `<div class="remaining-gaps" id="${discId}">`;
+  html += `<div class="remaining-gaps-label" onclick="document.getElementById('${discId}').classList.toggle('open')">Help us build · give feedback</div>`;
+  html += `<div class="remaining-gap-rows"><div>`;
+  html += `<div class="discovery-form">
     <h3 class="discovery-title">What would be most useful next?</h3>
     <p class="discovery-subtitle">Pick any that resonate — or tell us what's missing.</p>
     <div class="discovery-options">`;
@@ -41,6 +45,7 @@ export function renderDiscoveryForm(container) {
     <button class="discovery-submit" disabled>Send</button>
     <p class="discovery-thanks" style="display:none;">Thanks — this shapes what we build.</p>
   </div>`;
+  html += `</div></div></div>`;
 
   container.innerHTML = html;
 

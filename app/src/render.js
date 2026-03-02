@@ -135,12 +135,30 @@ export function renderResults(output, profile) {
   const devices = (profile._devices || []).filter(d => d !== 'none');
   renderMoves(output.gaps, output.coverageScore, output.results, devices);
 
-  // Post-score tracking modules
+  // BP tracker — render into inline slot (inside moves) if available, else standalone
+  const bpInline = document.getElementById('bp-tracker-inline');
   const bpSlot = document.getElementById('bp-tracker-slot');
-  if (bpSlot) renderBpTracker(bpSlot, devices);
+  if (bpInline) {
+    renderBpTracker(bpInline, devices);
+    if (bpSlot) bpSlot.innerHTML = '';
+  } else if (bpSlot) {
+    renderBpTracker(bpSlot, devices);
+  }
 
-  // "Start tracking today" based on equipment selections
-  renderTrackingToday(profile);
+  // "Start tracking today" — skip items already merged into gap cards
+  const movesEl = document.getElementById('r-moves');
+  const mergedDevices = movesEl?._mergedTrackingDevices || new Set();
+  renderTrackingToday(profile, mergedDevices);
+
+  // Test coverage heading above tier bars
+  const tierSummary = document.querySelector('.tier-summary');
+  if (tierSummary && !tierSummary.querySelector('.tier-summary-heading')) {
+    const heading = document.createElement('div');
+    heading.className = 'tier-summary-heading';
+    heading.style.cssText = 'font-size:0.72rem;font-family:var(--font-mono,monospace);text-transform:uppercase;letter-spacing:0.05em;color:var(--text-dim,#888);margin-bottom:8px;';
+    heading.textContent = 'Test coverage';
+    tierSummary.prepend(heading);
+  }
 
   // Metric tables
   renderTier('r-tier1', 'Core tests', output.results.filter(r => r.tier === 1));
@@ -286,6 +304,16 @@ export function renderTier(containerId, title, metrics) {
   el.innerHTML = html;
 }
 
+/** Map a gap to its tracking device key (if any) */
+function gapTrackingDevice(gap) {
+  const name = gap.name?.toLowerCase() || '';
+  const metric = gap.metric || '';
+  if (metric === 'systolic' || metric === 'sbp' || name.includes('blood pressure')) return 'bp_cuff';
+  if (metric === 'waist' || name.includes('waist')) return 'tape_measure';
+  if (metric === 'weight_trends' || name.includes('weight')) return 'scale';
+  return null;
+}
+
 /** Adjust gap costToClose text based on equipment the user owns */
 function equipmentAwareCost(gap, deviceSet) {
   const name = gap.name?.toLowerCase() || '';
@@ -323,6 +351,9 @@ export function renderMoves(gaps, currentScore, results, devices) {
     r.hasData && (r.standing === 'Below Average' || r.standing === 'Concerning')
   );
 
+  // Track which tracking device keys got merged into gap cards
+  const mergedTrackingDevices = new Set();
+
   let html = `<div class="action-plan">`;
   html += `<h3>Your next moves</h3>`;
 
@@ -337,16 +368,32 @@ export function renderMoves(gaps, currentScore, results, devices) {
 
     top3.forEach((g, i) => {
       const isBp = g.metric === 'systolic' || g.metric === 'sbp' || g.name?.toLowerCase().includes('blood pressure');
-      const clickAttr = isBp ? ` onclick="document.getElementById('bp-tracker-slot')?.scrollIntoView({behavior:'smooth',block:'start'})" style="cursor:pointer"` : '';
       const detail = equipmentAwareCost(g, deviceSet);
-      html += `<div class="move-card"${clickAttr}>
+      const trackingKey = gapTrackingDevice(g);
+      const trackingSugg = trackingKey ? TRACKING_SUGGESTIONS[trackingKey] : null;
+      const hasDevice = trackingKey && deviceSet.has(trackingKey);
+
+      // Inline tracking instruction when user has the device
+      let trackingInline = '';
+      if (hasDevice && trackingSugg) {
+        mergedTrackingDevices.add(trackingKey);
+        trackingInline = `<p class="move-tracking">${trackingSugg.instruction}</p>`;
+      }
+
+      html += `<div class="move-card">
         <div class="move-num">${i + 1}</div>
         <div class="move-body">
           <h4>${g.name}</h4>
           <p class="move-detail">${g.note ? `<strong>${g.note}</strong> ` : ''}${detail}</p>
+          ${trackingInline}
         </div>
         <div class="move-tag">+${g.weight} pts</div>
       </div>`;
+
+      // BP tracker slot — inline right after the BP gap card
+      if (isBp) {
+        html += `<div id="bp-tracker-inline"></div>`;
+      }
     });
 
     if (remaining.length > 0) {
@@ -358,6 +405,8 @@ export function renderMoves(gaps, currentScore, results, devices) {
       remaining.forEach(g => {
         const detail = equipmentAwareCost(g, deviceSet);
         const needsEquip = detail !== g.costToClose;
+        const trackingKey = gapTrackingDevice(g);
+        if (trackingKey && deviceSet.has(trackingKey)) mergedTrackingDevices.add(trackingKey);
         html += `<div class="remaining-gap-row">
           <span>${g.name}${needsEquip ? `<span class="remaining-gap-equip">${detail}</span>` : ''}</span>
           <span class="gap-pts">+${g.weight}</span>
@@ -398,6 +447,9 @@ export function renderMoves(gaps, currentScore, results, devices) {
 
   html += `</div>`;
   el.innerHTML = html;
+
+  // Store merged set for renderTrackingToday to reference
+  el._mergedTrackingDevices = mergedTrackingDevices;
 }
 
 // ── "Start tracking today" — personalized from equipment selections ──
@@ -419,16 +471,18 @@ const TRACKING_SUGGESTIONS = {
   },
 };
 
-function renderTrackingToday(profile) {
+function renderTrackingToday(profile, mergedDevices) {
   const el = document.getElementById('tracking-today');
   if (!el) return;
   const devices = (profile._devices || []).filter(d => d !== 'none');
-  if (devices.length === 0) { el.innerHTML = ''; return; }
+  // Only show tracking items not already merged into gap cards
+  const unmerged = devices.filter(d => !mergedDevices?.has(d));
+  if (unmerged.length === 0) { el.innerHTML = ''; return; }
 
   let html = '<div class="mb-8">';
   html += '<div class="font-mono text-[0.72rem] font-medium text-text-dim tracking-wider uppercase mb-5">Start tracking today</div>';
   html += '<div class="flex flex-col gap-3">';
-  for (const d of devices) {
+  for (const d of unmerged) {
     const s = TRACKING_SUGGESTIONS[d];
     if (!s) continue;
     html += `<div class="tracking-suggestion-card">
