@@ -558,6 +558,22 @@ window.clearAndRestart = async function() {
   log.info('cleared all data and restarted');
 };
 
+window.showStartFreshConfirm = function() {
+  document.getElementById('start-fresh-trigger').style.display = 'none';
+  document.getElementById('start-fresh-confirm').style.display = 'block';
+};
+
+window.cancelStartFresh = function() {
+  document.getElementById('start-fresh-confirm').style.display = 'none';
+  document.getElementById('start-fresh-trigger').style.display = '';
+};
+
+window.confirmStartFresh = async function() {
+  document.getElementById('start-fresh-confirm').style.display = 'none';
+  document.getElementById('start-fresh-trigger').style.display = '';
+  await window.clearAndRestart();
+};
+
 window.exportProfile = async function() {
   const data = await exportAll();
   const json = JSON.stringify(data, null, 2);
