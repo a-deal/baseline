@@ -34,7 +34,7 @@
 | 12 | **Lp(a) test** | "$30, once in your life, 20% chance it changes everything." |
 | 13 | **Blood pressure cuff** | "A $40 cuff has more evidence behind it than every consumer wearable combined." |
 | 14 | **Fasting insulin** | "Your glucose looks normal. Your insulin has been screaming for 10 years." |
-| 15 | **Sleep regularity** | "8 hours doesn't help if it's 10pm-6am Monday and 1am-9am Saturday." |
+| 15 | **Sleep regularity** | "8 hours doesn't help if it's 10pm-6am Monday and 1am-9am Saturday." (UK Biobank, 61K — Windred et al., SLEEP 2024) |
 
 ### From 05-twitter-thread-draft.md — Thread + Alt Hooks
 
