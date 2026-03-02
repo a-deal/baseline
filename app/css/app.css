@@ -1044,6 +1044,26 @@ footer p { @apply font-mono text-[0.72rem] text-text-dim leading-loose; }
   box-shadow: 0 4px 16px rgba(200, 60, 60, 0.2);
 }
 
+/* Score interstitial — anticipation beat before results render */
+#score-interstitial {
+  @apply hidden fixed inset-0 z-50 flex items-center justify-center;
+  background: var(--bg);
+}
+#score-interstitial.active { @apply flex; }
+.interstitial-inner { @apply text-center; }
+.interstitial-pulse {
+  @apply w-12 h-12 rounded-full mx-auto mb-6;
+  background: var(--red);
+  animation: interstitialPulse 0.8s ease-in-out infinite;
+}
+.interstitial-msg {
+  @apply font-display text-[1.1rem] uppercase tracking-widest text-text-muted;
+}
+@keyframes interstitialPulse {
+  0%, 100% { transform: scale(1); opacity: 0.6; }
+  50% { transform: scale(1.15); opacity: 1; }
+}
+
 /* Skip — secondary button, visible once first card touched */
 .phase2-skip-wrap {
   @apply text-center py-4 opacity-0 translate-y-2 pointer-events-none;

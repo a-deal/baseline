@@ -175,6 +175,16 @@ async function computeResults() {
 
   const tsProfile = await loadFullProfile();
   const output = scoreTimeSeriesProfile(tsProfile);
+
+  // Score reveal interstitial — build anticipation before showing results
+  document.getElementById('questionnaire').style.display = 'none';
+  const interstitial = document.getElementById('score-interstitial');
+  interstitial.classList.add('active');
+  window.scrollTo({ top: 0 });
+
+  await new Promise(resolve => setTimeout(resolve, 700));
+
+  interstitial.classList.remove('active');
   renderResults(output, formProfile);
   log.info('results computed', { score: output.coverageScore });
 }
