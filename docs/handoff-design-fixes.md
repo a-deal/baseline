@@ -63,3 +63,29 @@ Remaining gap rows now call `equipmentAwareCost()` and show equipment-aware deta
 **Fix:** Loading interstitial ("Crunching your numbers..."), score rings animate in, button transforms. 500-800ms anticipation beat.
 
 **Files:** `css/app.css`, `src/main.js`
+
+---
+
+## Known Gaps (discovered during Fix #4, March 2)
+
+Data persistence holes — return visitors lose these between sessions:
+
+### G1. Height not persisted
+`f-height-ft` and `f-height-in` are used for BMI calculation but never saved to IndexedDB. Return visitor loses height.
+**Fix:** Add `height_ft`/`height_in` to demographics in `saveDemographics()` or as observations.
+**Files:** `src/form.js`, `db.js`
+
+### G2. Medication names not persisted
+Only `has_medication_list: true/false` is stored. The actual med list (`_medication_text`) is built at scoring time but lost between sessions.
+**Fix:** Store `_medication_text` as an observation or add a meds field to the profile store.
+**Files:** `src/meds.js`, `db.js`
+
+### G3. Device selections not persisted
+`_devices` array is built in `buildProfile()` but never stored to IndexedDB. Return visitor's equipment choices are gone.
+**Fix:** Store device selections in the profile store or as observations.
+**Files:** `src/form.js`, `db.js`
+
+### G4. startOver() doesn't reset meds or devices
+Clicking "Start over" from results handles voice/results UI but skips meds, devices, and lab state. Stale data carries forward into the next intake.
+**Fix:** Wire `resetMeds()` and device deselection into `startOver()`, same pattern as `clearAndRestart()`.
+**Files:** `src/main.js`
