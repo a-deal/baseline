@@ -122,7 +122,6 @@
               <div class="voice-checklist-item" data-check="height"><div class="check-box"></div><span>Height</span></div>
               <div class="voice-checklist-item" data-check="weight"><div class="check-box"></div><span>Weight</span></div>
               <div class="voice-checklist-item" data-check="labs"><div class="check-box"></div><span>Lab results</span><span class="check-hint" id="lab-count-hint">0 found</span></div>
-              <div class="voice-checklist-item" data-check="bp"><div class="check-box"></div><span>Blood pressure</span></div>
               <div class="voice-checklist-item" data-check="waist"><div class="check-box"></div><span>Waist</span></div>
               <div class="voice-checklist-item" data-check="history"><div class="check-box"></div><span>Family hx</span></div>
             </div>
@@ -792,14 +791,6 @@
     <!-- UTILITY: Actions -->
     <div class="results-utility">
       <button onclick="editValues()">Edit my data</button>
-      <span class="start-fresh-link" id="start-fresh-trigger" onclick="showStartFreshConfirm()">Start fresh</span>
-      <div class="start-fresh-confirm" id="start-fresh-confirm" style="display:none;">
-        <span style="font-size:0.82rem;color:var(--text-muted);">This will clear all your data. Are you sure?</span>
-        <div style="display:flex;gap:8px;margin-top:6px;">
-          <button class="start-fresh-yes" onclick="confirmStartFresh()">Yes, clear everything</button>
-          <button class="start-fresh-cancel" onclick="cancelStartFresh()">Cancel</button>
-        </div>
-      </div>
     </div>
   </div><!-- /results-main -->
 

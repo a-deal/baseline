@@ -34,7 +34,6 @@ const NUDGE_SEQUENCE = [
   { check: 'height', text: '<strong>Height?</strong> — "5\'10" or "five ten"' },
   { check: 'weight', text: '<strong>Weight?</strong> — "195 lbs" or "I weigh 195"' },
   { check: 'labs',   text: '<strong>Do you have lab results?</strong> — "yes" or "no labs"' },
-  { check: 'bp',     text: '<strong>Blood pressure?</strong> — "110 over 70" or "BP 120/80"' },
   { check: 'waist',  text: '<strong>Waist?</strong> — measurement at the navel in inches' },
   { check: 'history', text: '<strong>Family history?</strong> — "father had a heart attack" or "no family history"' },
 ];
