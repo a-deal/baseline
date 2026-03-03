@@ -45,7 +45,7 @@ initDraftAutoSave();
 await checkReturnVisit();
 
 // Restore draft if no existing profile (return visit banner handles that case)
-const draft = restoreDraft();
+const draft = await restoreDraft();
 if (draft) {
   const returnBanner = document.getElementById('return-banner');
   const isReturnVisit = returnBanner?.classList.contains('active');
@@ -57,7 +57,7 @@ if (draft) {
     }
     showRetainedLabSummary();
     showRetainedWearableSummary();
-    log.info('restored draft from sessionStorage');
+    log.info('restored draft from IndexedDB');
   }
 }
 
@@ -221,7 +221,7 @@ async function computeResults() {
 
   interstitial.classList.remove('active');
   renderResults(output, formProfile);
-  clearDraft();
+  await clearDraft();
   _isEditMode = false;
   track('score_calculated', { score: Math.round(output.coverageScore) });
   log.info('results computed', { score: output.coverageScore });
@@ -767,7 +767,7 @@ window.clearSaved = async function() {
 // ── Shared intake reset — used by startOver and clearAndRestart ──
 function _resetIntakeUI() {
   _isEditMode = false;
-  sessionStorage.clear();
+  clearDraft();
   resetState();
   resetPhq9();
   // Show intake, hide results

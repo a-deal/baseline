@@ -3,6 +3,7 @@
 import { getSelectedMeds, addMedByName } from './meds.js';
 import { getPhq9Score } from './phq9.js';
 import { createLogger } from './logger.js';
+import { openDB } from '../db.js';
 const log = createLogger('form');
 
 // ── State ──
@@ -290,7 +291,7 @@ const DRAFT_FIELD_IDS = [
 
 let _saveTimer = null;
 
-export function saveDraft() {
+export async function saveDraft() {
   const fields = {};
   for (const id of DRAFT_FIELD_IDS) {
     const el = document.getElementById(id);
@@ -322,17 +323,24 @@ export function saveDraft() {
 
   const draft = { fields, sex, toggles, devices, meds, phase, enrichStep, timestamp: Date.now() };
   try {
-    sessionStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
-  } catch { /* quota exceeded — ignore */ }
+    const db = await openDB();
+    const tx = db.transaction('profile', 'readwrite');
+    tx.objectStore('profile').put(draft, DRAFT_KEY);
+  } catch { /* IDB error — ignore */ }
 }
 
-export function restoreDraft() {
+export async function restoreDraft() {
   try {
-    const raw = sessionStorage.getItem(DRAFT_KEY);
-    if (!raw) return null;
-    const draft = JSON.parse(raw);
+    const db = await openDB();
+    const draft = await new Promise((resolve, reject) => {
+      const tx = db.transaction('profile', 'readonly');
+      const req = tx.objectStore('profile').get(DRAFT_KEY);
+      req.onsuccess = () => resolve(req.result || null);
+      req.onerror = () => reject(req.error);
+    });
+    if (!draft) return null;
     if (Date.now() - draft.timestamp > DRAFT_MAX_AGE_MS) {
-      sessionStorage.removeItem(DRAFT_KEY);
+      await clearDraft();
       return null;
     }
     return draft;
@@ -385,8 +393,12 @@ export function applyDraft(draft) {
   }
 }
 
-export function clearDraft() {
-  sessionStorage.removeItem(DRAFT_KEY);
+export async function clearDraft() {
+  try {
+    const db = await openDB();
+    const tx = db.transaction('profile', 'readwrite');
+    tx.objectStore('profile').delete(DRAFT_KEY);
+  } catch { /* ignore */ }
 }
 
 export function initDraftAutoSave() {
