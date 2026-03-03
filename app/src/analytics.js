@@ -1,7 +1,7 @@
 // analytics.js — Lightweight event tracking via worker KV
 // Fire-and-forget. Queues locally if offline, flushes on next visit.
 
-const TRACK_URL = 'https://baseline-api.deal-e-andrew.workers.dev/track';
+const TRACK_URL = 'https://baseline-api.deal-e-andrew.workers.dev/t';
 const QUEUE_KEY = 'baseline-analytics-queue';
 
 let _sessionId = null;

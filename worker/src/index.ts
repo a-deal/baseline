@@ -138,7 +138,7 @@ export default {
 
     // Analytics tracking — fire-and-forget, never errors
     // Placed before origin validation so sendBeacon with text/plain works without CORS preflight
-    if (request.method === 'POST' && path === '/track') {
+    if (request.method === 'POST' && (path === '/t' || path === '/track')) {
       try {
         const text = await request.text();
         const payload = JSON.parse(text);

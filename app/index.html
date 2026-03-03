@@ -332,10 +332,12 @@
                 </button>
                 <div class="manual-fields" id="guide-garmin">
                   <ol class="device-guide-steps">
-                    <li>Go to <strong>connect.garmin.com</strong> and sign in</li>
-                    <li>Click your profile &rarr; Health Stats &rarr; Export</li>
-                    <li>Select CSV format and your date range</li>
-                    <li>Upload the file below</li>
+                    <li>Go to <strong>connect.garmin.com</strong> on a computer and sign in</li>
+                    <li>In the left sidebar, click <strong>Reports</strong></li>
+                    <li>Select the <strong>All Days</strong> report type</li>
+                    <li>Set your date range (last 30 days works great)</li>
+                    <li>Click the <strong>export icon</strong> (download arrow, top right of the table) &rarr; CSV</li>
+                    <li>Upload the CSV file below</li>
                   </ol>
                 </div>
 
@@ -384,6 +386,7 @@
             </div>
 
             <div class="parse-summary" id="wearable-import-summary"></div>
+            <button class="slide-skip" onclick="advanceEnrichStep()">I don&rsquo;t wear one &rarr;</button>
           </div>
 
           <!-- Slide 1: Blood work -->
@@ -498,6 +501,7 @@
                 </div>
               </div>
             </div>
+            <button class="slide-skip" onclick="advanceEnrichStep()">I don&rsquo;t have labs &rarr;</button>
           </div>
 
           <!-- Slide 2: Equipment -->
@@ -525,6 +529,7 @@
                 <div class="device-check"></div>
               </div>
             </div>
+            <button class="slide-skip" onclick="advanceEnrichStep()">None of these &rarr;</button>
           </div>
 
           <!-- Slide 3: Medications -->
@@ -535,6 +540,7 @@
               <div class="med-dropdown" id="med-dropdown"></div>
             </div>
             <div class="flex flex-wrap gap-2 mt-5" id="med-tags"></div>
+            <button class="slide-skip" onclick="advanceEnrichStep()">No medications &rarr;</button>
           </div>
 
           <!-- Slide 4: Mental Health -->
@@ -639,6 +645,7 @@
             </div>
 
             <div class="phq9-score-display" id="phq9-score-display"></div>
+            <button class="slide-skip" onclick="advanceEnrichStep()">Skip this &rarr;</button>
           </div>
         <!-- /step content -->
 
