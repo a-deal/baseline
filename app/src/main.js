@@ -223,6 +223,7 @@ async function computeResults() {
   renderResults(output, formProfile);
   await clearDraft();
   _isEditMode = false;
+  document.querySelector('.stepper-strip')?.classList.remove('edit-mode');
   track('score_calculated', { score: Math.round(output.coverageScore) });
   log.info('results computed', { score: output.coverageScore });
 }
@@ -336,9 +337,8 @@ let _currentEnrichStep = 0;
 let _isEditMode = false;
 const ENRICH_STEP_COUNT = 6;
 
-// Make stepper steps clickable — jump to that slide
+// Make stepper steps clickable in edit mode (CSS enables pointer-events via .edit-mode)
 document.querySelectorAll('.stepper-step').forEach((step, i) => {
-  step.style.cursor = 'pointer';
   step.addEventListener('click', () => goToEnrichStep(i));
 });
 
@@ -767,6 +767,7 @@ window.clearSaved = async function() {
 // ── Shared intake reset — used by startOver and clearAndRestart ──
 function _resetIntakeUI() {
   _isEditMode = false;
+  document.querySelector('.stepper-strip')?.classList.remove('edit-mode');
   clearDraft();
   resetState();
   resetPhq9();
@@ -856,6 +857,7 @@ function _resetIntakeUI() {
 
 window.editValues = function() {
   _isEditMode = true;
+  document.querySelector('.stepper-strip')?.classList.add('edit-mode');
   document.getElementById('results').classList.remove('active');
   document.getElementById('questionnaire').style.display = 'block';
   document.getElementById('phase1').style.display = 'none';

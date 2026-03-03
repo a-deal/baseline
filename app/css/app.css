@@ -988,6 +988,15 @@ footer p { @apply font-mono text-[0.72rem] text-text-dim leading-loose; }
   opacity: 0.45;
 }
 
+/* Edit mode — steps become clickable */
+.stepper-strip.edit-mode .stepper-step {
+  pointer-events: auto;
+  cursor: pointer;
+}
+.stepper-strip.edit-mode .stepper-step:not(.active):hover {
+  opacity: 0.8;
+}
+
 /* ── Nav buttons (own row below stepper strip) ── */
 .stepper-nav {
   @apply flex items-center justify-center gap-2 mt-3 mb-2;
