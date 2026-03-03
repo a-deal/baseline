@@ -396,14 +396,15 @@
 
           <!-- Slide 1: Blood work -->
           <div class="enrich-slide" data-slide="1">
+            <div class="slide-hint">Lipid panel, metabolic panel, CBC &mdash; the standard blood work from your annual physical.</div>
             <div class="field-group">
               <div class="upload-zone" id="lab-drop" onclick="document.getElementById('lab-file-input').click()">
                 <div class="text-text-dim opacity-40">
                   <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 16V4m0 0l-4 4m4-4l4 4"/><path d="M20 16v2a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-2"/></svg>
                 </div>
                 <div>
-                  <div class="font-body text-[0.92rem] text-text-muted font-medium mb-1">Upload lab report</div>
-                  <div class="font-mono text-[0.7rem] text-text-dim">PDF or text &middot; Quest, LabCorp, any format</div>
+                  <div class="font-body text-[0.92rem] text-text-muted font-medium mb-1">Upload your lipid or metabolic panel</div>
+                  <div class="font-mono text-[0.7rem] text-text-dim">PDF or text &middot; Quest, LabCorp, Function Health, any provider</div>
                 </div>
               </div>
               <input type="file" id="lab-file-input" accept=".pdf,.txt,.csv" multiple style="display:none" onchange="handleLabFileInput(event)">

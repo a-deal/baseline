@@ -879,6 +879,7 @@ footer p { @apply font-mono text-[0.72rem] text-text-dim leading-loose; }
 .lab-file-item .file-status.warn { color: #f0ad4e; }
 .lab-file-item .file-status.error { @apply text-accent; }
 .lab-file-item .file-date { @apply font-mono text-[0.62rem] text-text-dim; }
+.lab-file-item .file-hint { @apply block text-[0.72rem] text-text-muted mt-1 leading-relaxed; }
 .lab-file-item .file-chips { @apply hidden; }
 .parsed-chip-inline { @apply inline-block px-2 py-0.5 rounded-sm font-mono text-[0.7rem] text-text-muted; background: rgba(var(--surface),0.04); border: 1px solid rgba(var(--surface),0.06); }
 #lab-import-summary { @apply hidden font-mono text-[0.72rem] text-text-muted mt-2 px-2.5 py-1.5 bg-success-dim rounded border border-success/15; }
@@ -959,7 +960,10 @@ footer p { @apply font-mono text-[0.72rem] text-text-dim leading-loose; }
 
 /* ── Nav buttons (own row below stepper strip) ── */
 .stepper-nav {
-  @apply flex items-center justify-center gap-3 mt-3 mb-2;
+  @apply flex items-center justify-center gap-2 mt-3 mb-2;
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
 }
 .stepper-back {
   @apply flex items-center gap-1.5 px-5 py-2.5 rounded-lg font-mono text-[0.75rem] cursor-pointer transition-all duration-200 select-none;

@@ -166,8 +166,11 @@ function updateSubmitGate() {
 
 // ── Checklist updates ──
 export function updateVoiceChecklist(extracted, source = 'live') {
+  // AI re-submissions can overwrite previously locked items
+  const allowOverwrite = source === 'ai';
+
   const check = (id, condition) => {
-    if (checklistLocked.has(id)) return;
+    if (checklistLocked.has(id) && !allowOverwrite) return;
     const item = document.querySelector(`.voice-checklist-item[data-check="${id}"]`);
     if (!item || !condition) return;
 
@@ -178,7 +181,7 @@ export function updateVoiceChecklist(extracted, source = 'live') {
       return;
     }
 
-    item.classList.remove('pending');
+    item.classList.remove('pending', 'declined');
     item.classList.add('checked');
     checklistLocked.add(id);
   };
@@ -188,11 +191,11 @@ export function updateVoiceChecklist(extracted, source = 'live') {
   check('height', !!extracted.heightFt);
   check('weight', !!extracted.weight);
 
-  if (!checklistLocked.has('labs')) {
+  if (!checklistLocked.has('labs') || allowOverwrite) {
     const labItem = document.querySelector('.voice-checklist-item[data-check="labs"]');
     const hint = document.getElementById('lab-count-hint');
     if (labItem && (extracted.noLabs || extracted.hasLabs)) {
-      labItem.classList.remove('pending');
+      labItem.classList.remove('pending', 'declined', 'checked');
       if (extracted.noLabs) {
         labItem.classList.add('declined');
         if (hint) hint.textContent = 'none';
@@ -204,10 +207,10 @@ export function updateVoiceChecklist(extracted, source = 'live') {
     }
   }
   // BP: check if provided, or mark as declined
-  if (!checklistLocked.has('bp')) {
+  if (!checklistLocked.has('bp') || allowOverwrite) {
     const bpItem = document.querySelector('.voice-checklist-item[data-check="bp"]');
     if (bpItem && extracted.noBp) {
-      bpItem.classList.remove('pending');
+      bpItem.classList.remove('pending', 'checked');
       bpItem.classList.add('declined');
       checklistLocked.add('bp');
     }

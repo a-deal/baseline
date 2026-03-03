@@ -1,6 +1,6 @@
 // lab-import.js — Drag-drop, PDF extraction, file handling
 
-import { parseLabResults, FIELD_LABELS, FIELD_TO_INPUT } from './lab-parser.js';
+import { parseLabResults, detectPanelType, FIELD_LABELS, FIELD_TO_INPUT } from './lab-parser.js';
 import { addParsedLabValues, addPendingImport, getParsedLabValues, getPendingImports } from './form.js';
 import { createLogger } from './logger.js';
 const log = createLogger('lab-import');
@@ -74,9 +74,16 @@ export async function handleLabFiles(fileList) {
 
         log.info('imported lab file', { file: file.name, count, drawDate });
       } else {
-        fileItem.innerHTML = `<span class="file-name">${file.name}</span>
-          <span class="file-status warn">no biomarkers found</span>`;
-        log.warn('no biomarkers in file', { file: file.name });
+        const panel = detectPanelType(text);
+        if (panel) {
+          fileItem.innerHTML = `<span class="file-name">${file.name}</span>
+            <span class="file-status warn">looks like a ${panel.label}</span>
+            <span class="file-hint">${panel.hint}</span>`;
+        } else {
+          fileItem.innerHTML = `<span class="file-name">${file.name}</span>
+            <span class="file-status warn">no biomarkers found</span>`;
+        }
+        log.warn('no biomarkers in file', { file: file.name, detectedPanel: panel?.type });
       }
     } catch (err) {
       log.error('error processing lab file', { file: file.name, error: err.message });
@@ -151,7 +158,12 @@ export function parseLabText() {
   const containerEl = document.getElementById('parse-results');
 
   if (count === 0) {
-    summaryEl.innerHTML = 'No biomarkers found. Try pasting more text, or use the manual fields below.';
+    const panel = detectPanelType(text);
+    if (panel) {
+      summaryEl.innerHTML = `This looks like a <strong>${panel.label}</strong>. ${panel.hint}`;
+    } else {
+      summaryEl.innerHTML = 'No biomarkers found. Try pasting more text, or use the manual fields below.';
+    }
     summaryEl.style.background = 'var(--red-dim)';
     summaryEl.style.borderColor = 'rgba(200, 60, 60, 0.2)';
     valuesEl.innerHTML = '';

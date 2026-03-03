@@ -142,3 +142,48 @@ export function parseLabResults(text) {
   log.info('parsed lab results', { count: Object.keys(results).length, fields: Object.keys(results) });
   return results;
 }
+
+// ── Panel type detection (for helpful "no results" messages) ──
+const PANEL_SIGNATURES = [
+  {
+    type: 'autoimmune',
+    label: 'autoimmune panel',
+    keywords: ['ana screen', 'ana ifa', 'rheumatoid factor', 'anti-ccp', 'ccp ab', 'sjogren', 'scl-70', 'centromere', 'chromatin', 'sm antibody', 'sm/rnp', 'cardiolipin', 'b2 glycoprotein', 'lupus'],
+    hint: 'We look for metabolic markers like cholesterol, glucose, and A1C. Check if you have a separate lipid or metabolic panel.',
+  },
+  {
+    type: 'thyroid',
+    label: 'thyroid panel',
+    keywords: ['thyroid peroxidase', 'anti-tpo', 'thyroglobulin antibod', 'trab', 'thyroid stimulating immunoglobulin'],
+    hint: 'We can read TSH, Free T3, and Free T4 — check if those are on a separate report.',
+  },
+  {
+    type: 'urinalysis',
+    label: 'urinalysis',
+    keywords: ['urinalysis', 'urine appearance', 'urine color', 'specific gravity', 'urine ph', 'urine protein', 'urine glucose'],
+    hint: 'We look for blood-based biomarkers like cholesterol, glucose, and A1C.',
+  },
+  {
+    type: 'coagulation',
+    label: 'coagulation panel',
+    keywords: ['prothrombin time', 'inr', 'partial thromboplastin', 'fibrinogen', 'd-dimer'],
+    hint: 'We look for metabolic markers like cholesterol, glucose, and A1C.',
+  },
+  {
+    type: 'allergy',
+    label: 'allergy panel',
+    keywords: ['ige total', 'allergen', 'immunocap', 'specific ige'],
+    hint: 'We look for metabolic markers like cholesterol, glucose, and A1C.',
+  },
+];
+
+export function detectPanelType(text) {
+  const lower = text.toLowerCase();
+  for (const panel of PANEL_SIGNATURES) {
+    const matches = panel.keywords.filter(kw => lower.includes(kw));
+    if (matches.length >= 2) {
+      return { type: panel.type, label: panel.label, hint: panel.hint };
+    }
+  }
+  return null;
+}
