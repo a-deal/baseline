@@ -7,7 +7,7 @@
   --color-bg-elevated: #141418;
   --color-border: #2a2a35;
   --color-text: #f0f0f0;
-  --color-text-muted: #9a9aaa;
+  --color-text-muted: #a8a8b8;
   --color-text-dim: #6a6a7a;
   --color-accent: #c83c3c;
   --color-accent-dim: rgba(200, 60, 60, 0.12);
@@ -111,7 +111,7 @@ input, textarea, select { font-size: max(1rem, 16px); }
   --color-bg-elevated: #141418;
   --color-border: #2a2a35;
   --color-text: #f0f0f0;
-  --color-text-muted: #9a9aaa;
+  --color-text-muted: #a8a8b8;
   --color-text-dim: #6a6a7a;
   --color-accent: #c83c3c;
   --color-accent-dim: rgba(200, 60, 60, 0.12);
@@ -957,7 +957,20 @@ footer p { @apply font-mono text-[0.72rem] text-text-dim leading-loose; }
   opacity: 0.45;
 }
 
-/* ── Continue button (own row below stepper strip) ── */
+/* ── Nav buttons (own row below stepper strip) ── */
+.stepper-nav {
+  @apply flex items-center justify-center gap-3 mt-3 mb-2;
+}
+.stepper-back {
+  @apply flex items-center gap-1.5 px-5 py-2.5 rounded-lg font-mono text-[0.75rem] cursor-pointer transition-all duration-200 select-none;
+  background: none;
+  border: 1px solid rgba(var(--surface), 0.06);
+  color: var(--color-text-dim);
+}
+.stepper-back:hover {
+  color: var(--color-text-muted);
+  border-color: rgba(var(--surface), 0.12);
+}
 .stepper-continue {
   @apply flex items-center justify-center gap-2 mt-3 mb-2 px-8 py-2.5 rounded-lg font-display text-[0.82rem] font-bold uppercase tracking-wide cursor-pointer transition-all duration-300 select-none border mx-auto;
   width: fit-content;

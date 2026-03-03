@@ -336,6 +336,10 @@ function goToEnrichStep(n) {
 
   _currentEnrichStep = n;
   _updateContinueButton(n);
+
+  // Show/hide back button
+  const backBtn = document.getElementById('stepper-back');
+  if (backBtn) backBtn.style.display = n > 0 ? '' : 'none';
 }
 
 function _updateEnrichProgress() {
@@ -372,6 +376,11 @@ function advanceEnrichStep() {
   if (_currentEnrichStep >= ENRICH_STEP_COUNT - 1) return;
 
   goToEnrichStep(_currentEnrichStep + 1);
+}
+
+function retreatEnrichStep() {
+  if (_currentEnrichStep <= 0) return;
+  goToEnrichStep(_currentEnrichStep - 1);
 }
 
 // ── Continue button progressive disclosure ──
@@ -668,6 +677,7 @@ window.removeMedTag = removeMedTag;
 window.showPhase2 = showPhase2;
 window.goBackToPhase1 = goBackToPhase1;
 window.advanceEnrichStep = advanceEnrichStep;
+window.retreatEnrichStep = retreatEnrichStep;
 
 // ── Feedback tracking (after window bindings are set) ──
 initBreadcrumbTracking();

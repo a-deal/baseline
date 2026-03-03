@@ -285,11 +285,17 @@
             <span class="stepper-check">&check;</span>
           </div>
         </div>
-        <!-- Continue button — own row below stepper -->
-        <button class="stepper-continue" id="stepper-continue" onclick="advanceEnrichStep()">
-          <span class="stepper-continue-label">Continue</span>
-          <span class="stepper-continue-arrow">&rarr;</span>
-        </button>
+        <!-- Nav buttons — own row below stepper -->
+        <div class="stepper-nav">
+          <button class="stepper-back" id="stepper-back" onclick="retreatEnrichStep()" style="display:none">
+            <span class="stepper-back-arrow">&larr;</span>
+            <span>Back</span>
+          </button>
+          <button class="stepper-continue" id="stepper-continue" onclick="advanceEnrichStep()">
+            <span class="stepper-continue-label">Continue</span>
+            <span class="stepper-continue-arrow">&rarr;</span>
+          </button>
+        </div>
 
         <!-- Step content (no carousel wrapper — slides flow as page content) -->
           <!-- Slide 0: Wearable import -->
