@@ -18,11 +18,23 @@ jobs:
         with:
           node-version: 20
 
-      - name: Install Playwright
-        run: |
-          cd app
-          npm install @playwright/test
-          npx playwright install --with-deps chromium
+      - name: Install dependencies
+        run: cd app && npm ci
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        id: playwright-cache
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ hashFiles('app/package-lock.json') }}
+
+      - name: Install Playwright browsers
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: cd app && npx playwright install --with-deps chromium
+
+      - name: Install Playwright deps (cached)
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+        run: npx playwright install-deps chromium
 
       - name: Wait for GitHub Pages deploy
         if: github.event_name == 'push'
