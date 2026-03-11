@@ -471,23 +471,251 @@ footer a:hover { color: var(--text); }
   </div>
 </div>
 
-<!-- Dashboard -->
+<!-- Dashboard Foreshadow -->
 <div class="container">
   <div class="section">
     <h2>See it all at once</h2>
-    <p>Ask Claude to open the dashboard for a visual snapshot. <strong>Coverage, clinical zones, wearable trends, compound patterns, and coaching insights</strong> in one view. Progressive reveal — score and next moves above the fold, everything else on demand.</p>
+    <p>Say <strong>"show me the dashboard"</strong> and Claude opens a visual snapshot. Coverage, clinical zones, compound patterns, wearable trends — one view, your machine.</p>
+
+    <!-- Mini-dashboard preview -->
+    <div class="dash-preview" id="dash-preview">
+      <!-- Hero row -->
+      <div class="dp-hero">
+        <div class="dp-ring-wrap">
+          <svg viewBox="0 0 80 80" width="80" height="80">
+            <circle cx="40" cy="40" r="34" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="4"/>
+            <circle class="dp-ring" cx="40" cy="40" r="34" fill="none" stroke="#3daa62" stroke-width="4"
+              stroke-linecap="round" stroke-dasharray="0 214" transform="rotate(-90 40 40)"/>
+          </svg>
+          <div class="dp-grade">B+</div>
+        </div>
+        <div class="dp-stats">
+          <div class="dp-stat"><span class="dp-stat-val">71st</span><span class="dp-stat-lbl">avg percentile</span></div>
+          <div class="dp-stat"><span class="dp-stat-val">15/20</span><span class="dp-stat-lbl">measured</span></div>
+          <div class="dp-stat"><span class="dp-stat-val">5</span><span class="dp-stat-lbl">gaps</span></div>
+        </div>
+      </div>
+      <!-- Metric rows -->
+      <div class="dp-metrics">
+        <div class="dp-metric"><span class="dp-accent" style="background:#3daa62;"></span><span class="dp-name">Lipid Panel + ApoB</span><span class="dp-val">72</span><span class="dp-pill dp-optimal">Optimal</span></div>
+        <div class="dp-metric"><span class="dp-accent" style="background:#3daa62;"></span><span class="dp-name">Metabolic Panel</span><span class="dp-val">3.5</span><span class="dp-pill dp-optimal">Optimal</span></div>
+        <div class="dp-metric"><span class="dp-accent" style="background:#3daa62;"></span><span class="dp-name">Resting Heart Rate</span><span class="dp-val">50.5</span><span class="dp-pill dp-optimal">Optimal</span></div>
+        <div class="dp-metric"><span class="dp-accent" style="background:#c83c3c;box-shadow:0 0 6px rgba(200,60,60,0.3);"></span><span class="dp-name">Sleep Regularity</span><span class="dp-val">&plusmn;107</span><span class="dp-pill dp-concern">Concerning</span></div>
+      </div>
+      <!-- Patterns -->
+      <div class="dp-patterns">
+        <div class="dp-pat"><span class="dp-dot dp-dot-clear"></span>Metabolic Syndrome<span class="dp-pat-status">0/5</span></div>
+        <div class="dp-pat"><span class="dp-dot dp-dot-clear"></span>Recovery Stress<span class="dp-pat-status">0/3</span></div>
+      </div>
+      <!-- Fade overlay -->
+      <div class="dp-fade"></div>
+    </div>
 
     <div class="convo" style="margin-top:24px;">
       <div class="convo-msg convo-user">Show me the dashboard</div>
       <div class="convo-msg convo-ai">
         <div class="convo-label">HEALTH ENGINE</div>
-        <strong>Dashboard opened.</strong> Coverage at 74%. 15 of 20 metrics scored, avg 71st percentile.<br><br>
-        Next moves: <strong>Family History</strong> (free), <strong>Waist Circumference</strong> ($3), <strong>VO2 Max</strong> (free with Garmin).<br><br>
-        No compound patterns flagged. Recovery trends show RHR dropping (57 &rarr; 50 bpm over 90 days). Sleep regularity is the one flag — bedtime stdev of 107 min.
+        <strong>Dashboard opened.</strong> Coverage at 74% &mdash; 15 of 20 metrics scored. No compound patterns flagged. RHR trending down (57 &rarr; 50 bpm over 90 days). Sleep regularity is the one flag.
       </div>
     </div>
   </div>
 </div>
+
+<style>
+.dash-preview {
+  margin: 28px 0 0;
+  background: #0d0d10;
+  border: 1px solid #1a1a22;
+  border-radius: 8px;
+  padding: 24px 24px 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.dp-hero {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 20px;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.6s ease 0.1s, transform 0.6s ease 0.1s;
+}
+
+.dp-ring-wrap {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  flex-shrink: 0;
+}
+
+.dp-grade {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--text);
+}
+
+.dp-ring {
+  transition: stroke-dasharray 1s ease 0.4s;
+}
+
+.dp-stats {
+  display: flex;
+  gap: 20px;
+}
+
+.dp-stat {
+  display: flex;
+  flex-direction: column;
+}
+
+.dp-stat-val {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.dp-stat-lbl {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.5rem;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.dp-metrics {
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.6s ease 0.3s, transform 0.6s ease 0.3s;
+}
+
+.dp-metric {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.02);
+}
+
+.dp-metric:last-child { border-bottom: none; }
+
+.dp-accent {
+  width: 3px;
+  height: 18px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.dp-name {
+  font-size: 0.75rem;
+  color: var(--text);
+  flex: 1;
+}
+
+.dp-val {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  min-width: 40px;
+  text-align: right;
+}
+
+.dp-pill {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.5rem;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 100px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.dp-optimal { color: #3daa62; background: rgba(45, 138, 78, 0.08); }
+.dp-concern { color: #c83c3c; background: rgba(200, 60, 60, 0.08); }
+
+.dp-patterns {
+  display: flex;
+  gap: 12px;
+  margin-top: 12px;
+  padding-bottom: 24px;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.6s ease 0.5s, transform 0.6s ease 0.5s;
+}
+
+.dp-pat {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.6rem;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.dp-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.dp-dot-clear { background: #3daa62; box-shadow: 0 0 4px rgba(45,138,78,0.3); }
+
+.dp-pat-status {
+  color: var(--text-dim);
+  margin-left: 4px;
+}
+
+.dp-fade {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 48px;
+  background: linear-gradient(transparent, #0d0d10);
+  pointer-events: none;
+}
+
+.dash-preview.visible .dp-hero,
+.dash-preview.visible .dp-metrics,
+.dash-preview.visible .dp-patterns {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.dash-preview.visible .dp-ring {
+  stroke-dasharray: 158 214;
+}
+
+@media (max-width: 600px) {
+  .dp-stats { gap: 14px; }
+  .dp-patterns { flex-direction: column; gap: 6px; }
+}
+</style>
+
+<script>
+(function() {
+  const el = document.getElementById('dash-preview');
+  if (!el) return;
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        el.classList.add('visible');
+        obs.unobserve(el);
+      }
+    });
+  }, { threshold: 0.2 });
+  obs.observe(el);
+})();
+</script>
 
 <!-- Setup -->
 <div class="container">
