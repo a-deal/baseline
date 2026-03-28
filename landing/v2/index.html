@@ -928,6 +928,9 @@ tailwind.config = {
 <script src="https://unpkg.com/lenis@1.3.15/dist/lenis.min.js"></script>
 
 <script>
+// ——— Mobile detection ———
+const isMobile = window.innerWidth < 768;
+
 // ——— Lenis smooth scroll ———
 window.lenis = new Lenis({ wheelMultiplier: 0.8 });
 const lenis = window.lenis;
@@ -1103,10 +1106,10 @@ document.querySelectorAll('.stack-word').forEach((el, i) => {
   });
 });
 
-// ——— Domain cards: pinned grid, cards arrive from different directions, finale glow ———
-// IMPORTANT: This must run BEFORE outcome triggers, because the pin adds scroll height
+// ——— Domain cards ———
 const domainCards = document.querySelectorAll('.domain-card');
-if (domainCards.length) {
+if (domainCards.length && !isMobile) {
+  // Desktop: pinned grid, cards arrive from different directions, crash out
   const entryDirections = [
     { x: -80, y: 0 },   // 01 SLEEP - from left
     { x: 0, y: -80 },   // 02 LABS - from top
@@ -1137,20 +1140,18 @@ if (domainCards.length) {
     );
   });
 
-  // Brief hold after all cards settle
   const finaleStart = domainCards.length * 0.5 + 1.2;
   domainTl.to({}, { duration: 0.8 }, finaleStart);
 
-  // Crash out: cards fall/fly off in different directions
   const crashDirections = [
-    { x: -200, y: 800, rotation: -35 },  // 01 SLEEP - fall left
-    { x: 80, y: 900, rotation: 15 },     // 02 LABS - fall center-right
-    { x: 250, y: 750, rotation: 40 },    // 03 MOVEMENT - fly right
-    { x: -100, y: 850, rotation: -20 },  // 04 NUTRITION - fall center-left
-    { x: -300, y: 700, rotation: -45 },  // 05 BODY COMP - fly far left
-    { x: 150, y: 950, rotation: 25 },    // 06 VITALS - drop right
-    { x: -50, y: 800, rotation: -10 },   // 07 MIND - drop center
-    { x: 300, y: 750, rotation: 50 },    // 08 HISTORY - fly far right
+    { x: -200, y: 800, rotation: -35 },
+    { x: 80, y: 900, rotation: 15 },
+    { x: 250, y: 750, rotation: 40 },
+    { x: -100, y: 850, rotation: -20 },
+    { x: -300, y: 700, rotation: -45 },
+    { x: 150, y: 950, rotation: 25 },
+    { x: -50, y: 800, rotation: -10 },
+    { x: 300, y: 750, rotation: 50 },
   ];
 
   const crashStart = finaleStart + 0.8;
@@ -1161,21 +1162,29 @@ if (domainCards.length) {
       duration: 1.5, ease: 'power2.in',
     }, crashStart + i * 0.08);
   });
+} else if (domainCards.length) {
+  // Mobile: simple staggered reveal, no pin
+  domainCards.forEach((card, i) => {
+    gsap.to(card, {
+      opacity: 1, duration: 0.6, ease: 'power2.out',
+      delay: i * 0.08,
+      scrollTrigger: { trigger: card, start: 'top 90%', toggleActions: 'play none none reverse' }
+    });
+  });
 }
 
 // Refresh after pin so all downstream triggers have correct positions
 ScrollTrigger.refresh();
 
-// ——— Outcomes: pinned carousel with all cards in DOM ———
-// Scrubbed timeline — simple fades only, no rotation/scale (scrub + fancy eases = janky)
+// ——— Outcomes ———
 const outcomeNames = document.querySelectorAll('.outcome-name');
 const outcomeCards = document.querySelectorAll('.outcome-card-item');
 const carouselTrack = document.getElementById('outcomes-carousel-track');
 const nameHeight = 60;
 const numOutcomes = outcomeNames.length;
 
-if (numOutcomes) {
-  // More scroll per outcome = slower, more breathing room
+if (numOutcomes && !isMobile) {
+  // Desktop: pinned carousel with scrubbed timeline
   const scrollPerOutcome = 600;
   const totalScroll = numOutcomes * scrollPerOutcome;
 
@@ -1185,12 +1194,10 @@ if (numOutcomes) {
       start: 'top 15%',
       end: () => '+=' + totalScroll,
       pin: '#outcomes-pin-inner',
-      scrub: 1.5, // smoother catchup
+      scrub: 1.5,
     }
   });
 
-  // Each outcome gets a full segment with hold time
-  // Layout: [name transition 0.25] [card fade in 0.2] [hold 0.35] [card fade out 0.2]
   const seg = 1;
 
   outcomeNames.forEach((nameEl, i) => {
@@ -1200,19 +1207,12 @@ if (numOutcomes) {
     const prevSpan = i > 0 ? outcomeNames[i - 1].querySelector('span') : null;
     const prevCard = i > 0 ? outcomeCards[i - 1] : null;
 
-    // Previous card fades out (overlaps with name transition)
     if (prevCard) {
-      outcomeTl.to(prevCard, {
-        opacity: 0, y: -20, duration: seg * 0.2, ease: 'none',
-      }, t);
+      outcomeTl.to(prevCard, { opacity: 0, y: -20, duration: seg * 0.2, ease: 'none' }, t);
     }
 
-    // Slide carousel track to this name
-    outcomeTl.to(carouselTrack, {
-      y: -(i * nameHeight), duration: seg * 0.25, ease: 'none',
-    }, t);
+    outcomeTl.to(carouselTrack, { y: -(i * nameHeight), duration: seg * 0.25, ease: 'none' }, t);
 
-    // Highlight this name, dim previous
     if (span) {
       outcomeTl.to(span, { color: '#c83c3c', duration: seg * 0.2, ease: 'none' }, t);
     }
@@ -1220,7 +1220,6 @@ if (numOutcomes) {
       outcomeTl.to(prevSpan, { color: 'rgba(240,240,240,0.15)', duration: seg * 0.15, ease: 'none' }, t);
     }
 
-    // Card fades in (simple opacity + slight y, no rotation/scale)
     if (card) {
       outcomeTl.fromTo(card,
         { opacity: 0, y: 24 },
@@ -1230,16 +1229,68 @@ if (numOutcomes) {
     }
   });
 
-  // Dim last name and fade last card at end
   const lastSpan = outcomeNames[numOutcomes - 1]?.querySelector('span');
   const lastCard = outcomeCards[numOutcomes - 1];
   if (lastSpan) outcomeTl.to(lastSpan, { color: 'rgba(240,240,240,0.15)', duration: 0.3, ease: 'none' }, numOutcomes * seg);
   if (lastCard) outcomeTl.to(lastCard, { opacity: 0, duration: 0.3, ease: 'none' }, numOutcomes * seg);
+} else if (numOutcomes) {
+  // Mobile: no pin, show as scrollable list
+  // Hide the carousel viewport and show names inline with their cards
+  const carousel = document.getElementById('outcomes-carousel');
+  const cardArea = document.getElementById('outcome-card-area');
+  if (carousel) carousel.style.display = 'none';
+  if (cardArea) cardArea.style.display = 'none';
+
+  // Build a simple mobile outcomes list
+  const pinInner = document.getElementById('outcomes-pin-inner');
+  if (pinInner) {
+    pinInner.classList.remove('min-h-screen');
+    pinInner.style.minHeight = 'auto';
+
+    const mobileList = document.createElement('div');
+    mobileList.className = 'space-y-6 w-full px-band py-8';
+
+    const outcomeLabels = ['SLEEP BETTER','LOSE WEIGHT','MORE ENERGY','BUILD STRENGTH','EAT HEALTHIER','LESS STRESS','SHARPER FOCUS','KNOW MORE'];
+
+    outcomeCards.forEach((card, i) => {
+      const wrapper = document.createElement('div');
+      wrapper.className = 'reveal';
+      wrapper.style.opacity = '0';
+
+      // Name heading
+      const name = document.createElement('div');
+      name.className = 'font-display font-bold text-coral text-[1.4rem] tracking-tight mb-3';
+      name.textContent = outcomeLabels[i] || '';
+
+      // Clone the card content (not the absolute-positioned wrapper)
+      const cardContent = card.querySelector('.bg-bg-elevated');
+      const blurb = card.querySelector('p.text-ink-muted');
+      const cardClone = cardContent ? cardContent.cloneNode(true) : null;
+
+      wrapper.appendChild(name);
+      if (cardClone) wrapper.appendChild(cardClone);
+      if (blurb) {
+        const blurbClone = blurb.cloneNode(true);
+        blurbClone.className = 'text-ink-muted text-[0.85rem] leading-relaxed mt-4';
+        wrapper.appendChild(blurbClone);
+      }
+
+      mobileList.appendChild(wrapper);
+
+      // Animate
+      gsap.to(wrapper, {
+        opacity: 1, duration: 0.6,
+        scrollTrigger: { trigger: wrapper, start: 'top 88%', toggleActions: 'play none none reverse' }
+      });
+    });
+
+    pinInner.querySelector('.w-full')?.replaceWith(mobileList);
+  }
 }
 
-// ——— Proof section: pinned, stat row + insulin card animate in sequence ———
+// ——— Proof section: pinned, stat row + insulin card animate in sequence (desktop only) ———
 const proofStatRow = document.getElementById('proof-stat-row');
-if (proofStatRow) {
+if (proofStatRow && !isMobile) {
   const proofTl = gsap.timeline({
     scrollTrigger: {
       trigger: '#proof-pin-wrap',
