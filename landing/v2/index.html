@@ -49,6 +49,13 @@ tailwind.config = {
       -webkit-background-clip: text;
       background-clip: text;
     }
+    .font-ghost-diag {
+      font-family: 'Anybody', sans-serif; font-weight: 900; line-height: 0.85; letter-spacing: -0.03em; text-transform: uppercase;
+      color: transparent;
+      background: linear-gradient(135deg, #1a1a1a var(--fill, 0%), rgba(0,0,0,0.06) var(--fill, 0%));
+      -webkit-background-clip: text;
+      background-clip: text;
+    }
     .font-ghost-dark {
       font-family: 'Anybody', sans-serif; font-weight: 900; line-height: 0.85; letter-spacing: -0.03em; text-transform: uppercase;
       color: transparent;
@@ -850,7 +857,7 @@ tailwind.config = {
   <div id="closing-pin-wrap" style="min-height: 100vh;">
     <div class="flex items-center justify-center px-band" id="closing-pin-inner" style="min-height: 100vh;">
       <div class="text-center">
-        <div class="font-ghost text-[clamp(2.5rem,9vw,8rem)] leading-[0.85] mx-auto" id="closing-ghost">START WITH WHAT YOU HAVE</div>
+        <div class="font-ghost-diag text-[clamp(2.5rem,9vw,8rem)] leading-[0.85] mx-auto" id="closing-ghost">START WITH WHAT YOU HAVE</div>
       </div>
     </div>
   </div>
@@ -1340,27 +1347,26 @@ if (proofStatRow && !isMobile) {
 // ——— Closing statement: pinned on cream, ghost-fill, then release to CTA (desktop only) ———
 const closingGhost = document.getElementById('closing-ghost');
 if (closingGhost && !isMobile) {
-  // Start faded out, offset diagonally
-  gsap.set(closingGhost, { opacity: 0, x: -60, y: 40 });
+  gsap.set(closingGhost, { opacity: 0, scale: 0.92 });
 
   const closingTl = gsap.timeline({
     scrollTrigger: {
       trigger: '#closing-pin-wrap',
       start: 'top top',
-      end: '+=1400',
+      end: '+=1600',
       pin: '#closing-pin-inner',
       scrub: 1,
     }
   });
 
-  // Fade in + slide diagonally into place
-  closingTl.to(closingGhost, { opacity: 1, x: 0, y: 0, duration: 0.3, ease: 'none' }, 0);
-  // Ghost fill diagonally (left to right)
-  closingTl.to(closingGhost, { '--fill': '100%', duration: 0.4, ease: 'none' }, 0.25);
-  // Hold at full
-  closingTl.to({}, { duration: 0.15 });
-  // Fade out + drift diagonally off
-  closingTl.to(closingGhost, { opacity: 0, x: 60, y: -40, duration: 0.25, ease: 'none' });
+  // Fade in with a subtle scale punch
+  closingTl.to(closingGhost, { opacity: 1, scale: 1, duration: 0.2, ease: 'none' }, 0.05);
+  // Diagonal ghost fill sweeps from top-left to bottom-right
+  closingTl.to(closingGhost, { '--fill': '100%', duration: 0.5, ease: 'none' }, 0.15);
+  // Hold at full — let it land
+  closingTl.to({}, { duration: 0.2 });
+  // Fade out with slight scale up (exhale)
+  closingTl.to(closingGhost, { opacity: 0, scale: 1.05, duration: 0.2, ease: 'none' });
 }
 
 // ——— Coverage bar animations ———
