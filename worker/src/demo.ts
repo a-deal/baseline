@@ -1,7 +1,7 @@
 import Anthropic from '@anthropic-ai/sdk';
 
 // Rate limit: max requests per IP per hour
-export const DEMO_RATE_LIMIT = 20;
+export const DEMO_RATE_LIMIT = 60;
 const RATE_WINDOW_SECONDS = 3600;
 const MAX_MESSAGES = 12; // max conversation turns
 const MAX_TOKENS = 512; // per response
