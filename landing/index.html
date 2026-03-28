@@ -3,2392 +3,1410 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>baseline. — Average is not healthy.</title>
+<title>baseline. — Your AI Health Coach</title>
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
-<meta name="description" content="Build your health record once. Use it everywhere. Take it with you forever. Free, local-first health coverage scoring.">
-<meta property="og:title" content="baseline. — Average is not healthy.">
-<meta property="og:description" content="I ranked 40 health metrics by ROI. The top 10 cost $143/year combined. Several are free.">
+<meta name="description" content="An AI health coach that knows your numbers, connects them, and drives you to outcomes.">
+<meta property="og:title" content="baseline. — Your AI Health Coach">
+<meta property="og:description" content="There's a healthier version of you on the other side of this.">
 <meta property="og:type" content="website">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="baseline. — Average is not healthy.">
-<meta name="twitter:description" content="Build your health record once. Use it everywhere. Take it with you forever.">
+<meta property="og:image" content="https://mybaseline.health/coach/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<style>
-*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-
-:root {
-  --bg: #08080a;
-  --bg-elevated: #0e0e11;
-  --border: #181820;
-  --text: #f0f0f0;
-  --text-muted: #a8a8b8;
-  --text-dim: #3e3e4a;
-  --red: #c83c3c;
-  --red-dim: rgba(200, 60, 60, 0.10);
-  --font-display: 'Barlow Condensed', sans-serif;
-  --font-body: 'DM Sans', -apple-system, sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
-}
-
-html { scroll-behavior: smooth; }
-
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: var(--font-body);
-  line-height: 1.6;
-  -webkit-font-smoothing: antialiased;
-  overflow-x: hidden;
-  position: relative;
-}
-
-/* ── Subtle grid (from banner) ── */
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background-image:
-    linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
-  background-size: 60px 60px;
-  pointer-events: none;
-  z-index: 0;
-  mask-image: radial-gradient(ellipse 90% 70% at 50% 25%, black 0%, transparent 65%);
-  -webkit-mask-image: radial-gradient(ellipse 90% 70% at 50% 25%, black 0%, transparent 65%);
-}
-
-a { color: var(--text-muted); text-decoration: none; }
-a:hover { color: var(--text); }
-
-.container {
-  max-width: 680px;
-  margin: 0 auto;
-  padding: 0 28px;
-  position: relative;
-  z-index: 1;
-}
-
-/* ── Hero ── */
-.hero {
-  padding: 140px 0 120px;
-  text-align: center;
-}
-
-.logo {
-  font-family: var(--font-display);
-  font-size: 1.1rem;
-  font-weight: 700;
-  text-transform: lowercase;
-  letter-spacing: -0.5px;
-  color: var(--text);
-  margin-bottom: 56px;
-  text-align: right;
-}
-
-.logo .period { color: var(--red); }
-
-h1 {
-  font-family: var(--font-display);
-  font-size: clamp(3rem, 8vw, 5rem);
-  font-weight: 700;
-  line-height: 1.0;
-  letter-spacing: -0.5px;
-  text-transform: uppercase;
-  margin-bottom: 36px;
-}
-
-h1 .line-neg {
-  display: block;
-  color: var(--text);
-}
-
-h1 .word-noise {
-  display: inline-block;
-  color: transparent;
-  -webkit-text-stroke: 1.5px var(--text);
-  opacity: 0.7;
-}
-
-h1 .word-signal {
-  color: var(--red);
-}
-
-.hero-hook {
-  font-family: var(--font-body);
-  font-size: 1.2rem;
-  font-weight: 300;
-  font-style: italic;
-  color: var(--text-muted);
-  margin-bottom: 16px;
-}
-
-.hero-sub {
-  font-size: 1.05rem;
-  color: var(--text-muted);
-  max-width: 440px;
-  margin: 0 auto 52px;
-  font-weight: 300;
-  line-height: 1.6;
-}
-
-.signal-wave {
-  width: min(480px, 80vw);
-  height: auto;
-  margin: 28px auto 32px;
-  display: block;
-  opacity: 0;
-  animation: fadeIn 0.6s ease forwards 0.8s;
-}
-
-.wave-noise, .wave-transition, .wave-signal {
-  stroke-dasharray: 1000;
-  stroke-dashoffset: 1000;
-  animation: drawLine 2.5s ease forwards 1s;
-}
-
-.wave-transition { animation-delay: 1.6s; }
-.wave-signal { animation-delay: 2s; stroke-dasharray: 800; stroke-dashoffset: 800; animation-duration: 2s; }
-
-@keyframes drawLine {
-  to { stroke-dashoffset: 0; }
-}
-
-@keyframes fadeIn {
-  to { opacity: 1; }
-}
-
-.beta-cta {
-  display: inline-block;
-  padding: 14px 36px;
-  background: var(--red);
-  color: #fff;
-  border-radius: 6px;
-  font-family: var(--font-body);
-  font-weight: 700;
-  font-size: 0.95rem;
-  text-decoration: none;
-  letter-spacing: 0.01em;
-  margin-bottom: 20px;
-  transition: opacity 0.2s;
-}
-.beta-cta:hover { opacity: 0.85; text-decoration: none; }
-
-.signup-form {
-  display: flex;
-  gap: 8px;
-  max-width: 400px;
-  margin: 0 auto 14px;
-}
-
-.signup-form input {
-  flex: 1;
-  padding: 13px 16px;
-  background: var(--bg-elevated);
-  border: 1px solid var(--border);
-  border-radius: 5px;
-  color: var(--text);
-  font-family: var(--font-mono);
-  font-size: 0.82rem;
-  outline: none;
-  transition: border-color 0.2s;
-}
-
-.signup-form input::placeholder { color: var(--text-dim); }
-.signup-form input:focus { border-color: rgba(240,240,240,0.2); }
-
-.signup-form button {
-  padding: 13px 24px;
-  background: var(--text);
-  color: var(--bg);
-  border: none;
-  border-radius: 5px;
-  font-family: var(--font-body);
-  font-weight: 700;
-  font-size: 0.85rem;
-  cursor: pointer;
-  white-space: nowrap;
-  transition: opacity 0.2s;
-  letter-spacing: 0.3px;
-}
-
-.signup-form button:hover { opacity: 0.85; }
-
-.trust-line {
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  color: var(--text-dim);
-  letter-spacing: 0.06em;
-}
-
-.score-link {
-  position: fixed;
-  bottom: 32px;
-  right: 32px;
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  font-weight: 500;
-  color: rgba(240, 240, 240, 0.7);
-  letter-spacing: 0.04em;
-  transition: all 0.25s;
-  padding: 10px 18px;
-  background: rgba(14, 14, 17, 0.9);
-  border: 1px solid rgba(255,255,255,0.15);
-  border-radius: 5px;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  z-index: 50;
-}
-
-.score-link:hover {
-  color: var(--text);
-  border-color: rgba(255,255,255,0.3);
-  background: rgba(14, 14, 17, 0.95);
-}
-
-.score-link.hidden { opacity: 0; pointer-events: none; }
-
-/* ── Hero comparison grid ── */
-.hero-compare {
-  margin-top: 32px;
-  display: inline-block;
-}
-
-.hero-compare table {
-  border-collapse: collapse;
-  font-family: var(--font-mono);
-  font-size: 0.62rem;
-  letter-spacing: 0.03em;
-}
-
-.hero-compare th {
-  padding: 0 10px 6px;
-  font-weight: 400;
-  color: var(--text-dim);
-  text-align: center;
-  white-space: nowrap;
-}
-
-.hero-compare th.col-baseline {
-  color: var(--text-muted);
-  font-weight: 600;
-}
-
-.hero-compare td {
-  padding: 3px 10px;
-  text-align: center;
-  color: var(--text-dim);
-}
-
-.hero-compare td:first-child {
-  text-align: right;
-  color: rgba(240,240,240,0.25);
-  padding-right: 14px;
-  font-size: 0.58rem;
-}
-
-.hero-compare .check { color: var(--text-muted); }
-.hero-compare .check-baseline { color: var(--text); font-weight: 600; }
-.hero-compare .miss { color: rgba(255,255,255,0.08); }
-
-@media (max-width: 600px) {
-  .hero-compare { margin-top: 24px; }
-  .hero-compare th,
-  .hero-compare td { padding: 2px 6px; font-size: 0.56rem; }
-}
-
-/* ── Divider ── */
-.divider {
-  width: 40px;
-  height: 1px;
-  background: var(--border);
-  margin: 0 auto;
-}
-
-/* ── Bridge ── */
-.bridge {
-  padding: 80px 0;
-  text-align: center;
-}
-
-.bridge p {
-  font-family: var(--font-display);
-  font-size: clamp(1.4rem, 3.5vw, 2rem);
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  color: rgba(240, 240, 240, 0.3);
-}
-
-/* ── Section base ── */
-section {
-  padding: 96px 0;
-}
-
-.section-label {
-  font-family: var(--font-display);
-  font-size: 0.8rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 4px;
-  color: var(--text-dim);
-  margin-bottom: 20px;
-}
-
-h2 {
-  font-family: var(--font-display);
-  font-size: clamp(1.6rem, 4vw, 2.2rem);
-  font-weight: 700;
-  line-height: 1.1;
-  letter-spacing: -0.3px;
-  text-transform: uppercase;
-  margin-bottom: 32px;
-}
-
-/* ── Problem ── */
-.pain-points {
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-  margin-bottom: 40px;
-}
-
-.pain-point {
-  display: flex;
-  align-items: baseline;
-  gap: 16px;
-  padding: 16px 0;
-  border-bottom: 1px solid rgba(255,255,255,0.04);
-}
-
-.pain-point:last-child { border-bottom: none; }
-
-.pain-icon {
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  color: var(--red);
-  flex-shrink: 0;
-}
-
-.pain-point p {
-  font-size: 0.92rem;
-  color: var(--text-muted);
-  line-height: 1.55;
-}
-
-.stat-callout {
-  padding: 24px 28px;
-  background: var(--red-dim);
-  border-left: 2px solid var(--red);
-  border-radius: 0 4px 4px 0;
-  font-size: 0.9rem;
-  color: var(--text-muted);
-  line-height: 1.7;
-}
-
-.stat-callout strong { color: var(--text); }
-
-/* ── Coverage ── */
-.coverage-visual {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  margin: 40px 0;
-}
-
-.coverage-bar {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-}
-
-.coverage-bar .label {
-  font-family: var(--font-mono);
-  font-size: 0.7rem;
-  color: var(--text-dim);
-  width: 110px;
-  flex-shrink: 0;
-  text-align: right;
-}
-
-.bar-track {
-  flex: 1;
-  height: 3px;
-  background: rgba(255,255,255,0.05);
-  border-radius: 2px;
-  overflow: hidden;
-}
-
-.bar-fill {
-  height: 100%;
-  border-radius: 2px;
-  background: var(--text);
-  transition: width 1.5s ease;
-}
-
-.bar-fill.high { opacity: 0.7; }
-.bar-fill.med { opacity: 0.4; }
-.bar-fill.low { background: var(--red); opacity: 0.6; }
-
-.coverage-bar .pct {
-  font-family: var(--font-mono);
-  font-size: 0.7rem;
-  color: var(--text-dim);
-  width: 36px;
-}
-
-.journey-text {
-  margin-top: 36px;
-  font-size: 0.92rem;
-  color: var(--text-muted);
-  line-height: 1.7;
-}
-
-.journey-text strong { color: var(--text); }
-
-/* ── Top 10 ── */
-.metrics-list {
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-  margin-top: 28px;
-}
-
-.metric-row {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  padding: 13px 0;
-  border-bottom: 1px solid rgba(255,255,255,0.04);
-}
-
-.metric-row:last-child { border-bottom: none; }
-
-.metric-rank {
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  font-weight: 500;
-  color: var(--text-dim);
-  width: 24px;
-  flex-shrink: 0;
-}
-
-.metric-name {
-  flex: 1;
-  font-size: 0.92rem;
-  color: var(--text);
-}
-
-.metric-cost {
-  font-family: var(--font-mono);
-  font-size: 0.78rem;
-  color: var(--text-muted);
-  text-align: right;
-  white-space: nowrap;
-}
-
-.metric-cost.free {
-  color: var(--text);
-  font-weight: 500;
-}
-
-.metrics-note {
-  margin-top: 28px;
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  color: var(--text-dim);
-}
-
-/* ── Cost Comparison ── */
-.compare-table {
-  width: 100%;
-  margin: 36px 0 28px;
-  border-collapse: separate;
-  border-spacing: 0;
-}
-
-.compare-table th,
-.compare-table td {
-  padding: 14px 16px;
-  text-align: left;
-  font-size: 0.82rem;
-  border-bottom: 1px solid rgba(255,255,255,0.04);
-}
-
-.compare-table th {
-  font-family: var(--font-mono);
-  font-size: 0.68rem;
-  font-weight: 500;
-  color: var(--text-dim);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  padding-bottom: 12px;
-  border-bottom: 1px solid rgba(255,255,255,0.08);
-}
-
-.compare-table td:first-child {
-  color: var(--text-muted);
-  font-weight: 500;
-}
-
-.compare-table .row-baseline td {
-  color: var(--text);
-  background: rgba(255,255,255,0.02);
-}
-
-.compare-table .row-baseline td:first-child {
-  color: var(--text);
-  font-weight: 700;
-}
-
-.compare-table td.price {
-  font-family: var(--font-mono);
-  font-size: 0.78rem;
-  white-space: nowrap;
-}
-
-.compare-table td.coverage-cell {
-  font-family: var(--font-mono);
-  font-size: 0.78rem;
-}
-
-.compare-table .coverage-inline {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.compare-table .mini-bar {
-  display: inline-block;
-  height: 3px;
-  border-radius: 2px;
-  background: var(--text-muted);
-  opacity: 0.5;
-  vertical-align: middle;
-}
-
-.compare-table .row-baseline .mini-bar {
-  background: var(--text);
-  opacity: 0.8;
-}
-
-.compare-note {
-  font-size: 0.82rem;
-  color: var(--text-muted);
-  line-height: 1.7;
-  margin-top: 12px;
-}
-
-.compare-note strong { color: var(--text); }
-
-/* Product gap cards */
-.gap-cards {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
-  margin-top: 32px;
-}
-
-.gap-card {
-  padding: 18px 20px;
-  background: var(--bg-elevated);
-  border: 1px solid var(--border);
-  border-radius: 6px;
-}
-
-.gap-card .gap-product {
-  font-family: var(--font-mono);
-  font-size: 0.68rem;
-  font-weight: 500;
-  color: var(--text-dim);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  margin-bottom: 8px;
-}
-
-.gap-card .gap-text {
-  font-size: 0.82rem;
-  color: var(--text-muted);
-  line-height: 1.55;
-}
-
-.gap-card .gap-text strong { color: var(--text); }
-
-/* Journey before/after */
-.journey-visual {
-  display: flex;
-  align-items: center;
-  gap: 24px;
-  margin: 32px 0 12px;
-  justify-content: center;
-}
-
-.journey-score {
-  text-align: center;
-}
-
-.journey-score .j-num {
-  font-family: var(--font-display);
-  font-size: 2.4rem;
-  font-weight: 800;
-  line-height: 1;
-}
-
-.journey-score .j-num.before { color: var(--red); opacity: 0.7; }
-.journey-score .j-num.after { color: var(--text); }
-
-.journey-score .j-label {
-  font-family: var(--font-mono);
-  font-size: 0.62rem;
-  color: var(--text-dim);
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  margin-top: 4px;
-}
-
-.journey-arrow {
-  font-family: var(--font-mono);
-  font-size: 1.2rem;
-  color: var(--text-dim);
-}
-
-.journey-cost {
-  font-family: var(--font-mono);
-  font-size: 0.78rem;
-  color: var(--text-muted);
-  padding: 8px 14px;
-  background: var(--bg-elevated);
-  border: 1px solid var(--border);
-  border-radius: 4px;
-}
-
-/* Score counter */
-.score-counter {
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  color: var(--text-dim);
-  letter-spacing: 0.04em;
-  margin-top: 16px;
-}
-
-@media (max-width: 600px) {
-  .compare-table th,
-  .compare-table td {
-    padding: 10px 8px;
-    font-size: 0.75rem;
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@300;400;500;600;700&family=Anybody:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/lenis@1.3.15/dist/lenis.css" crossorigin>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        bg: { DEFAULT: '#08080a', elevated: '#0e0e11' },
+        ink: { DEFAULT: '#f0f0f0', muted: '#a8a8b8', dim: '#3e3e4a' },
+        cream: '#f5f2e9',
+        warm: '#1a1714',
+        coral: { DEFAULT: '#c83c3c', bright: '#c83c3c' },
+        green: '#2d8a4e',
+      },
+      fontFamily: {
+        display: ['Anybody', 'sans-serif'],
+        serif: ['Playfair Display', 'serif'],
+        body: ['Inter', 'sans-serif'],
+        mono: ['JetBrains Mono', 'monospace'],
+      },
+    }
   }
-  .compare-table td.price { font-size: 0.72rem; }
-  .gap-cards { grid-template-columns: 1fr; }
-  .journey-visual { flex-wrap: wrap; gap: 16px; }
 }
-
-/* ── How It Works ── */
-.steps {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1px;
-  margin: 36px 0;
-  background: rgba(255,255,255,0.04);
-  border-radius: 8px;
-  overflow: hidden;
-}
-
-.step {
-  padding: 28px 16px;
-  background: var(--bg);
-  text-align: center;
-}
-
-.step-num {
-  font-family: var(--font-mono);
-  font-size: 0.62rem;
-  font-weight: 500;
-  color: var(--text-dim);
-  letter-spacing: 0.1em;
-  margin-bottom: 12px;
-}
-
-.step-title {
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 1.05rem;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin-bottom: 8px;
-}
-
-.step-desc {
-  font-size: 0.75rem;
-  color: var(--text-dim);
-  line-height: 1.45;
-}
-
-.how-details {
-  margin-top: 28px;
-  font-size: 0.88rem;
-  color: var(--text-muted);
-  line-height: 1.65;
-}
-
-.how-details code {
-  font-family: var(--font-mono);
-  font-size: 0.78rem;
-  background: var(--bg-elevated);
-  padding: 2px 7px;
-  border-radius: 3px;
-  color: var(--text);
-}
-
-/* ── Story ── */
-.story-block {
-  margin-top: 24px;
-}
-
-.story-block p {
-  font-size: 0.92rem;
-  color: var(--text-muted);
-  line-height: 1.75;
-  margin-bottom: 20px;
-}
-
-.story-block p:last-child { margin-bottom: 0; }
-.story-block strong { color: var(--text); }
-
-.insulin-callout {
-  margin-top: 32px;
-  padding: 24px 28px;
-  background: var(--red-dim);
-  border-left: 2px solid var(--red);
-  border-radius: 0 4px 4px 0;
-  font-family: var(--font-mono);
-  font-size: 0.78rem;
-  color: var(--text-muted);
-  line-height: 1.7;
-}
-
-.insulin-callout strong { color: var(--text); }
-
-/* ── Freshness ── */
-.freshness-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1px;
-  background: var(--border);
-  border-radius: 8px;
-  overflow: hidden;
-  margin-top: 32px;
-}
-
-.freshness-cell {
-  background: var(--bg-elevated);
-  padding: 24px 20px;
-}
-
-.freshness-cell .fc-label {
-  font-family: var(--font-mono);
-  font-size: 0.68rem;
-  color: var(--text-dim);
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-  margin-bottom: 10px;
-}
-
-.freshness-cell .fc-window {
-  font-family: var(--font-display);
-  font-size: 1.4rem;
-  font-weight: 700;
-  color: var(--text);
-  margin-bottom: 6px;
-}
-
-.freshness-cell .fc-examples {
-  font-size: 0.78rem;
-  color: var(--text-muted);
-  line-height: 1.6;
-}
-
-.freshness-callout {
-  margin-top: 28px;
-  padding: 20px 24px;
-  background: rgba(255,255,255,0.02);
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  font-size: 0.85rem;
-  color: var(--text-muted);
-  line-height: 1.7;
-}
-
-.freshness-callout strong { color: var(--text); }
-
-.decay-visual {
-  display: flex;
-  align-items: center;
-  gap: 2px;
-  margin-top: 16px;
-}
-
-.decay-bar {
-  height: 6px;
-  border-radius: 3px;
-  flex: 1;
-}
-
-.decay-labels {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 6px;
-}
-
-.decay-labels span {
-  font-family: var(--font-mono);
-  font-size: 0.65rem;
-  color: var(--text-dim);
-}
-
-@media (max-width: 640px) {
-  .freshness-grid { grid-template-columns: 1fr; }
-}
-
-/* ── CTA ── */
-.cta-section {
-  text-align: center;
-  padding: 120px 0;
-}
-
-.cta-section h2 {
-  margin-bottom: 16px;
-  font-size: clamp(1.8rem, 5vw, 2.8rem);
-}
-
-.cta-sub {
-  font-size: 0.9rem;
-  color: var(--text-muted);
-  margin-bottom: 40px;
-}
-
-.ai-link {
-  color: var(--text);
-  font-weight: 500;
-  border-bottom: 1px solid rgba(255,255,255,0.2);
-  padding-bottom: 1px;
-  transition: border-color 0.2s;
-}
-
-.ai-link:hover {
-  color: var(--text);
-  border-bottom-color: rgba(255,255,255,0.5);
-}
-
-/* ── Footer ── */
-footer {
-  padding: 48px 0;
-  border-top: 1px solid var(--border);
-  text-align: center;
-}
-
-footer p {
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  color: var(--text-dim);
-  line-height: 2;
-}
-
-/* ── Mobile ── */
-@media (max-width: 600px) {
-  .hero { padding: 100px 0 80px; }
-  section { padding: 72px 0; }
-
-  h1 { font-size: clamp(2.4rem, 10vw, 3.5rem); }
-
-  .signup-form {
-    flex-direction: column;
+</script>
+<style type="text/tailwindcss">
+  @layer utilities {
+    .font-massive { font-family: 'Anybody', sans-serif; font-weight: 900; line-height: 0.88; letter-spacing: -0.04em; text-transform: uppercase; }
+    .font-ghost {
+      font-family: 'Anybody', sans-serif; font-weight: 900; line-height: 0.85; letter-spacing: -0.03em; text-transform: uppercase;
+      color: transparent;
+      background: linear-gradient(to right, #1a1a1a var(--fill, 0%), rgba(0,0,0,0.06) var(--fill, 0%));
+      -webkit-background-clip: text;
+      background-clip: text;
+    }
+    .font-ghost-dark {
+      font-family: 'Anybody', sans-serif; font-weight: 900; line-height: 0.85; letter-spacing: -0.03em; text-transform: uppercase;
+      color: transparent;
+      background: linear-gradient(to right, rgba(240,240,240,0.12) var(--fill, 0%), rgba(240,240,240,0.04) var(--fill, 0%));
+      -webkit-background-clip: text;
+      background-clip: text;
+    }
+    .font-ghost-light {
+      font-family: 'Anybody', sans-serif; font-weight: 900; line-height: 0.85; letter-spacing: -0.03em; text-transform: uppercase;
+      color: transparent;
+      background: linear-gradient(to right, rgba(200,60,60,0.25) var(--fill, 0%), rgba(200,60,60,0.06) var(--fill, 0%));
+      -webkit-background-clip: text;
+      background-clip: text;
+    }
+    .font-stat { font-family: 'Anybody', sans-serif; font-weight: 900; line-height: 1; letter-spacing: -0.03em; }
+    .font-label { font-family: 'JetBrains Mono', monospace; font-weight: 500; font-size: 0.65rem; letter-spacing: 0.25em; text-transform: uppercase; }
+    .px-band { padding-left: clamp(2rem, 6vw, 6rem); padding-right: clamp(2rem, 6vw, 6rem); }
+    .py-band { padding-top: clamp(6rem, 12vw, 10rem); padding-bottom: clamp(6rem, 12vw, 10rem); }
   }
 
-  .signup-form button {
-    padding: 14px;
+  /* GSAP handles all scroll animations. These are just marker classes. */
+  html.lenis, html.lenis body { height: auto; }
+  .lenis.lenis-smooth { scroll-behavior: auto !important; }
+  .lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+
+  /* Noise texture */
+  .noise::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0.35;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+    background-size: 128px 128px;
+    mix-blend-mode: overlay;
   }
 
-  .coverage-bar .label {
-    width: 80px;
-    font-size: 0.65rem;
+  /* Form focus */
+  input:focus { border-color: theme('colors.coral.DEFAULT') !important; outline: none; }
+
+  /* Stacked word hover */
+  .stack-word { transition: color 0.3s ease, transform 0.3s ease, letter-spacing 0.3s ease; }
+  .stack-word:hover { color: #c83c3c; transform: translateX(8px); letter-spacing: -0.02em; }
+
+  /* CTA button */
+  .cta-btn { position: relative; overflow: hidden; }
+  .cta-btn::before {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%; width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent);
+    transition: left 0.5s ease;
+  }
+  .cta-btn:hover::before { left: 100%; }
+
+  /* Parallax elements */
+  .parallax { will-change: transform; }
+
+  /* Diagonal section divider */
+  .angle-top { clip-path: polygon(0 clamp(30px, 5vw, 60px), 100% 0, 100% 100%, 0 100%); margin-top: calc(-1 * clamp(30px, 5vw, 60px)); }
+  .angle-bottom { clip-path: polygon(0 0, 100% 0, 100% calc(100% - clamp(30px, 5vw, 60px)), 0 100%); }
+
+  /* Bridge card that spans sections */
+  .bridge-card {
+    position: relative;
+    z-index: 10;
+    margin-bottom: calc(-1 * clamp(3rem, 6vw, 6rem));
   }
 
-  .steps {
-    grid-template-columns: 1fr 1fr;
+  /* Floating accent line */
+  .accent-line {
+    position: absolute;
+    width: 2px;
+    background: linear-gradient(to bottom, transparent, rgba(200,60,60,0.4), transparent);
+    pointer-events: none;
   }
 
-  .cta-section { padding: 80px 0; }
-}
+  /* Stat counter animation */
+  .stat-count { display: inline-block; }
 
-/* ── Form success state ── */
-.form-success {
-  display: none;
-  font-family: var(--font-mono);
-  font-size: 0.82rem;
-  color: var(--text-muted);
-  padding: 14px 0;
-}
+  /* Scroll progress bar */
+  .scroll-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 2px;
+    background: #c83c3c;
+    z-index: 100;
+    transform-origin: left;
+    transition: none;
+  }
 
-/* ── Intake Form ── */
-.intake {
-  max-width: 560px;
-  margin: 0 auto;
-}
+  /* Horizontal scrolling marquee */
+  .marquee-track {
+    display: flex;
+    width: max-content;
+    animation: marquee 25s linear infinite;
+  }
+  .marquee-track:hover { animation-play-state: paused; }
+  @keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+  .marquee-word {
+    font-family: 'Anybody', sans-serif;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: -0.03em;
+    white-space: nowrap;
+    padding: 0 clamp(1.5rem, 3vw, 3rem);
+  }
+  .marquee-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #c83c3c;
+    flex-shrink: 0;
+    align-self: center;
+  }
 
-.intake-progress {
-  display: flex;
-  gap: 4px;
-  margin-bottom: 48px;
-}
+  /* Letter stagger button */
+  .letter-btn { display: inline-flex; gap: 0; }
+  .letter-btn span {
+    display: inline-block;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+  }
+  .letter-btn:hover span {
+    animation: letterBounce 0.4s ease forwards;
+  }
+  .letter-btn:hover span:nth-child(1) { animation-delay: 0s; }
+  .letter-btn:hover span:nth-child(2) { animation-delay: 0.02s; }
+  .letter-btn:hover span:nth-child(3) { animation-delay: 0.04s; }
+  .letter-btn:hover span:nth-child(4) { animation-delay: 0.06s; }
+  .letter-btn:hover span:nth-child(5) { animation-delay: 0.08s; }
+  .letter-btn:hover span:nth-child(6) { animation-delay: 0.1s; }
+  .letter-btn:hover span:nth-child(7) { animation-delay: 0.12s; }
+  .letter-btn:hover span:nth-child(8) { animation-delay: 0.14s; }
+  @keyframes letterBounce {
+    0% { transform: translateY(0); }
+    40% { transform: translateY(-3px); }
+    100% { transform: translateY(0); }
+  }
 
-.intake-progress .pip {
-  flex: 1;
-  height: 2px;
-  background: rgba(255,255,255,0.08);
-  border-radius: 1px;
-  transition: background 0.3s;
-}
+  /* Footer reveal: sits behind content, uncovered as last section scrolls away */
+  .footer-reveal {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 0;
+  }
+  /* All content sections float above the footer */
+  section, .connector-section, nav, .marquee-wrap { position: relative; z-index: 1; }
 
-.intake-progress .pip.active {
-  background: rgba(255,255,255,0.35);
-}
+  /* Outcome name */
+  .outcome-name { transition: transform 0.3s ease; }
 
-.intake-progress .pip.done {
-  background: var(--red);
-  opacity: 0.6;
-}
+  /* Domain card in pinned grid */
+  .domain-card { will-change: transform, opacity; transition: border-color 0.3s ease; }
 
-.intake-step {
-  display: none;
-}
+  /* Founder photo parallax scale */
+  .founder-photo { will-change: transform; }
 
-.intake-step.active {
-  display: block;
-}
+  /* Step card emerge */
+  .step-emerge { will-change: transform, opacity; }
 
-.intake-step h3 {
-  font-family: var(--font-display);
-  font-size: 1.6rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: -0.3px;
-  margin-bottom: 10px;
-  color: var(--text);
-}
+  /* Mobile spacing tightening */
+  @media (max-width: 767px) {
+    .connector-section { padding-top: 3rem !important; padding-bottom: 3rem !important; }
+  }
 
-.intake-step .step-hint {
-  font-size: 0.88rem;
-  color: var(--text-muted);
-  margin-bottom: 28px;
-  line-height: 1.5;
-}
-
-/* Radio / select groups */
-.option-group {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 32px;
-}
-
-.option-group.vertical {
-  flex-direction: column;
-  gap: 0;
-}
-
-.opt-btn {
-  padding: 11px 20px;
-  background: var(--bg-elevated);
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 5px;
-  color: rgba(240, 240, 240, 0.7);
-  font-family: var(--font-body);
-  font-size: 0.9rem;
-  cursor: pointer;
-  transition: all 0.15s;
-  user-select: none;
-}
-
-.opt-btn:hover {
-  border-color: rgba(255,255,255,0.22);
-  color: var(--text);
-}
-
-.opt-btn.selected {
-  border-color: rgba(255,255,255,0.3);
-  color: var(--text);
-  background: rgba(255,255,255,0.07);
-}
-
-/* Checklist items */
-.check-item {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 13px 0;
-  border-bottom: 1px solid rgba(255,255,255,0.05);
-  cursor: pointer;
-  transition: color 0.15s;
-  user-select: none;
-}
-
-.check-item:last-child { border-bottom: none; }
-.check-item:hover .check-label { color: var(--text); }
-
-.check-box {
-  width: 20px;
-  height: 20px;
-  border: 1.5px solid rgba(255,255,255,0.15);
-  border-radius: 4px;
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.15s;
-  font-size: 0.72rem;
-}
-
-.check-item.checked .check-box {
-  border-color: rgba(255,255,255,0.4);
-  background: rgba(255,255,255,0.1);
-}
-
-.check-item.checked .check-box::after {
-  content: '✓';
-  color: var(--text);
-}
-
-.check-label {
-  font-size: 0.92rem;
-  color: rgba(240, 240, 240, 0.65);
-  line-height: 1.4;
-}
-
-.check-item:hover .check-label,
-.check-item.checked .check-label {
-  color: var(--text);
-}
-
-.check-label .sub {
-  display: block;
-  font-size: 0.78rem;
-  color: var(--text-muted);
-  margin-top: 2px;
-}
-
-/* Navigation */
-.intake-nav {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 40px;
-  padding-top: 24px;
-  border-top: 1px solid rgba(255,255,255,0.04);
-}
-
-.intake-nav .back-btn {
-  font-family: var(--font-body);
-  font-size: 0.85rem;
-  color: var(--text-muted);
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 8px 0;
-  transition: color 0.15s;
-}
-
-.intake-nav .back-btn:hover { color: var(--text); }
-.intake-nav .back-btn.hidden { visibility: hidden; }
-
-.intake-nav .next-btn {
-  padding: 11px 28px;
-  background: var(--text);
-  color: var(--bg);
-  border: none;
-  border-radius: 5px;
-  font-family: var(--font-body);
-  font-weight: 700;
-  font-size: 0.85rem;
-  cursor: pointer;
-  transition: opacity 0.2s;
-  letter-spacing: 0.3px;
-}
-
-.intake-nav .next-btn:hover { opacity: 0.85; }
-
-/* Open text input */
-.intake-textarea {
-  width: 100%;
-  min-height: 80px;
-  padding: 14px 16px;
-  background: var(--bg-elevated);
-  border: 1px solid var(--border);
-  border-radius: 5px;
-  color: var(--text);
-  font-family: var(--font-body);
-  font-size: 0.88rem;
-  line-height: 1.5;
-  resize: vertical;
-  outline: none;
-  transition: border-color 0.2s;
-}
-
-.intake-textarea::placeholder { color: var(--text-dim); }
-.intake-textarea:focus { border-color: rgba(255,255,255,0.2); }
-
-/* ── Results Screen ── */
-.result-screen {
-  display: none;
-  text-align: center;
-}
-
-.result-screen.active { display: block; }
-
-.score-ring {
-  position: relative;
-  width: 180px;
-  height: 180px;
-  margin: 0 auto 12px;
-}
-
-.score-ring svg {
-  width: 100%;
-  height: 100%;
-  transform: rotate(-90deg);
-}
-
-.score-ring .track {
-  fill: none;
-  stroke: rgba(255,255,255,0.06);
-  stroke-width: 6;
-}
-
-.score-ring .fill {
-  fill: none;
-  stroke: var(--text);
-  stroke-width: 6;
-  stroke-linecap: round;
-  stroke-dasharray: 440;
-  stroke-dashoffset: 440;
-  transition: stroke-dashoffset 1.5s ease;
-}
-
-.score-ring .fill.red { stroke: var(--red); }
-
-.score-number {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
-.score-number .pct {
-  font-family: var(--font-display);
-  font-size: 3.2rem;
-  font-weight: 800;
-  line-height: 1;
-  letter-spacing: -1px;
-}
-
-.score-number .label {
-  font-family: var(--font-mono);
-  font-size: 0.65rem;
-  color: var(--text-dim);
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  margin-top: 4px;
-}
-
-.score-context {
-  font-size: 0.88rem;
-  color: var(--text-muted);
-  margin-bottom: 40px;
-  line-height: 1.6;
-}
-
-.score-context strong { color: var(--text); }
-
-/* Tier bars */
-.tier-bars {
-  display: flex;
-  gap: 16px;
-  justify-content: center;
-  margin-bottom: 48px;
-}
-
-.tier-bar {
-  text-align: center;
-}
-
-.tier-bar .tier-label {
-  font-family: var(--font-mono);
-  font-size: 0.65rem;
-  color: var(--text-dim);
-  letter-spacing: 0.5px;
-  margin-bottom: 8px;
-}
-
-.tier-bar .tier-track {
-  width: 120px;
-  height: 4px;
-  background: rgba(255,255,255,0.06);
-  border-radius: 2px;
-  overflow: hidden;
-  margin: 0 auto 6px;
-}
-
-.tier-bar .tier-fill {
-  height: 100%;
-  border-radius: 2px;
-  background: var(--text);
-  opacity: 0.5;
-  transition: width 1.2s ease 0.3s;
-}
-
-.tier-bar .tier-pct {
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  color: var(--text-muted);
-}
-
-/* Insights */
-.insights {
-  text-align: left;
-  margin: 0 auto 48px;
-  max-width: 480px;
-}
-
-.insights h3 {
-  font-family: var(--font-display);
-  font-size: 1.1rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin-bottom: 20px;
-}
-
-.insight-card {
-  padding: 18px 20px;
-  background: var(--bg-elevated);
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  margin-bottom: 10px;
-  text-align: left;
-}
-
-.insight-card .insight-label {
-  font-family: var(--font-mono);
-  font-size: 0.68rem;
-  color: var(--text-dim);
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-  margin-bottom: 6px;
-}
-
-.insight-card .insight-text {
-  font-size: 0.88rem;
-  color: var(--text-muted);
-  line-height: 1.6;
-}
-
-.insight-card .insight-text strong { color: var(--text); }
-
-/* Result email form */
-.result-email {
-  margin-top: 40px;
-  padding-top: 32px;
-  border-top: 1px solid rgba(255,255,255,0.06);
-}
-
-.result-email p {
-  font-size: 0.88rem;
-  color: var(--text-muted);
-  margin-bottom: 16px;
-}
-
-@media (max-width: 600px) {
-  .tier-bars { flex-direction: column; align-items: center; }
-  .option-group { flex-direction: column; }
-}
+  /* Step card with left accent */
+  .step-card {
+    border-left: 3px solid rgba(200,60,60,0.3);
+    padding-left: 1.5rem;
+    transition: border-color 0.3s ease;
+  }
+  .step-card:hover { border-left-color: #c83c3c; }
 </style>
 </head>
-<body>
+<body class="font-body bg-bg text-ink overflow-x-hidden">
 
-<!-- Hero -->
-<div class="container">
-  <div class="hero">
-    <div class="logo">baseline<span class="period">.</span></div>
-    <h1>
-      <span class="line-neg">Less <span class="word-noise">noise</span><br>More <span class="word-signal">signal</span></span>
-    </h1>
-    <svg class="signal-wave" viewBox="0 0 600 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path class="wave-noise" d="M0,30 L8,18 L14,42 L20,12 L28,38 L34,22 L40,45 L46,8 L54,40 L60,15 L66,35 L72,20 L80,44 L86,10 L92,38 L98,25 L106,42 L112,14 L118,36 L124,28 L132,40 L138,18 L144,34 L150,22 L158,39 L164,16 L170,37 L176,24 L184,41 L190,13 L196,35 L202,20 L210,38" stroke="#3e3e4a" stroke-width="1.5" stroke-linecap="round"/>
-      <path class="wave-transition" d="M210,38 L220,32 L232,28 L244,30 L256,30 L268,30" stroke="#3e3e4a" stroke-width="1.5" stroke-linecap="round"/>
-      <path class="wave-signal" d="M268,30 L290,30 L300,30 L310,30 L320,30 L328,30 L332,28 L336,18 L340,8 L344,30 L348,48 L352,38 L356,30 L370,30 L400,30 L410,30 L420,30 L428,30 L432,28 L436,18 L440,8 L444,30 L448,48 L452,38 L456,30 L470,30 L500,30 L510,30 L520,30 L528,30 L532,28 L536,18 L540,8 L544,30 L548,48 L552,38 L556,30 L570,30 L600,30" stroke="var(--red)" stroke-width="2" stroke-linecap="round"/>
-    </svg>
-    <p class="hero-sub">Build your health record once. Use it everywhere. Take it with you forever.</p>
-    <a href="https://beta.mybaseline.health" class="beta-cta">Try the beta</a>
-    <br><a href="coach/" style="font-family:var(--font-mono);font-size:0.78rem;color:var(--text-muted);text-decoration:underline;text-underline-offset:3px;display:inline-block;margin-top:12px;">Or talk to the AI coach &rarr;</a>
-    <p class="trust-line">Free. Local-first. Your data stays yours.</p>
+<!-- Scroll progress bar -->
+<div class="scroll-progress" id="scroll-progress" style="width: 0%"></div>
+
+<!-- NAV -->
+<nav class="fixed top-0 left-0 right-0 z-50 flex justify-between items-center px-band py-5 mix-blend-difference">
+  <a href="/" class="font-display font-extrabold text-sm text-white/60 tracking-tight no-underline hover:text-white/90 transition-opacity">b<span class="text-coral">.</span></a>
+</nav>
+
+<!-- ═══════════════════════ HERO ═══════════════════════ -->
+<section class="relative min-h-screen bg-bg flex flex-col justify-end px-band pb-24 md:pb-32 overflow-hidden noise">
+  <!-- Radial glow -->
+  <div class="absolute inset-0 pointer-events-none z-0" style="background: radial-gradient(ellipse 70% 50% at 30% 55%, rgba(200,60,60,0.06) 0%, transparent 60%);"></div>
+  <!-- Grid -->
+  <div class="absolute inset-0 pointer-events-none z-0" style="background-image: linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px); background-size: 60px 60px; mask-image: radial-gradient(ellipse 80% 60% at 40% 50%, black 0%, transparent 55%); -webkit-mask-image: radial-gradient(ellipse 80% 60% at 40% 50%, black 0%, transparent 55%);"></div>
+
+  <!-- Floating accent line -->
+  <div class="accent-line hidden md:block" style="right: 15%; top: 20%; height: 40%;"></div>
+
+  <div class="relative z-10">
+    <div class="font-label text-ink-dim mb-6 reveal">your full health picture</div>
+    <h1 class="font-massive text-[clamp(5rem,18vw,16rem)] text-ink leading-[0.82] reveal stagger-1">FINALLY</h1>
+    <div class="mt-8 md:mt-10 flex flex-col md:flex-row md:items-end md:justify-between gap-6 reveal stagger-2">
+      <p class="font-mono text-[0.75rem] md:text-[0.8rem] text-ink-muted tracking-widest uppercase max-w-md leading-relaxed entrance-words">an ai coach that knows your numbers. connects them. tells you what to do next.</p>
+      <a href="#get-started" class="font-mono text-[0.65rem] text-coral tracking-widest uppercase hover:text-ink transition-colors">get started &darr;</a>
+    </div>
+  </div>
+
+</section>
+
+<!-- ═══════════════════════ MARQUEE ═══════════════════════ -->
+<div class="bg-bg overflow-hidden py-8 md:py-12 border-y border-ink-dim/10">
+  <div class="marquee-track">
+    <span class="marquee-word text-[clamp(1rem,2.5vw,1.5rem)] text-ink-dim/40">LESS NOISE</span>
+    <span class="marquee-dot"></span>
+    <span class="marquee-word text-[clamp(1rem,2.5vw,1.5rem)] text-ink-dim/40">MORE SIGNAL</span>
+    <span class="marquee-dot"></span>
+    <span class="marquee-word text-[clamp(1rem,2.5vw,1.5rem)] text-ink-dim/40">YOUR FULL HEALTH PICTURE</span>
+    <span class="marquee-dot"></span>
+    <span class="marquee-word text-[clamp(1rem,2.5vw,1.5rem)] text-ink-dim/40">FINALLY</span>
+    <span class="marquee-dot"></span>
+    <span class="marquee-word text-[clamp(1rem,2.5vw,1.5rem)] text-ink-dim/40">LESS NOISE</span>
+    <span class="marquee-dot"></span>
+    <span class="marquee-word text-[clamp(1rem,2.5vw,1.5rem)] text-ink-dim/40">MORE SIGNAL</span>
+    <span class="marquee-dot"></span>
+    <span class="marquee-word text-[clamp(1rem,2.5vw,1.5rem)] text-ink-dim/40">YOUR FULL HEALTH PICTURE</span>
+    <span class="marquee-dot"></span>
+    <span class="marquee-word text-[clamp(1rem,2.5vw,1.5rem)] text-ink-dim/40">FINALLY</span>
+    <span class="marquee-dot"></span>
   </div>
 </div>
-<a href="#score-section" class="score-link">Calculate your score &darr;</a>
 
-<div class="divider"></div>
+<!-- ═══════════════════════ THE PROBLEM ═══════════════════════ -->
+<section class="bg-bg relative noise overflow-visible" id="problem-section">
+  <div class="px-band py-band">
+    <div class="font-label text-coral mb-16 reveal">(the problem)</div>
 
-<!-- The Question -->
-<section>
-  <div class="container" style="text-align:center; padding-top:64px; padding-bottom:64px;">
-    <p style="font-family:var(--font-display); font-size:clamp(1.4rem,3.5vw,2rem); font-weight:700; text-transform:uppercase; letter-spacing:-0.3px; color:var(--text); line-height:1.2; margin-bottom:20px;">How do I know if I'm actually healthy?</p>
-    <p style="color:var(--text-muted); font-size:0.9rem; max-width:520px; margin:0 auto 16px; line-height:1.7;">Not "am I fit?" Not "are my labs in range?" The real question. The one your doctor doesn't answer and your wearable can't.</p>
-    <p style="color:var(--text-muted); font-size:0.9rem; max-width:520px; margin:0 auto 16px; line-height:1.7;">There are about <strong style="color:var(--text);">40 metrics</strong> where the science is clear. Validated across large populations, replicated across decades. That's the boundary of what we know right now.</p>
-    <p style="color:var(--text-muted); font-size:0.9rem; max-width:520px; margin:0 auto 24px; line-height:1.7;">Not 400. <strong style="color:var(--text);">Forty.</strong></p>
-    <a href="about/" style="font-family:var(--font-mono); font-size:0.75rem; color:var(--text-muted); text-decoration:underline; text-decoration-style:dotted; text-underline-offset:3px;">Why 40? Read the story &rarr;</a>
-  </div>
-</section>
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-0">
+      <!-- Left: THE REAL QUESTION massive stacked -->
+      <div class="md:col-span-6">
+        <div class="font-massive text-ink leading-[0.88] entrance-clip-up">
+          <div class="text-[clamp(3rem,9vw,8rem)]">THE</div>
+          <div class="text-[clamp(3.5rem,11vw,10rem)]">REAL</div>
+          <div class="text-[clamp(2.5rem,7.5vw,6.5rem)]">QUESTION</div>
+        </div>
+      </div>
 
-<div class="divider"></div>
+      <!-- Right: the question + pain points, vertically centered next to REAL -->
+      <div class="md:col-span-5 md:col-start-8 flex flex-col justify-center">
+        <div class="mb-10">
+          <p class="text-ink text-[1.1rem] leading-[1.6] font-medium entrance-words">How do I know if I'm <span class="text-coral font-semibold">actually</span> healthy?</p>
+          <p class="text-ink-muted text-[0.95rem] leading-[1.85] mt-4 reveal stagger-2">Not "am I fit?" Not "are my labs in range?" The one your doctor doesn't answer and your wearable can't.</p>
+        </div>
 
-<!-- Problem -->
-<section>
-  <div class="container">
-
-    <h2>Your health data is everywhere<br>except where it's useful.</h2>
-    <p style="color:var(--text-muted);font-size:0.92rem;font-style:italic;margin-bottom:28px;">"Data is everywhere but nowhere."</p>
-    <div class="pain-points">
-      <div class="pain-point">
-        <span class="pain-icon">01</span>
-        <p>Lab results buried in PDFs you'll never open again. Patient portals you forgot the password to.</p>
-      </div>
-      <div class="pain-point">
-        <span class="pain-icon">02</span>
-        <p>Wearable apps that don't talk to each other, your doctor, or your lab results.</p>
-      </div>
-      <div class="pain-point">
-        <span class="pain-icon">03</span>
-        <p>No tool tells you what's <em>missing</em>. The gaps you can't see are the ones that matter.</p>
-      </div>
-    </div>
-    <div class="stat-callout">
-      <strong>96M Americans are prediabetic.</strong> 47% have hypertension — half don't know it. 20% carry a genetic lipid risk factor invisible on standard tests.
-    </div>
-  </div>
-</section>
-
-<div class="divider"></div>
-
-<!-- How It Works -->
-<section>
-  <div class="container">
-
-    <h2>Four steps to your coverage score.</h2>
-    <div class="steps">
-      <div class="step">
-        <div class="step-num">01</div>
-        <div class="step-title">Drop it in</div>
-        <div class="step-desc">A lab PDF, a wearable export, or both</div>
-      </div>
-      <div class="step">
-        <div class="step-num">02</div>
-        <div class="step-title">We read it</div>
-        <div class="step-desc">Parsed and organized on your machine</div>
-      </div>
-      <div class="step">
-        <div class="step-num">03</div>
-        <div class="step-title">See your gaps</div>
-        <div class="step-desc">What you've covered and what's missing</div>
-      </div>
-      <div class="step">
-        <div class="step-num">04</div>
-        <div class="step-title">Know what's next</div>
-        <div class="step-desc">Ranked by cost and impact</div>
-      </div>
-    </div>
-    <p class="how-details">
-      Drop a lab PDF. Connect your wearable. Answer a few questions. See your score in 60 seconds.
-    </p>
-  </div>
-</section>
-
-<div class="divider"></div>
-
-<!-- Coverage -->
-<section>
-  <div class="container">
-    <h2>You're closer than you think.</h2>
-    <p style="color: var(--text-muted); margin-bottom: 8px; font-size: 0.9rem;">Your health has a coverage score. Not a wellness grade. A map of what you've measured — and what you haven't.</p>
-    <div class="coverage-visual">
-      <div class="coverage-bar">
-        <span class="label">blood work</span>
-        <div class="bar-track"><div class="bar-fill high" style="width: 82%"></div></div>
-        <span class="pct">82%</span>
-      </div>
-      <div class="coverage-bar">
-        <span class="label">cardiovascular</span>
-        <div class="bar-track"><div class="bar-fill high" style="width: 75%"></div></div>
-        <span class="pct">75%</span>
-      </div>
-      <div class="coverage-bar">
-        <span class="label">sleep</span>
-        <div class="bar-track"><div class="bar-fill med" style="width: 60%"></div></div>
-        <span class="pct">60%</span>
-      </div>
-      <div class="coverage-bar">
-        <span class="label">activity</span>
-        <div class="bar-track"><div class="bar-fill high" style="width: 90%"></div></div>
-        <span class="pct">90%</span>
-      </div>
-      <div class="coverage-bar">
-        <span class="label">family history</span>
-        <div class="bar-track"><div class="bar-fill low" style="width: 25%"></div></div>
-        <span class="pct">25%</span>
-      </div>
-      <div class="coverage-bar">
-        <span class="label">medications</span>
-        <div class="bar-track"><div class="bar-fill high" style="width: 100%"></div></div>
-        <span class="pct">100%</span>
-      </div>
-    </div>
-    <p class="journey-text">
-      Three moves totaling <strong>~$50</strong> would take most people from 40% to 80%.
-    </p>
-  </div>
-</section>
-
-<div class="divider"></div>
-
-<!-- Top 10 -->
-<section id="metrics">
-  <div class="container">
-
-    <h2>Top 10 health metrics by ROI.</h2>
-    <div class="metrics-list">
-      <div class="metric-row">
-        <span class="metric-rank">01</span>
-        <span class="metric-name">Blood pressure</span>
-        <span class="metric-cost">$40 one-time</span>
-      </div>
-      <div class="metric-row">
-        <span class="metric-rank">02</span>
-        <span class="metric-name">Lipid panel + ApoB</span>
-        <span class="metric-cost">$30–50/yr</span>
-      </div>
-      <div class="metric-row">
-        <span class="metric-rank">03</span>
-        <span class="metric-name">Fasting insulin + metabolic panel</span>
-        <span class="metric-cost">$40–60/yr</span>
-      </div>
-      <div class="metric-row">
-        <span class="metric-rank">04</span>
-        <span class="metric-name">Family history</span>
-        <span class="metric-cost free">free</span>
-      </div>
-      <div class="metric-row">
-        <span class="metric-rank">05</span>
-        <span class="metric-name">Sleep regularity</span>
-        <span class="metric-cost free">free</span>
-      </div>
-      <div class="metric-row">
-        <span class="metric-rank">06</span>
-        <span class="metric-name">Daily steps</span>
-        <span class="metric-cost free">free</span>
-      </div>
-      <div class="metric-row">
-        <span class="metric-rank">07</span>
-        <span class="metric-name">Resting heart rate</span>
-        <span class="metric-cost free">free</span>
-      </div>
-      <div class="metric-row">
-        <span class="metric-rank">08</span>
-        <span class="metric-name">Waist circumference</span>
-        <span class="metric-cost">$3</span>
-      </div>
-      <div class="metric-row">
-        <span class="metric-rank">09</span>
-        <span class="metric-name">Medication list</span>
-        <span class="metric-cost free">free</span>
-      </div>
-      <div class="metric-row">
-        <span class="metric-rank">10</span>
-        <span class="metric-name">Lp(a)</span>
-        <span class="metric-cost">$30 once</span>
-      </div>
-    </div>
-    <p class="metrics-note">$143/year combined. Several are free. <a href="methodology/" style="color:var(--text-muted);border-bottom:1px solid rgba(255,255,255,0.15);padding-bottom:1px;">Full methodology and 40-metric ranking &rarr;</a></p>
-  </div>
-</section>
-
-<div class="divider"></div>
-
-<!-- Story -->
-<section>
-  <div class="container">
-
-    <h2>I ran myself through 40 metrics.</h2>
-    <div class="journey-visual">
-      <div class="journey-score"><div class="j-num before">42%</div><div class="j-label">Before</div></div>
-      <div class="journey-arrow">&rarr;</div>
-      <div class="journey-score"><div class="j-num after">85%</div><div class="j-label">After</div></div>
-      <div class="journey-cost">~$50 to close the gap</div>
-    </div>
-    <div class="story-block">
-      <p>Seven draws. 200 biomarkers. Full blood work through Quest. My health coverage when I started: <strong>42%</strong>.</p>
-      <p>The gaps weren't what I expected. I had comprehensive blood panels but had never collected family history. I tracked sleep duration religiously but not regularity. My wearable had 18 months of resting heart rate data — I'd never looked at the trend.</p>
-      <p>The real find was my fasting insulin. Single draw: 3.5 mIU/L. Looks perfect. But across three draws over six months: <strong>3.5 &rarr; 8.2 &rarr; 13.9</strong>. A trend that a single snapshot would never catch.</p>
-    </div>
-    <div class="insulin-callout">
-      <strong>3.5 &rarr; 13.9 mIU/L</strong> over 6 months. Each draw looked "normal" on its own. The trend told a different story. Insulin resistance shows up 10&ndash;15 years before a diabetes diagnosis — but only if you're tracking.
-    </div>
-  </div>
-</section>
-
-<div class="divider"></div>
-
-<!-- Cost Comparison -->
-<section id="comparison">
-  <div class="container">
-    <p class="section-label">Cost comparison</p>
-    <h2>Where your health data lives today.</h2>
-
-    <table class="compare-table">
-      <thead>
-        <tr>
-          <th>Product</th>
-          <th>Cost/yr</th>
-          <th>Designed for</th>
-          <th>Foundation (T1)</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>Function Health</td>
-          <td class="price">$365</td>
-          <td>Deep blood work (160+ tests, 2x/yr)</td>
-          <td class="coverage-cell"><span class="coverage-inline"><span class="mini-bar" style="width:38px"></span> 62%</span></td>
-        </tr>
-        <tr>
-          <td>InsideTracker</td>
-          <td class="price">$249–589</td>
-          <td>Blood + DNA optimization</td>
-          <td class="coverage-cell"><span class="coverage-inline"><span class="mini-bar" style="width:34px"></span> 55%</span></td>
-        </tr>
-        <tr>
-          <td>Oura Ring</td>
-          <td class="price">$369 yr 1</td>
-          <td>Sleep + recovery tracking</td>
-          <td class="coverage-cell"><span class="coverage-inline"><span class="mini-bar" style="width:14px"></span> 22%</span></td>
-        </tr>
-        <tr>
-          <td>Whoop</td>
-          <td class="price">$239</td>
-          <td>Strain + recovery coaching</td>
-          <td class="coverage-cell"><span class="coverage-inline"><span class="mini-bar" style="width:14px"></span> 22%</span></td>
-        </tr>
-        <tr class="row-baseline">
-          <td>Baseline T1</td>
-          <td class="price">~$100</td>
-          <td>Coverage scoring across all domains</td>
-          <td class="coverage-cell"><span class="coverage-inline"><span class="mini-bar" style="width:60px"></span> 100%</span></td>
-        </tr>
-      </tbody>
-    </table>
-
-    <p class="compare-note">
-      Each of these products is excellent at what it's designed for — deep labs, sleep optimization, recovery coaching. Baseline isn't a replacement for any of them. It's the <strong>layer that shows you the full picture</strong>: what you've covered across all domains, what's still missing, and what to do next. Different tools give you different slices. <strong>Baseline is the map.</strong> Year 2+ cost drops to ~$70–110 (just the annual labs).
-    </p>
-
-    <p style="margin-top:24px;"><a href="gaps/" style="color:var(--text-muted);font-family:var(--font-mono);font-size:0.78rem;border-bottom:1px solid rgba(255,255,255,0.15);padding-bottom:1px;">See what your current setup misses &rarr;</a></p>
-  </div>
-</section>
-
-<div class="divider"></div>
-
-<!-- Freshness -->
-<section>
-  <div class="container">
-    <p class="section-label">Data freshness</p>
-    <h2>Your health data has a shelf life.</h2>
-    <div class="story-block">
-      <p>A blood draw from last January doesn't tell you what your cholesterol is <em>now</em>. A single hs-CRP reading can swing 40% between draws with no real change. And your summer Vitamin D level says almost nothing about where you stand in February.</p>
-      <p>Baseline tracks when your data was collected — and adjusts your coverage score as it ages. <strong>Fresh data gets full credit. Stale data decays.</strong> Not all at once, and not the same for every metric. Some biomarkers barely move (HbA1c, Lp(a)). Others are volatile enough that a single reading is only partial coverage.</p>
-    </div>
-
-    <div class="freshness-grid">
-      <div class="freshness-cell">
-        <div class="fc-label">Measure once</div>
-        <div class="fc-window">Lifetime</div>
-        <div class="fc-examples">Lp(a) — 80% genetic, barely changes<br>Family history — update if new diagnosis</div>
-      </div>
-      <div class="freshness-cell">
-        <div class="fc-label">Stable markers</div>
-        <div class="fc-window">6 months</div>
-        <div class="fc-examples">ApoB, LDL, HDL, HbA1c, hemoglobin, TSH, liver enzymes</div>
-      </div>
-      <div class="freshness-cell">
-        <div class="fc-label">Volatile markers</div>
-        <div class="fc-window">3 months</div>
-        <div class="fc-examples">Triglycerides, fasting glucose, fasting insulin, Vitamin D (seasonal)</div>
-      </div>
-    </div>
-
-    <div class="freshness-callout">
-      <strong>Wearable data is different.</strong> It doesn't expire — it's continuously fresh as long as you're wearing the device. Resting heart rate, HRV, sleep, steps: these stay current automatically. That's why wearable integration is the highest-ROI coverage play. Connect once, stay covered.
-
-      <div class="decay-visual">
-        <div class="decay-bar" style="background: var(--text); opacity: 0.9;"></div>
-        <div class="decay-bar" style="background: var(--text); opacity: 0.7;"></div>
-        <div class="decay-bar" style="background: var(--text); opacity: 0.5;"></div>
-        <div class="decay-bar" style="background: var(--text); opacity: 0.3;"></div>
-        <div class="decay-bar" style="background: var(--text); opacity: 0.15;"></div>
-        <div class="decay-bar" style="background: var(--text); opacity: 0.06;"></div>
-      </div>
-      <div class="decay-labels">
-        <span>Fresh (full credit)</span>
-        <span>6 months</span>
-        <span>12 months (stale)</span>
+        <!-- 3 pain points, numbered -->
+        <div class="space-y-8">
+          <div class="flex gap-4 reveal stagger-1">
+            <div class="font-stat text-[1.5rem] text-coral/50 leading-none mt-1 shrink-0">01</div>
+            <p class="text-sm text-ink-muted leading-relaxed">Lab results buried in PDFs you'll never open again. Patient portals you forgot the password to.</p>
+          </div>
+          <div class="flex gap-4 reveal stagger-2">
+            <div class="font-stat text-[1.5rem] text-coral/50 leading-none mt-1 shrink-0">02</div>
+            <p class="text-sm text-ink-muted leading-relaxed">Wearable apps that don't talk to each other, your doctor, or your lab results.</p>
+          </div>
+          <div class="flex gap-4 reveal stagger-3">
+            <div class="font-stat text-[1.5rem] text-coral/50 leading-none mt-1 shrink-0">03</div>
+            <p class="text-sm text-ink-muted leading-relaxed">No tool tells you what's <span class="text-coral">missing</span>. The gaps you can't see are the ones that matter.</p>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
+<!-- ═══════════ CONNECTOR: Ghost text ═══════════ -->
+<div class="connector-section bg-bg px-band py-[clamp(4rem,10vw,8rem)] text-center overflow-hidden" id="connector-noise-signal">
+  <div class="font-ghost-dark text-[clamp(2.5rem,8vw,7rem)] leading-[0.9] max-w-5xl mx-auto">LESS NOISE</div>
+  <div class="font-ghost-dark text-[clamp(2.5rem,8vw,7rem)] leading-[0.9] max-w-5xl mx-auto mt-2" id="ghost-signal" style="background: linear-gradient(to right, rgba(200,60,60,0.25) var(--fill, 0%), rgba(240,240,240,0.04) var(--fill, 0%)); -webkit-background-clip: text; background-clip: text;">MORE SIGNAL</div>
+</div>
 
-<div class="divider"></div>
+<!-- ═══════════════════════ HEALTH DOMAINS — WHERE YOUR CONTEXT LIVES ═══════════════════════ -->
+<section class="bg-bg relative noise" style="overflow: clip;" id="outcomes-section">
+  <div class="px-band pt-[clamp(6rem,12vw,10rem)] pb-8 md:pb-16">
+    <div class="font-label text-coral mb-10 md:mb-16 reveal">(your health picture)</div>
 
-<!-- Intake / Score -->
-<section class="cta-section" id="score-section">
-  <div class="container">
-    <h2>See your score.</h2>
-    <p class="cta-sub" style="color:var(--text-muted);">9 questions. 60 seconds. No health data collected — just what you track.<br>
-    Or <a href="https://chatgpt.com/g/g-69a200216dcc8191af219ebded578dc7-baseline-health-coverage" target="_blank" rel="noopener" class="ai-link">talk through it with AI &rarr;</a></p>
-
-    <div class="intake" id="intake">
-      <!-- Progress pips -->
-      <div class="intake-progress">
-        <div class="pip active" data-step="0"></div>
-        <div class="pip" data-step="1"></div>
-        <div class="pip" data-step="2"></div>
-        <div class="pip" data-step="3"></div>
-        <div class="pip" data-step="4"></div>
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-16 mb-16 md:mb-24">
+      <div class="md:col-span-5">
+        <div class="font-display font-bold text-[clamp(1.4rem,3.5vw,2.8rem)] text-ink leading-[1.15] tracking-tight mb-8 parallax entrance-snap" data-speed="0.02">SCATTERED CONTEXT<br>ONE PICTURE</div>
+        <p class="text-ink-muted text-[0.95rem] leading-[1.85] max-w-md entrance-words">Your labs are in one portal. Your sleep is in another app. Your weight is on a scale. Family history is in your head. No tool connects them. We do.</p>
       </div>
-
-      <!-- Step 0: Demographics -->
-      <div class="intake-step active" data-step="0">
-        <h3>About you</h3>
-        <p class="step-hint">Used for percentile comparison. Not stored.</p>
-
-        <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:10px;">Age range</p>
-        <div class="option-group" data-field="age" data-type="single">
-          <div class="opt-btn" data-value="20-29">20–29</div>
-          <div class="opt-btn" data-value="30-39">30–39</div>
-          <div class="opt-btn" data-value="40-49">40–49</div>
-          <div class="opt-btn" data-value="50-59">50–59</div>
-          <div class="opt-btn" data-value="60+">60+</div>
-        </div>
-
-        <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:10px;">Sex</p>
-        <div class="option-group" data-field="sex" data-type="single">
-          <div class="opt-btn" data-value="M">Male</div>
-          <div class="opt-btn" data-value="F">Female</div>
-        </div>
-
-        <div class="intake-nav">
-          <button class="back-btn hidden">&larr; Back</button>
-          <button class="next-btn">Next &rarr;</button>
-        </div>
-      </div>
-
-      <!-- Step 1: Blood work -->
-      <div class="intake-step" data-step="1">
-        <h3>Blood work</h3>
-        <p class="step-hint">Had blood work in the last 2 years? Check what was included.</p>
-
-        <div class="option-group vertical" data-field="bloodwork" data-type="multi">
-          <div class="check-item" data-value="lipids">
-            <div class="check-box"></div>
-            <div class="check-label">Lipid panel <span class="sub">Cholesterol, LDL, HDL, triglycerides</span></div>
-          </div>
-          <div class="check-item" data-value="apob">
-            <div class="check-box"></div>
-            <div class="check-label">ApoB</div>
-          </div>
-          <div class="check-item" data-value="glucose">
-            <div class="check-box"></div>
-            <div class="check-label">Fasting glucose or HbA1c</div>
-          </div>
-          <div class="check-item" data-value="insulin">
-            <div class="check-box"></div>
-            <div class="check-label">Fasting insulin</div>
-          </div>
-          <div class="check-item" data-value="lpa">
-            <div class="check-box"></div>
-            <div class="check-label">Lp(a) <span class="sub">Lipoprotein(a) — usually not included</span></div>
-          </div>
-          <div class="check-item" data-value="hscrp">
-            <div class="check-box"></div>
-            <div class="check-label">hs-CRP <span class="sub">High-sensitivity C-reactive protein</span></div>
-          </div>
-          <div class="check-item" data-value="liver">
-            <div class="check-box"></div>
-            <div class="check-label">Liver enzymes <span class="sub">ALT, AST, or GGT</span></div>
-          </div>
-          <div class="check-item" data-value="cbc">
-            <div class="check-box"></div>
-            <div class="check-label">CBC <span class="sub">Complete blood count</span></div>
-          </div>
-          <div class="check-item" data-value="tsh">
-            <div class="check-box"></div>
-            <div class="check-label">TSH <span class="sub">Thyroid</span></div>
-          </div>
-          <div class="check-item" data-value="vitd">
-            <div class="check-box"></div>
-            <div class="check-label">Vitamin D or ferritin</div>
-          </div>
-          <div class="check-item" data-value="unsure" data-exclusive="true">
-            <div class="check-box"></div>
-            <div class="check-label">I'm not sure what was included</div>
-          </div>
-          <div class="check-item" data-value="none" data-exclusive="true">
-            <div class="check-box"></div>
-            <div class="check-label">No blood work</div>
-          </div>
-        </div>
-
-        <div class="intake-nav">
-          <button class="back-btn">&larr; Back</button>
-          <button class="next-btn">Next &rarr;</button>
-        </div>
-      </div>
-
-      <!-- Step 2: Body + Wearable -->
-      <div class="intake-step" data-step="2">
-        <h3>Body &amp; activity</h3>
-        <p class="step-hint">Measurements and wearable data you currently have.</p>
-
-        <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:10px;">Body measurements</p>
-        <div class="option-group vertical" data-field="body" data-type="multi">
-          <div class="check-item" data-value="bp">
-            <div class="check-box"></div>
-            <div class="check-label">Blood pressure <span class="sub">Own a cuff or have a recent reading</span></div>
-          </div>
-          <div class="check-item" data-value="waist">
-            <div class="check-box"></div>
-            <div class="check-label">Waist circumference</div>
-          </div>
-          <div class="check-item" data-value="weight">
-            <div class="check-box"></div>
-            <div class="check-label">Weight <span class="sub">Scale, even occasionally</span></div>
-          </div>
-        </div>
-
-        <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:10px;margin-top:20px;">Wearable / activity tracking</p>
-        <div class="option-group vertical" data-field="wearable" data-type="multi">
-          <div class="check-item" data-value="steps">
-            <div class="check-box"></div>
-            <div class="check-label">Steps <span class="sub">Wearable or phone</span></div>
-          </div>
-          <div class="check-item" data-value="hr">
-            <div class="check-box"></div>
-            <div class="check-label">Heart rate</div>
-          </div>
-          <div class="check-item" data-value="sleep">
-            <div class="check-box"></div>
-            <div class="check-label">Sleep tracking</div>
-          </div>
-          <div class="check-item" data-value="vo2">
-            <div class="check-box"></div>
-            <div class="check-label">VO2 max estimate</div>
-          </div>
-          <div class="check-item" data-value="zones">
-            <div class="check-box"></div>
-            <div class="check-label">Heart rate zones <span class="sub">Zone 2 tracking</span></div>
-          </div>
-          <div class="check-item" data-value="no-wearable" data-exclusive="true">
-            <div class="check-box"></div>
-            <div class="check-label">No wearable or tracking</div>
-          </div>
-        </div>
-
-        <div class="intake-nav">
-          <button class="back-btn">&larr; Back</button>
-          <button class="next-btn">Next &rarr;</button>
-        </div>
-      </div>
-
-      <!-- Step 3: Context -->
-      <div class="intake-step" data-step="3">
-        <h3>Context</h3>
-        <p class="step-hint">A few yes/no questions that round out the picture.</p>
-
-        <div class="option-group vertical" data-field="context" data-type="multi">
-          <div class="check-item" data-value="family">
-            <div class="check-box"></div>
-            <div class="check-label">I've asked my parents about heart disease, stroke, or diabetes in the family</div>
-          </div>
-          <div class="check-item" data-value="meds">
-            <div class="check-box"></div>
-            <div class="check-label">I could list my current medications + supplements right now</div>
-          </div>
-          <div class="check-item" data-value="phq9">
-            <div class="check-box"></div>
-            <div class="check-label">I've completed a depression screening (PHQ-9) in the last year <span class="sub">Or know what it is</span></div>
-          </div>
-        </div>
-
-        <div class="intake-nav">
-          <button class="back-btn">&larr; Back</button>
-          <button class="next-btn">Next &rarr;</button>
-        </div>
-      </div>
-
-      <!-- Step 4: Catch-all -->
-      <div class="intake-step" data-step="4">
-        <h3>Anything else?</h3>
-        <p class="step-hint">Track something we didn't ask about? We want to know. (Optional)</p>
-
-        <textarea class="intake-textarea" id="catchall" placeholder="e.g. CGM, DEXA scan, grip strength, testosterone, genetic testing..."></textarea>
-
-        <div class="intake-nav">
-          <button class="back-btn">&larr; Back</button>
-          <button class="next-btn">See my score &rarr;</button>
-        </div>
+      <div class="md:col-span-5 md:col-start-8 flex flex-col justify-end">
+        <p class="font-display font-bold text-[clamp(1.1rem,1.8vw,1.4rem)] leading-[1.45] tracking-tight text-ink reveal stagger-2 mt-auto">Eight domains. Forty metrics.<br>One coach that sees all of it.</p>
       </div>
     </div>
 
-    <!-- Results -->
-    <div class="result-screen" id="results">
-      <div class="score-ring">
-        <svg viewBox="0 0 160 160">
-          <circle class="track" cx="80" cy="80" r="70"/>
-          <circle class="fill" id="score-arc" cx="80" cy="80" r="70"/>
-        </svg>
-        <div class="score-number">
-          <span class="pct" id="score-pct">0%</span>
-          <span class="label">coverage</span>
+    <!-- Health domains: pinned grid, cards reveal one at a time -->
+    <div class="relative mb-16 md:mb-24" id="domains-pin-wrap">
+      <div id="domains-pin-inner">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mb-4 md:mb-6">
+          <div class="domain-card rounded-xl border border-ink-dim/15 p-5 md:p-7 opacity-0" style="background: rgba(255,255,255,0.03);" data-domain-idx="0">
+            <div class="font-stat text-[1.4rem] text-coral/40 mb-2">01</div>
+            <div class="font-display font-bold text-ink text-[clamp(1.2rem,2.5vw,1.8rem)] tracking-tight mb-2">SLEEP</div>
+            <p class="text-[0.65rem] text-ink-dim leading-relaxed">Duration, consistency, quality</p>
+            <p class="text-[0.7rem] text-ink-muted leading-relaxed mt-3 hidden md:block">Poor sleep doubles your risk of metabolic disease. The foundation everything else depends on.</p>
+          </div>
+          <div class="domain-card rounded-xl border border-ink-dim/15 p-5 md:p-7 opacity-0" style="background: rgba(255,255,255,0.03);" data-domain-idx="1">
+            <div class="font-stat text-[1.4rem] text-coral/40 mb-2">02</div>
+            <div class="font-display font-bold text-ink text-[clamp(1.2rem,2.5vw,1.8rem)] tracking-tight mb-2">LABS</div>
+            <p class="text-[0.65rem] text-ink-dim leading-relaxed">Blood work, biomarkers, trends</p>
+            <p class="text-[0.7rem] text-ink-muted leading-relaxed mt-3 hidden md:block">A single blood draw is a snapshot. Three draws reveal trajectories your doctor can't see in one visit.</p>
+          </div>
+          <div class="domain-card rounded-xl border border-ink-dim/15 p-5 md:p-7 opacity-0" style="background: rgba(255,255,255,0.03);" data-domain-idx="2">
+            <div class="font-stat text-[1.4rem] text-coral/40 mb-2">03</div>
+            <div class="font-display font-bold text-ink text-[clamp(1.2rem,2.5vw,1.8rem)] tracking-tight mb-2">MOVEMENT</div>
+            <p class="text-[0.65rem] text-ink-dim leading-relaxed">Steps, training, VO2 max</p>
+            <p class="text-[0.7rem] text-ink-muted leading-relaxed mt-3 hidden md:block">VO2 max is the single strongest predictor of all-cause mortality. Stronger than smoking. And it's trainable at any age.</p>
+          </div>
+          <div class="domain-card rounded-xl border border-ink-dim/15 p-5 md:p-7 opacity-0" style="background: rgba(255,255,255,0.03);" data-domain-idx="3">
+            <div class="font-stat text-[1.4rem] text-coral/40 mb-2">04</div>
+            <div class="font-display font-bold text-ink text-[clamp(1.2rem,2.5vw,1.8rem)] tracking-tight mb-2">NUTRITION</div>
+            <p class="text-[0.65rem] text-ink-dim leading-relaxed">Macros, protein, meal patterns</p>
+            <p class="text-[0.7rem] text-ink-muted leading-relaxed mt-3 hidden md:block">Most adults eat 50-70% less protein than optimal. One change here moves body comp, energy, and recovery simultaneously.</p>
+          </div>
         </div>
-      </div>
-
-      <p class="score-context" id="score-context"></p>
-
-      <div class="tier-bars">
-        <div class="tier-bar">
-          <div class="tier-label">Foundation</div>
-          <div class="tier-track"><div class="tier-fill" id="t1-fill" style="width:0%"></div></div>
-          <div class="tier-pct" id="t1-pct">0%</div>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+          <div class="domain-card rounded-xl border border-ink-dim/15 p-5 md:p-7 opacity-0" style="background: rgba(255,255,255,0.03);" data-domain-idx="4">
+            <div class="font-stat text-[1.4rem] text-coral/40 mb-2">05</div>
+            <div class="font-display font-bold text-ink text-[clamp(1.2rem,2.5vw,1.8rem)] tracking-tight mb-2">BODY COMP</div>
+            <p class="text-[0.65rem] text-ink-dim leading-relaxed">Weight, waist, lean mass</p>
+            <p class="text-[0.7rem] text-ink-muted leading-relaxed mt-3 hidden md:block">The scale lies. Two people at 180 lbs can have completely different health profiles. Composition is signal.</p>
+          </div>
+          <div class="domain-card rounded-xl border border-ink-dim/15 p-5 md:p-7 opacity-0" style="background: rgba(255,255,255,0.03);" data-domain-idx="5">
+            <div class="font-stat text-[1.4rem] text-coral/40 mb-2">06</div>
+            <div class="font-display font-bold text-ink text-[clamp(1.2rem,2.5vw,1.8rem)] tracking-tight mb-2">VITALS</div>
+            <p class="text-[0.65rem] text-ink-dim leading-relaxed">Blood pressure, heart rate, HRV</p>
+            <p class="text-[0.7rem] text-ink-muted leading-relaxed mt-3 hidden md:block">Resting heart rate trends predict cardiac events years in advance. Your body's real-time status report.</p>
+          </div>
+          <div class="domain-card rounded-xl border border-ink-dim/15 p-5 md:p-7 opacity-0" style="background: rgba(255,255,255,0.03);" data-domain-idx="6">
+            <div class="font-stat text-[1.4rem] text-coral/40 mb-2">07</div>
+            <div class="font-display font-bold text-ink text-[clamp(1.2rem,2.5vw,1.8rem)] tracking-tight mb-2">MIND</div>
+            <p class="text-[0.65rem] text-ink-dim leading-relaxed">Stress, mood, mental health</p>
+            <p class="text-[0.7rem] text-ink-muted leading-relaxed mt-3 hidden md:block">Chronic stress elevates cortisol, disrupts sleep, and accelerates aging. The domain that amplifies every other one.</p>
+          </div>
+          <div class="domain-card rounded-xl border border-ink-dim/15 p-5 md:p-7 opacity-0" style="background: rgba(255,255,255,0.03);" data-domain-idx="7">
+            <div class="font-stat text-[1.4rem] text-coral/40 mb-2">08</div>
+            <div class="font-display font-bold text-ink text-[clamp(1.2rem,2.5vw,1.8rem)] tracking-tight mb-2">HISTORY</div>
+            <p class="text-[0.65rem] text-ink-dim leading-relaxed">Family history, medications</p>
+            <p class="text-[0.7rem] text-ink-muted leading-relaxed mt-3 hidden md:block">Your family history changes which metrics matter most. Context that changes what to measure first.</p>
+          </div>
         </div>
-        <div class="tier-bar">
-          <div class="tier-label">Enhanced</div>
-          <div class="tier-track"><div class="tier-fill" id="t2-fill" style="width:0%"></div></div>
-          <div class="tier-pct" id="t2-pct">0%</div>
-        </div>
-      </div>
-
-      <div class="insights" id="insights"></div>
-
-      <div class="result-email">
-        <p>Ready for the full picture? Import your actual data in the beta.</p>
-        <a href="https://beta.mybaseline.health" class="beta-cta" style="margin-top:12px;">Try the beta</a>
-        <br><a href="coach/" style="font-family:var(--font-mono);font-size:0.78rem;color:var(--text-muted);text-decoration:underline;text-underline-offset:3px;display:inline-block;margin-top:10px;">Or get coached 1:1 &rarr;</a>
       </div>
     </div>
 
   </div>
 </section>
-<div class="divider"></div>
 
-<!-- Footer -->
-<footer>
-  <div class="container">
-    <p>
-      Built in San Francisco with love &middot; <a href="https://x.com/a_e_deal" target="_blank" rel="noopener">@a_e_deal</a> &middot; <a href="coach/">AI Coach</a> &middot; <a href="about/">The Story</a> &middot; <a href="privacy/">Privacy</a><br>
-      Local-first. Your health data never touches our servers.
-    </p>
+<!-- ═══════════ TRANSITION: What we help you do ═══════════ -->
+<section class="bg-bg relative noise py-band px-band text-center">
+  <div class="font-label text-coral mb-8 reveal">(what we help you do)</div>
+  <div class="font-massive text-[clamp(2.5rem,7vw,5.5rem)] text-ink leading-[0.88] entrance-split">THE OUTCOMES<br>WE COACH ON</div>
+  <p class="text-ink-muted text-[0.95rem] leading-[1.85] max-w-md mx-auto mt-8 reveal stagger-2">Your context powers everything below. These are the results people see when the full picture comes together.</p>
+</section>
+
+<!-- ═══════════════════════ OUTCOMES (pinned carousel) ═══════════════════════ -->
+<section class="bg-bg relative" id="outcomes-pin-section">
+  <div id="outcomes-pin-wrap">
+    <div class="min-h-screen flex items-center px-band" id="outcomes-pin-inner">
+      <div class="w-full flex flex-col md:flex-row gap-8 md:gap-16 items-center">
+
+        <!-- Left: side label (desktop) -->
+        <div class="hidden md:block md:w-[100px] shrink-0">
+          <p class="font-mono text-[0.6rem] text-ink-dim tracking-widest uppercase leading-relaxed">The outcomes<br>we coach on</p>
+        </div>
+
+        <!-- Center: carousel viewport (clips overflow, shows one name at a time) -->
+        <div class="flex-1 max-w-lg relative overflow-hidden" style="height: 60px;" id="outcomes-carousel">
+          <div class="absolute left-0 w-full" id="outcomes-carousel-track">
+            <div class="outcome-name" data-outcome-name="sleep" style="height: 60px; display: flex; align-items: center;">
+              <span class="font-display font-bold text-[clamp(2rem,5vw,3.5rem)] text-ink/15 leading-[1] tracking-tight block">SLEEP BETTER</span>
+            </div>
+            <div class="outcome-name" data-outcome-name="weight" style="height: 60px; display: flex; align-items: center;">
+              <span class="font-display font-bold text-[clamp(2rem,5vw,3.5rem)] text-ink/15 leading-[1] tracking-tight block">LOSE WEIGHT</span>
+            </div>
+            <div class="outcome-name" data-outcome-name="energy" style="height: 60px; display: flex; align-items: center;">
+              <span class="font-display font-bold text-[clamp(2rem,5vw,3.5rem)] text-ink/15 leading-[1] tracking-tight block">MORE ENERGY</span>
+            </div>
+            <div class="outcome-name" data-outcome-name="strength" style="height: 60px; display: flex; align-items: center;">
+              <span class="font-display font-bold text-[clamp(2rem,5vw,3.5rem)] text-ink/15 leading-[1] tracking-tight block">BUILD STRENGTH</span>
+            </div>
+            <div class="outcome-name" data-outcome-name="nutrition" style="height: 60px; display: flex; align-items: center;">
+              <span class="font-display font-bold text-[clamp(2rem,5vw,3.5rem)] text-ink/15 leading-[1] tracking-tight block">EAT HEALTHIER</span>
+            </div>
+            <div class="outcome-name" data-outcome-name="stress" style="height: 60px; display: flex; align-items: center;">
+              <span class="font-display font-bold text-[clamp(2rem,5vw,3.5rem)] text-ink/15 leading-[1] tracking-tight block">LESS STRESS</span>
+            </div>
+            <div class="outcome-name" data-outcome-name="focus" style="height: 60px; display: flex; align-items: center;">
+              <span class="font-display font-bold text-[clamp(2rem,5vw,3.5rem)] text-ink/15 leading-[1] tracking-tight block">SHARPER FOCUS</span>
+            </div>
+            <div class="outcome-name" data-outcome-name="coverage" style="height: 60px; display: flex; align-items: center;">
+              <span class="font-display font-bold text-[clamp(2rem,5vw,3.5rem)] text-ink/15 leading-[1] tracking-tight block">KNOW MORE</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: stacked cards (all 8 in DOM, GSAP controls visibility) -->
+        <div class="hidden md:block md:w-[300px] shrink-0 relative" id="outcome-card-area" style="min-height: 280px;">
+          <div class="outcome-card-item absolute inset-0 opacity-0" data-outcome-idx="0">
+            <div class="bg-bg-elevated border border-ink-dim/20 rounded-xl p-6 shadow-2xl mb-5">
+              <div class="font-mono text-[0.55rem] text-coral tracking-widest uppercase mb-4">sleep duration</div>
+              <div class="flex items-baseline gap-3 mb-1">
+                <div class="font-stat text-[1rem] text-ink-dim/40 leading-tight line-through decoration-ink-dim/20">5.2 hrs</div>
+                <div class="text-ink-dim/30">&rarr;</div>
+                <div class="font-stat text-[1.8rem] text-ink leading-tight">7.4 hrs</div>
+              </div>
+              <div class="font-mono text-[0.6rem] text-coral font-bold tracking-widest uppercase mb-4">+42%</div>
+              <div class="w-full h-px bg-ink-dim/20 mb-3"></div>
+              <p class="text-[0.7rem] text-ink-muted leading-relaxed">From fragmented to restorative. The foundation everything else depends on.</p>
+            </div>
+            <p class="text-ink-muted text-[0.85rem] leading-relaxed">The single highest-leverage change for most people.</p>
+          </div>
+          <div class="outcome-card-item absolute inset-0 opacity-0" data-outcome-idx="1">
+            <div class="bg-bg-elevated border border-ink-dim/20 rounded-xl p-6 shadow-2xl mb-5">
+              <div class="font-mono text-[0.55rem] text-coral tracking-widest uppercase mb-4">weight trend</div>
+              <div class="flex items-baseline gap-3 mb-1">
+                <div class="font-stat text-[1rem] text-ink-dim/40 leading-tight line-through decoration-ink-dim/20">206 lbs</div>
+                <div class="text-ink-dim/30">&rarr;</div>
+                <div class="font-stat text-[1.8rem] text-ink leading-tight">188 lbs</div>
+              </div>
+              <div class="font-mono text-[0.6rem] text-coral font-bold tracking-widest uppercase mb-4">-18 lbs</div>
+              <div class="w-full h-px bg-ink-dim/20 mb-3"></div>
+              <p class="text-[0.7rem] text-ink-muted leading-relaxed">Sustainable habits, not crash diets. Your coach tracks the trend, not the day.</p>
+            </div>
+            <p class="text-ink-muted text-[0.85rem] leading-relaxed">Calories, protein, consistency. No crash diets.</p>
+          </div>
+          <div class="outcome-card-item absolute inset-0 opacity-0" data-outcome-idx="2">
+            <div class="bg-bg-elevated border border-ink-dim/20 rounded-xl p-6 shadow-2xl mb-5">
+              <div class="font-mono text-[0.55rem] text-coral tracking-widest uppercase mb-4">daily energy</div>
+              <div class="flex items-baseline gap-3 mb-1">
+                <div class="font-stat text-[1rem] text-ink-dim/40 leading-tight line-through decoration-ink-dim/20">3/10</div>
+                <div class="text-ink-dim/30">&rarr;</div>
+                <div class="font-stat text-[1.8rem] text-ink leading-tight">8/10</div>
+              </div>
+              <div class="font-mono text-[0.6rem] text-coral font-bold tracking-widest uppercase mb-4">+167%</div>
+              <div class="w-full h-px bg-ink-dim/20 mb-3"></div>
+              <p class="text-[0.7rem] text-ink-muted leading-relaxed">Move more, recover well, feel alert. Energy is the output of every system working.</p>
+            </div>
+            <p class="text-ink-muted text-[0.85rem] leading-relaxed">Energy is the output of every system working.</p>
+          </div>
+          <div class="outcome-card-item absolute inset-0 opacity-0" data-outcome-idx="3">
+            <div class="bg-bg-elevated border border-ink-dim/20 rounded-xl p-6 shadow-2xl mb-5">
+              <div class="font-mono text-[0.55rem] text-coral tracking-widest uppercase mb-4">training consistency</div>
+              <div class="flex items-baseline gap-3 mb-1">
+                <div class="font-stat text-[1rem] text-ink-dim/40 leading-tight line-through decoration-ink-dim/20">1x/wk</div>
+                <div class="text-ink-dim/30">&rarr;</div>
+                <div class="font-stat text-[1.8rem] text-ink leading-tight">4x/wk</div>
+              </div>
+              <div class="font-mono text-[0.6rem] text-coral font-bold tracking-widest uppercase mb-4">4x</div>
+              <div class="w-full h-px bg-ink-dim/20 mb-3"></div>
+              <p class="text-[0.7rem] text-ink-muted leading-relaxed">Progressive load, consistent training. Volume adjusts with your recovery.</p>
+            </div>
+            <p class="text-ink-muted text-[0.85rem] leading-relaxed">Volume adjusts with your recovery data.</p>
+          </div>
+          <div class="outcome-card-item absolute inset-0 opacity-0" data-outcome-idx="4">
+            <div class="bg-bg-elevated border border-ink-dim/20 rounded-xl p-6 shadow-2xl mb-5">
+              <div class="font-mono text-[0.55rem] text-coral tracking-widest uppercase mb-4">daily protein</div>
+              <div class="flex items-baseline gap-3 mb-1">
+                <div class="font-stat text-[1rem] text-ink-dim/40 leading-tight line-through decoration-ink-dim/20">62g</div>
+                <div class="text-ink-dim/30">&rarr;</div>
+                <div class="font-stat text-[1.8rem] text-ink leading-tight">165g</div>
+              </div>
+              <div class="font-mono text-[0.6rem] text-coral font-bold tracking-widest uppercase mb-4">+166%</div>
+              <div class="w-full h-px bg-ink-dim/20 mb-3"></div>
+              <p class="text-[0.7rem] text-ink-muted leading-relaxed">One change at a time until it sticks. No meal plans. Just better defaults.</p>
+            </div>
+            <p class="text-ink-muted text-[0.85rem] leading-relaxed">One change at a time until it sticks.</p>
+          </div>
+          <div class="outcome-card-item absolute inset-0 opacity-0" data-outcome-idx="5">
+            <div class="bg-bg-elevated border border-ink-dim/20 rounded-xl p-6 shadow-2xl mb-5">
+              <div class="font-mono text-[0.55rem] text-coral tracking-widest uppercase mb-4">hrv baseline</div>
+              <div class="flex items-baseline gap-3 mb-1">
+                <div class="font-stat text-[1rem] text-ink-dim/40 leading-tight line-through decoration-ink-dim/20">28 ms</div>
+                <div class="text-ink-dim/30">&rarr;</div>
+                <div class="font-stat text-[1.8rem] text-ink leading-tight">52 ms</div>
+              </div>
+              <div class="font-mono text-[0.6rem] text-coral font-bold tracking-widest uppercase mb-4">+86%</div>
+              <div class="w-full h-px bg-ink-dim/20 mb-3"></div>
+              <p class="text-[0.7rem] text-ink-muted leading-relaxed">Stress shows up in the numbers before you feel it. Recovery is measurable.</p>
+            </div>
+            <p class="text-ink-muted text-[0.85rem] leading-relaxed">Stress shows up before you feel it.</p>
+          </div>
+          <div class="outcome-card-item absolute inset-0 opacity-0" data-outcome-idx="6">
+            <div class="bg-bg-elevated border border-ink-dim/20 rounded-xl p-6 shadow-2xl mb-5">
+              <div class="font-mono text-[0.55rem] text-coral tracking-widest uppercase mb-4">sleep consistency</div>
+              <div class="flex items-baseline gap-3 mb-1">
+                <div class="font-stat text-[1rem] text-ink-dim/40 leading-tight line-through decoration-ink-dim/20">52%</div>
+                <div class="text-ink-dim/30">&rarr;</div>
+                <div class="font-stat text-[1.8rem] text-ink leading-tight">89%</div>
+              </div>
+              <div class="font-mono text-[0.6rem] text-coral font-bold tracking-widest uppercase mb-4">+71%</div>
+              <div class="w-full h-px bg-ink-dim/20 mb-3"></div>
+              <p class="text-[0.7rem] text-ink-muted leading-relaxed">Same bedtime, same wake time. Focus follows when the basics are locked in.</p>
+            </div>
+            <p class="text-ink-muted text-[0.85rem] leading-relaxed">Same time in, same time out. Every day.</p>
+          </div>
+          <div class="outcome-card-item absolute inset-0 opacity-0" data-outcome-idx="7">
+            <div class="bg-bg-elevated border border-ink-dim/20 rounded-xl p-6 shadow-2xl mb-5">
+              <div class="font-mono text-[0.55rem] text-coral tracking-widest uppercase mb-4">health coverage</div>
+              <div class="flex items-baseline gap-3 mb-1">
+                <div class="font-stat text-[1rem] text-ink-dim/40 leading-tight line-through decoration-ink-dim/20">42%</div>
+                <div class="text-ink-dim/30">&rarr;</div>
+                <div class="font-stat text-[1.8rem] text-ink leading-tight">85%</div>
+              </div>
+              <div class="font-mono text-[0.6rem] text-coral font-bold tracking-widest uppercase mb-4">+43pts</div>
+              <div class="w-full h-px bg-ink-dim/20 mb-3"></div>
+              <p class="text-[0.7rem] text-ink-muted leading-relaxed">Your full health picture. What you have measured, what is missing, what to do next.</p>
+            </div>
+            <p class="text-ink-muted text-[0.85rem] leading-relaxed">What you have, what is missing, what to do next.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ HOW IT WORKS (cream card inside dark) ═══════════════════════ -->
+<section class="bg-bg relative noise overflow-visible">
+  <!-- Floating rotated label -->
+  <div class="hidden md:block absolute -left-4 top-1/3 font-mono text-[0.55rem] text-coral/30 tracking-[0.5em] uppercase origin-center" style="transform: rotate(-90deg); white-space: nowrap;">the process</div>
+
+  <div class="px-band py-band">
+    <!-- Cream container card -->
+    <div class="bg-cream rounded-3xl p-8 md:p-16 lg:p-20 reveal-scale">
+      <div class="font-label text-coral mb-16">(how it works)</div>
+
+      <div class="font-ghost text-[clamp(2.5rem,9vw,7rem)] leading-[0.85] mb-20 parallax" data-speed="0.03">FOUR<br>STEPS</div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-x-20 gap-y-16 max-w-4xl" id="steps-grid">
+        <div class="step-card step-emerge">
+          <div class="font-stat text-[3rem] text-coral leading-none mb-3">01</div>
+          <p class="text-[0.95rem] text-[#4a4a4a] leading-[1.85]"><strong class="text-[#1a1a1a] font-semibold">You sign up with your name and number.</strong> That's it. Your coach reaches out on whatever channel you prefer and gets to know you.</p>
+        </div>
+        <div class="step-card step-emerge">
+          <div class="font-stat text-[3rem] text-coral leading-none mb-3">02</div>
+          <p class="text-[0.95rem] text-[#4a4a4a] leading-[1.85]"><strong class="text-[#1a1a1a] font-semibold">Your coach builds your health picture.</strong> Over time, not all at once. Maybe it starts with sleep. Maybe you have labs you want to make sense of.</p>
+        </div>
+        <div class="step-card step-emerge">
+          <div class="font-stat text-[3rem] text-coral leading-none mb-3">03</div>
+          <p class="text-[0.95rem] text-[#4a4a4a] leading-[1.85]"><strong class="text-[#1a1a1a] font-semibold">You get coached on what matters.</strong> The system finds the highest-leverage thing for you right now and helps you lock it in before moving to the next.</p>
+        </div>
+        <div class="step-card step-emerge">
+          <div class="font-stat text-[3rem] text-coral leading-none mb-3">04</div>
+          <p class="text-[0.95rem] text-[#4a4a4a] leading-[1.85]"><strong class="text-[#1a1a1a] font-semibold">You see real outcomes.</strong> Not charts. Changes. Better sleep. More energy. A coach that notices progress and adjusts with you.</p>
+        </div>
+      </div>
+
+      <!-- Rotated strip cards (ABCS services pattern) -->
+      <div class="mt-20 flex flex-wrap justify-end gap-3 md:gap-4">
+        <div class="rotated-strip border-2 border-[#1a1714]/15 rounded-lg px-5 py-8 md:px-6 md:py-12 font-display font-bold text-[#1a1714] text-sm md:text-base tracking-tight" style="transform: rotate(-8deg);">SLEEP</div>
+        <div class="rotated-strip border-2 border-[#1a1714]/15 rounded-lg px-5 py-8 md:px-6 md:py-12 font-display font-bold text-[#1a1714] text-sm md:text-base tracking-tight" style="transform: rotate(-4deg);">NUTRITION</div>
+        <div class="rotated-strip border-2 border-[#1a1714]/15 rounded-lg px-5 py-8 md:px-6 md:py-12 font-display font-bold text-[#1a1714] text-sm md:text-base tracking-tight" style="transform: rotate(2deg);">MOVEMENT</div>
+        <div class="rotated-strip border-2 border-[#1a1714]/15 rounded-lg px-5 py-8 md:px-6 md:py-12 font-display font-bold text-[#1a1714] text-sm md:text-base tracking-tight" style="transform: rotate(5deg);">LABS</div>
+        <div class="rotated-strip border-2 border-[#1a1714]/15 rounded-lg px-5 py-8 md:px-6 md:py-12 font-display font-bold text-[#1a1714] text-sm md:text-base tracking-tight" style="transform: rotate(8deg);">MIND</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ CONNECTOR: Ghost text ═══════════ -->
+<div class="connector-section bg-bg px-band py-[clamp(4rem,10vw,8rem)] text-center overflow-hidden">
+  <div class="font-ghost-dark text-[clamp(2.5rem,8vw,7rem)] leading-[0.9] max-w-5xl mx-auto">YOUR NUMBERS TELL A STORY</div>
+</div>
+
+<!-- ═══════════════════════ THE PROOF (pinned stat reveal) ═══════════════════════ -->
+<section class="relative overflow-hidden" style="background: #0c0c0f;" id="proof-section">
+  <div class="px-band py-band" id="proof-pin-wrap">
+    <div id="proof-pin-inner">
+    <div class="font-label text-coral mb-16 text-center reveal">(the proof)</div>
+
+    <!-- Centered provocative statement (ABCS about-page serif heading style) -->
+    <div class="max-w-3xl mx-auto text-center mb-16 md:mb-20">
+      <h2 class="font-serif text-[clamp(1.6rem,3.5vw,2.8rem)] text-ink leading-[1.3] font-medium entrance-snap">About 40 metrics where the science is clear. Validated across large populations. Replicated across decades. Not 400. <em class="text-coral">Forty.</em></h2>
+    </div>
+
+    <!-- Hero stat: 42% → 85% centered big -->
+    <div class="flex items-center justify-center gap-8 md:gap-12 mb-16 md:mb-20 reveal" id="proof-stat-row">
+      <div class="text-center">
+        <div class="font-stat text-[clamp(3rem,8vw,5rem)] text-ink-dim/30 leading-none">42%</div>
+        <div class="text-xs text-ink-dim mt-3 font-mono tracking-widest">before</div>
+      </div>
+      <div class="flex flex-col items-center gap-1">
+        <svg width="40" height="20" viewBox="0 0 40 20" class="text-coral"><path d="M0 10h32m0 0l-6-6m6 6l-6 6" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div class="font-mono text-[0.55rem] text-coral tracking-widest uppercase">~$50</div>
+      </div>
+      <div class="text-center">
+        <div class="font-stat text-[clamp(3rem,8vw,5rem)] text-coral leading-none">85%</div>
+        <div class="text-xs text-ink-dim mt-3 font-mono tracking-widest">after</div>
+      </div>
+    </div>
+
+    <div class="max-w-md mx-auto text-center mb-16 md:mb-20">
+      <p class="text-ink-muted text-[0.95rem] leading-[1.85] reveal">Three moves totaling about $50 would take most people from 40% to 80% coverage. Several of the top metrics are free.</p>
+    </div>
+
+    <!-- Insulin story card — centered, wider -->
+    <div class="max-w-xl mx-auto">
+      <div class="border border-ink-dim/20 rounded-2xl p-8 md:p-10 reveal-scale">
+        <div class="font-mono text-xs text-coral tracking-widest uppercase mb-4">fasting insulin</div>
+        <div class="font-stat text-[2rem] text-ink leading-tight mb-4">3.5 &rarr; 8.2 &rarr; 13.9 <span class="text-ink-muted text-sm font-body font-normal">mIU/L</span></div>
+        <p class="text-sm text-ink-muted leading-relaxed">Each draw looked "normal" on its own. The trend told a different story. Insulin resistance shows up 10-15 years before a diabetes diagnosis. But only if you're tracking.</p>
+        <div class="w-8 h-px bg-coral/40 mt-6 mb-4"></div>
+        <p class="font-mono text-[0.6rem] text-ink-dim tracking-widest uppercase">founder's real data</p>
+      </div>
+    </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ COMPARISON ═══════════════════════ -->
+<section class="bg-bg relative overflow-hidden">
+  <div class="px-band py-band">
+    <div class="font-label text-coral mb-16 reveal">(the landscape)</div>
+
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-16 mb-20">
+      <div class="md:col-span-6">
+        <div class="font-massive text-[clamp(2.2rem,5.5vw,4.5rem)] text-ink leading-[0.95] entrance-split">DIFFERENT TOOLS<br>GIVE YOU SLICES.</div>
+      </div>
+      <div class="md:col-span-5 md:col-start-8 flex items-end">
+        <p class="text-ink-muted text-[0.95rem] leading-[1.85] reveal stagger-1">Each product is excellent at what it does. They give you a piece. <strong class="text-ink">Baseline is the layer that shows you the whole picture.</strong></p>
+      </div>
+    </div>
+
+    <!-- Competitor cards: tilted, staggered -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8">
+      <div class="comp-card relative rounded-2xl p-7 md:p-8" style="background: rgba(255,255,255,0.04);" data-rotate="-1.5">
+        <div class="font-display font-bold text-ink text-lg mb-1">Function Health</div>
+        <p class="text-ink-dim text-xs mb-6">Deep blood work. 160+ tests, 2x/yr.</p>
+        <div class="flex items-center justify-between mb-3">
+          <div class="font-mono text-[0.55rem] text-ink-dim tracking-widest uppercase">coverage</div>
+          <div class="font-stat text-lg text-ink-muted">62%</div>
+        </div>
+        <div class="w-full h-1.5 rounded-full bg-ink-dim/10 overflow-hidden"><div class="h-full rounded-full bg-ink-dim/30 coverage-bar" style="width: 0%;" data-target="62"></div></div>
+        <div class="mt-5 pt-4 border-t border-ink-dim/10">
+          <div class="font-mono text-[0.55rem] text-ink-dim tracking-widest uppercase mb-1">cost</div>
+          <div class="font-stat text-xl text-ink">$365<span class="text-ink-dim text-xs font-body">/yr</span></div>
+        </div>
+      </div>
+
+      <div class="comp-card relative rounded-2xl p-7 md:p-8" style="background: rgba(255,255,255,0.04);" data-rotate="1">
+        <div class="font-display font-bold text-ink text-lg mb-1">InsideTracker</div>
+        <p class="text-ink-dim text-xs mb-6">Blood + DNA optimization.</p>
+        <div class="flex items-center justify-between mb-3">
+          <div class="font-mono text-[0.55rem] text-ink-dim tracking-widest uppercase">coverage</div>
+          <div class="font-stat text-lg text-ink-muted">55%</div>
+        </div>
+        <div class="w-full h-1.5 rounded-full bg-ink-dim/10 overflow-hidden"><div class="h-full rounded-full bg-ink-dim/30 coverage-bar" style="width: 0%;" data-target="55"></div></div>
+        <div class="mt-5 pt-4 border-t border-ink-dim/10">
+          <div class="font-mono text-[0.55rem] text-ink-dim tracking-widest uppercase mb-1">cost</div>
+          <div class="font-stat text-xl text-ink">$249<span class="text-ink-dim text-xs font-body">-589/yr</span></div>
+        </div>
+      </div>
+
+      <div class="comp-card relative rounded-2xl p-7 md:p-8" style="background: rgba(255,255,255,0.04);" data-rotate="-0.5">
+        <div class="font-display font-bold text-ink text-lg mb-1">Oura / Whoop</div>
+        <p class="text-ink-dim text-xs mb-6">Sleep + recovery wearables.</p>
+        <div class="flex items-center justify-between mb-3">
+          <div class="font-mono text-[0.55rem] text-ink-dim tracking-widest uppercase">coverage</div>
+          <div class="font-stat text-lg text-ink-muted">22%</div>
+        </div>
+        <div class="w-full h-1.5 rounded-full bg-ink-dim/10 overflow-hidden"><div class="h-full rounded-full bg-ink-dim/30 coverage-bar" style="width: 0%;" data-target="22"></div></div>
+        <div class="mt-5 pt-4 border-t border-ink-dim/10">
+          <div class="font-mono text-[0.55rem] text-ink-dim tracking-widest uppercase mb-1">cost</div>
+          <div class="font-stat text-xl text-ink">$239<span class="text-ink-dim text-xs font-body">-369/yr</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Baseline: cream card, big, stands apart -->
+    <div class="bg-cream rounded-3xl p-8 md:p-12 lg:p-14 reveal-scale" style="transform: rotate(0.5deg);">
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
+        <div class="md:col-span-5">
+          <div class="font-massive text-[clamp(2rem,4vw,3rem)] text-[#1a1714] leading-[0.95] mb-4">BASELINE</div>
+          <p class="text-[#4a4a4a] text-[0.95rem] leading-[1.75]">Full picture. All domains. AI coaching that connects your sleep, labs, weight, and habits into one view.</p>
+        </div>
+        <div class="md:col-span-3 md:col-start-7 text-center">
+          <div class="font-mono text-[0.55rem] text-coral tracking-widest uppercase mb-2">coverage</div>
+          <div class="font-stat text-[4rem] text-coral leading-none">100%</div>
+          <div class="w-full h-2 rounded-full bg-coral/10 overflow-hidden mt-4"><div class="h-full rounded-full bg-coral coverage-bar" style="width: 0%;" data-target="100"></div></div>
+        </div>
+        <div class="md:col-span-3 md:col-start-10 text-center md:text-right">
+          <div class="font-mono text-[0.55rem] text-[#4a4a4a] tracking-widest uppercase mb-2">cost</div>
+          <div class="font-stat text-[2.5rem] text-[#1a1714] leading-none">~$100<span class="text-[#4a4a4a] text-sm font-body">/yr</span></div>
+          <p class="text-[#6a6a6a] text-xs mt-2">$143/yr for top 10 metrics. Several are free.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════ CONNECTOR: Ghost text ═══════════ -->
+<div class="connector-section bg-bg px-band py-[clamp(4rem,10vw,8rem)] text-center overflow-hidden">
+  <div class="font-ghost-light text-[clamp(2.5rem,8vw,7rem)] leading-[0.9] max-w-5xl mx-auto">BUILT BY PEOPLE WHO USE IT EVERY DAY</div>
+</div>
+
+<!-- ═══════════════════════ A NOTE FROM US — Vertical scroll story ═══════════════════════ -->
+<section class="bg-cream relative overflow-hidden">
+  <div class="px-band py-band">
+    <div class="font-label text-coral mb-16 reveal">(a note from us)</div>
+
+    <!-- Story beat 1: Paul's opening — the problem he lived -->
+    <div class="max-w-3xl mx-auto mb-20 md:mb-28">
+      <h2 class="font-massive text-[clamp(2rem,5vw,4rem)] text-[#1a1714] leading-[0.92] entrance-clip-up">MORE DATA<br>MADE IT<br>WORSE.</h2>
+    </div>
+
+    <!-- Story beat 2: Paul + polaroid -->
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-10 mb-20 md:mb-28 items-center">
+      <div class="md:col-span-5 reveal-right">
+        <div class="bg-white p-3 pb-14 shadow-xl inline-block founder-photo" style="transform: rotate(-1.5deg);">
+          <img src="coach/paul.jpg" alt="Paul Mederos" class="w-full max-w-[320px] aspect-[4/5] object-cover" style="filter: sepia(0.3) saturate(0.8);">
+        </div>
+        <div class="mt-8 space-y-4 max-w-[360px]">
+          <div class="flex items-baseline gap-4 border-b border-[#1a1714]/15 pb-3">
+            <span class="font-mono text-[0.6rem] text-[#6a6a6a] tracking-widest uppercase shrink-0 w-16">name</span>
+            <span class="font-serif italic text-[1.4rem] text-[#1a1714]">Paul Mederos</span>
+          </div>
+          <div class="flex items-baseline gap-4 border-b border-[#1a1714]/15 pb-3">
+            <span class="font-mono text-[0.6rem] text-[#6a6a6a] tracking-widest uppercase shrink-0 w-16">role</span>
+            <span class="font-serif italic text-[1.4rem] text-[#1a1714]">Co-founder</span>
+          </div>
+          <div class="flex items-baseline gap-4 border-b border-[#1a1714]/15 pb-3">
+            <span class="font-mono text-[0.6rem] text-[#6a6a6a] tracking-widest uppercase shrink-0 w-16">before</span>
+            <span class="font-serif italic text-[1.4rem] text-[#1a1714]">Territory Foods, Pro Athlete</span>
+          </div>
+        </div>
+      </div>
+      <div class="md:col-span-6 md:col-start-7 flex flex-col justify-center pl-0 md:pl-4">
+        <p class="font-display font-bold text-[#1a1714] text-[clamp(1.2rem,2.2vw,1.6rem)] leading-[1.4] tracking-tight mb-4 entrance-words">Full-body MRI. 150+ biomarker panels. Microbiome tests. A decade of spreadsheets.</p>
+        <p class="text-[#4a4a4a] text-[1.05rem] leading-[1.85] reveal stagger-1">Paul assembled an entire care team: functional medicine, primary care, nutrition, specialists. Each provider held a partial picture. He was the one responsible for synthesizing it all.</p>
+      </div>
+    </div>
+
+    <!-- Story beat 3: The anxiety breakthrough -->
+    <div class="max-w-3xl mx-auto mb-20 md:mb-28">
+      <h2 class="font-massive text-[clamp(1.6rem,4vw,3rem)] text-[#1a1714] leading-[0.95] mb-6 reveal">THE BREAKTHROUGH<br>WASN'T MORE DATA.</h2>
+      <p class="font-display font-bold text-[clamp(1.1rem,1.8vw,1.4rem)] leading-[1.45] tracking-tight mb-4 font-ghost text-[#1a1714]" style="background: linear-gradient(to right, #1a1714 var(--fill, 0%), rgba(0,0,0,0.08) var(--fill, 0%)); -webkit-background-clip: text; background-clip: text; color: transparent;">It was something that could finally synthesize the complete picture.</p>
+      <p class="text-[#4a4a4a] text-[1.05rem] leading-[1.85] reveal stagger-2">Accumulating data had intensified his anxiety, not improved his outcomes. When language models became capable enough to connect the dots, the cognitive burden disappeared. A few interventions that actually mattered became clear.</p>
+    </div>
+
+    <!-- Story beat 4: The vision shift -->
+    <div class="max-w-3xl mx-auto mb-20 md:mb-28">
+      <h2 class="font-massive text-[clamp(1.6rem,4vw,3rem)] text-[#1a1714] leading-[0.95] mb-6 reveal">NOT BUILT FOR<br>BIOHACKERS.</h2>
+      <p class="font-display font-bold text-[clamp(1.1rem,1.8vw,1.4rem)] leading-[1.45] tracking-tight mb-4 font-ghost" style="background: linear-gradient(to right, #1a1714 var(--fill, 0%), rgba(0,0,0,0.08) var(--fill, 0%)); -webkit-background-clip: text; background-clip: text; color: transparent;">Built for the parent who gets lab results and doesn't know what to do with them.</p>
+      <p class="text-[#4a4a4a] text-[1.05rem] leading-[1.85] reveal stagger-2">Two kids. Aging parents. Limited time. The system identifies small, impactful daily actions that fit into a real life. Not 30 habits. Three to five.</p>
+    </div>
+
+    <!-- Story beat 5: Andrew + polaroid -->
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-10 mb-20 md:mb-28 items-center">
+      <div class="md:col-span-6 flex flex-col justify-center">
+        <p class="font-display font-bold text-[#1a1714] text-[clamp(1.2rem,2.2vw,1.6rem)] leading-[1.4] tracking-tight mb-4 entrance-words">I built the coach that texts me every morning.</p>
+        <p class="text-[#4a4a4a] text-[1.05rem] leading-[1.85] reveal stagger-1">It pulls my sleep data, heart rate, weight trend, and lab history. Three weeks in, it cross-referenced sleep fragmentation, heart rate patterns, and nocturia frequency. Flagged possible sleep apnea. Connected dots a decade of doctor visits missed.</p>
+      </div>
+      <div class="md:col-span-5 md:col-start-8 reveal-left">
+        <div class="bg-white p-3 pb-14 shadow-xl inline-block founder-photo" style="transform: rotate(2deg);">
+          <img src="coach/andrew.jpg" alt="Andrew Deal" class="w-full max-w-[320px] aspect-[4/5] object-cover" style="filter: sepia(0.3) saturate(0.8);">
+        </div>
+        <div class="mt-8 space-y-4 max-w-[360px]">
+          <div class="flex items-baseline gap-4 border-b border-[#1a1714]/15 pb-3">
+            <span class="font-mono text-[0.6rem] text-[#6a6a6a] tracking-widest uppercase shrink-0 w-16">name</span>
+            <span class="font-serif italic text-[1.4rem] text-[#1a1714]">Andrew Deal</span>
+          </div>
+          <div class="flex items-baseline gap-4 border-b border-[#1a1714]/15 pb-3">
+            <span class="font-mono text-[0.6rem] text-[#6a6a6a] tracking-widest uppercase shrink-0 w-16">role</span>
+            <span class="font-serif italic text-[1.4rem] text-[#1a1714]">Co-founder</span>
+          </div>
+          <div class="flex items-baseline gap-4 border-b border-[#1a1714]/15 pb-3">
+            <span class="font-mono text-[0.6rem] text-[#6a6a6a] tracking-widest uppercase shrink-0 w-16">before</span>
+            <span class="font-serif italic text-[1.4rem] text-[#1a1714]">Twitch, GoDaddy, John Deere</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Story beat 6: The dad story (emotional closer) -->
+    <div class="max-w-3xl mx-auto mb-24">
+      <h2 class="font-massive text-[clamp(1.6rem,4vw,3rem)] text-[#1a1714] leading-[0.95] mb-6 reveal">I TEXTED MY DAD<br>FROM IT.</h2>
+      <p class="font-display font-bold text-[clamp(1.1rem,1.8vw,1.4rem)] leading-[1.45] tracking-tight font-ghost" style="background: linear-gradient(to right, #1a1714 var(--fill, 0%), rgba(0,0,0,0.08) var(--fill, 0%)); -webkit-background-clip: text; background-clip: text; color: transparent;">He doesn't know what AI is. He doesn't need to.</p>
+      <p class="text-[#4a4a4a] text-[1.05rem] leading-[1.85] mt-4 reveal stagger-2">He got a message from a coach who's about to learn his health picture and help him build on it.</p>
+    </div>
+
+    <!-- Big closing statement -->
+    <div class="text-center reveal">
+      <div class="font-ghost text-[clamp(3rem,10vw,9rem)] leading-[0.85] mx-auto">START WITH WHAT YOU HAVE</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════ CTA / SIGNUP ═══════════════════════ -->
+<section id="get-started" class="relative overflow-hidden" style="background: #0e0e11;">
+  <div class="absolute inset-0 pointer-events-none z-0" style="background: radial-gradient(ellipse 60% 40% at 50% 40%, rgba(200,60,60,0.04) 0%, transparent 60%);"></div>
+
+  <!-- Floating accent line -->
+  <div class="accent-line hidden md:block" style="right: 30%; top: 10%; height: 50%;"></div>
+
+  <div class="px-band py-band relative z-10">
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-16">
+      <div class="md:col-span-5 flex flex-col justify-center">
+        <div class="font-label text-coral mb-8 reveal">(get started)</div>
+        <div class="font-massive text-[clamp(2.5rem,6vw,4.5rem)] text-ink mb-6 entrance-clip-up">READY<br>WHEN YOU<br>ARE</div>
+        <p class="text-ink-muted text-[0.9rem] leading-relaxed max-w-sm reveal stagger-2">Just your name and how you want to be reached. Your coach will take it from there.</p>
+        <p class="text-ink-dim text-xs mt-8 reveal stagger-3"><strong class="text-ink-muted font-medium">Free while we grow.</strong> Early members get founding rates locked in for life.</p>
+      </div>
+
+      <div class="md:col-span-5 md:col-start-8">
+        <form class="space-y-5 reveal stagger-2" id="coach-form" action="https://formspree.io/f/mjgezrdp" method="POST">
+          <input type="hidden" name="_subject" value="Coach signup - baseline v2">
+          <input type="hidden" name="source" value="landing-v2">
+          <div>
+            <label class="block font-mono text-[0.6rem] uppercase tracking-widest text-ink-dim mb-2" for="name">Name</label>
+            <input type="text" id="name" name="name" placeholder="First name" required class="w-full px-4 py-3.5 bg-bg border border-ink-dim/30 rounded-md text-ink font-body text-sm transition-colors">
+          </div>
+          <div>
+            <label class="block font-mono text-[0.6rem] uppercase tracking-widest text-ink-dim mb-2" for="phone">Phone number</label>
+            <input type="tel" id="phone" name="phone" placeholder="+1 (555) 123-4567" required class="w-full px-4 py-3.5 bg-bg border border-ink-dim/30 rounded-md text-ink font-body text-sm transition-colors">
+          </div>
+          <div>
+            <label class="block font-mono text-[0.6rem] uppercase tracking-widest text-ink-dim mb-2" for="channel">Preferred channel</label>
+            <input type="text" id="channel" name="channel" list="channel-list" placeholder="WhatsApp, iMessage, Telegram..." required class="w-full px-4 py-3.5 bg-bg border border-ink-dim/30 rounded-md text-ink font-body text-sm transition-colors">
+            <datalist id="channel-list">
+              <option value="WhatsApp">
+              <option value="iMessage">
+              <option value="SMS">
+              <option value="Telegram">
+            </datalist>
+          </div>
+          <div>
+            <label class="block font-mono text-[0.6rem] uppercase tracking-widest text-ink-dim mb-2" for="email">Email <span class="text-ink-dim/50">(optional)</span></label>
+            <input type="email" id="email" name="email" placeholder="you@example.com" class="w-full px-4 py-3.5 bg-bg border border-ink-dim/30 rounded-md text-ink font-body text-sm transition-colors">
+          </div>
+          <button type="submit" class="cta-btn letter-btn w-full py-4 bg-coral text-white font-mono font-bold text-xs uppercase tracking-[0.3em] rounded-md hover:opacity-90 transition-opacity cursor-pointer border-none mt-3 flex items-center justify-center gap-[0.3em]"><span>I</span><span>'</span><span>M</span><span>&nbsp;</span><span>I</span><span>N</span></button>
+          <p class="text-center text-xs text-ink-dim font-mono mt-1">your coach will reach out within 24 hours.</p>
+        </form>
+
+        <div class="hidden mt-6 p-6 border border-green rounded-lg text-center" id="success" style="background: rgba(45, 138, 78, 0.08);">
+          <p class="text-ink text-sm">You're in. Your coach will reach out shortly.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ FOOTER (revealed from behind CTA) ═══════════════════════ -->
+<footer class="footer-reveal bg-bg overflow-hidden" id="site-footer" style="visibility: hidden;">
+  <div class="px-band pt-16 md:pt-24 pb-12">
+    <!-- Big BASELINE watermark -->
+    <div class="font-massive text-[clamp(5rem,18vw,14rem)] text-ink/[0.06] leading-[0.82] mb-12">BASELINE</div>
+
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-8 border-t border-ink-dim/10 pt-8">
+      <div class="space-y-3">
+        <p class="text-sm text-ink-muted">Built by <a href="https://www.linkedin.com/in/pmederos/" class="text-ink-muted underline underline-offset-4 hover:text-ink transition-colors">Paul Mederos</a> and <a href="https://www.linkedin.com/in/adeal/" class="text-ink-muted underline underline-offset-4 hover:text-ink transition-colors">Andrew Deal</a>.</p>
+        <p class="text-xs text-ink-dim">Scoring engine is <a href="https://github.com/a-deal/kiso" class="text-ink-dim underline underline-offset-2 hover:text-ink-muted transition-colors">open source</a>. <a href="privacy/" class="text-ink-dim underline underline-offset-2 hover:text-ink-muted transition-colors">Privacy policy</a>.</p>
+      </div>
+      <p class="font-mono text-[0.55rem] text-ink-dim/50 tracking-widest uppercase">&copy; 2026 baseline health</p>
+    </div>
   </div>
 </footer>
+<!-- Spacer for footer reveal (matches footer height) -->
+<div id="footer-spacer" style="position: relative; z-index: 0;"></div>
+
+<!-- GSAP + ScrollTrigger + Lenis -->
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
+<script src="https://unpkg.com/lenis@1.3.15/dist/lenis.min.js"></script>
 
 <script>
-// ── Form submissions (hero + result) ──
-document.querySelectorAll('form').forEach(form => {
-  form.addEventListener('submit', function(e) {
-    e.preventDefault();
-    const data = new FormData(this);
-    fetch(this.action, {
-      method: 'POST',
-      body: data,
-      headers: { 'Accept': 'application/json' }
-    }).then(r => {
-      if (r.ok) {
-        this.style.display = 'none';
-        const success = this.parentElement.querySelector('.form-success') ||
-          this.nextElementSibling;
-        if (success && success.classList.contains('form-success')) {
-          success.style.display = 'block';
-        } else {
-          const msg = document.createElement('p');
-          msg.className = 'form-success';
-          msg.style.display = 'block';
-          msg.textContent = "You're on the list. We'll be in touch.";
-          this.parentElement.insertBefore(msg, this.nextSibling);
-        }
-        this.reset();
-      }
-    });
+// ——— Lenis smooth scroll ———
+window.lenis = new Lenis({ wheelMultiplier: 0.8 });
+const lenis = window.lenis;
+lenis.on('scroll', ScrollTrigger.update);
+gsap.ticker.add((time) => lenis.raf(time * 1000));
+gsap.ticker.lagSmoothing(0);
+gsap.registerPlugin(ScrollTrigger);
+
+// ——— Scroll reveals with GSAP (replaces IntersectionObserver) ———
+document.querySelectorAll('.reveal').forEach(el => {
+  gsap.from(el, {
+    y: 40, opacity: 0, duration: 1, ease: 'expo.out',
+    delay: parseFloat(el.classList.contains('stagger-1') ? 0.1 : el.classList.contains('stagger-2') ? 0.22 : el.classList.contains('stagger-3') ? 0.34 : el.classList.contains('stagger-4') ? 0.46 : 0),
+    scrollTrigger: { trigger: el, start: 'top 88%', toggleActions: 'play none none reverse' }
+  });
+});
+document.querySelectorAll('.reveal-left').forEach(el => {
+  gsap.from(el, {
+    x: -60, opacity: 0, duration: 1, ease: 'expo.out',
+    scrollTrigger: { trigger: el, start: 'top 88%', toggleActions: 'play none none reverse' }
+  });
+});
+document.querySelectorAll('.reveal-right').forEach(el => {
+  gsap.from(el, {
+    x: 60, opacity: 0, duration: 1, ease: 'expo.out',
+    scrollTrigger: { trigger: el, start: 'top 88%', toggleActions: 'play none none reverse' }
+  });
+});
+document.querySelectorAll('.reveal-scale').forEach(el => {
+  gsap.from(el, {
+    scale: 0.92, opacity: 0, duration: 1.2, ease: 'expo.out',
+    scrollTrigger: { trigger: el, start: 'top 88%', toggleActions: 'play none none reverse' }
   });
 });
 
-// ── Query param deep-link (from ChatGPT) ──
-(function() {
-  const params = new URLSearchParams(window.location.search);
-  const score = parseInt(params.get('score'));
-  const t1 = parseInt(params.get('t1'));
-  const t2 = parseInt(params.get('t2'));
-  const insights = params.get('insights'); // comma-separated insight IDs
+// ——— Unique section header entrances (ABCS-inspired variety) ———
 
-  if (!isNaN(score)) {
-    // Hide form, show results directly
-    const intake = document.getElementById('intake');
-    const results = document.getElementById('results');
-    if (intake) intake.style.display = 'none';
-    if (results) results.classList.add('active');
-
-    // Scroll to score section
-    setTimeout(() => {
-      document.getElementById('score-section').scrollIntoView({ behavior: 'smooth' });
-    }, 300);
-
-    // Animate score ring
-    const circumference = 2 * Math.PI * 70;
-    const offset = circumference - (score / 100) * circumference;
-    const arc = document.getElementById('score-arc');
-    arc.style.strokeDasharray = circumference;
-    setTimeout(() => { arc.style.strokeDashoffset = offset; }, 400);
-    if (score < 40) arc.classList.add('red');
-
-    document.getElementById('score-pct').textContent = score + '%';
-
-    // Context
-    let ctx = '';
-    if (score >= 80) ctx = "You're ahead of most people. Your data coverage is strong.";
-    else if (score >= 60) ctx = "Solid foundation. A few targeted additions would get you to <strong>80%+</strong>.";
-    else if (score >= 40) ctx = "You're closer than you think. <strong>Three moves totaling ~$50</strong> could nearly double your coverage.";
-    else ctx = "Most people start here. The good news: the highest-ROI metrics are cheap or free.";
-    ctx += ' <em style="color:var(--text-dim);font-size:0.82rem;">Score calculated via AI conversation.</em>';
-    document.getElementById('score-context').innerHTML = ctx;
-
-    // Tier bars
-    if (!isNaN(t1)) {
-      setTimeout(() => { document.getElementById('t1-fill').style.width = t1 + '%'; }, 500);
-      document.getElementById('t1-pct').textContent = t1 + '%';
-    }
-    if (!isNaN(t2)) {
-      setTimeout(() => { document.getElementById('t2-fill').style.width = t2 + '%'; }, 500);
-      document.getElementById('t2-pct').textContent = t2 + '%';
-    }
-
-    // Insights from query param
-    const INSIGHT_MAP = {
-      'apob': { label: 'Lipid upgrade', text: 'When ApoB and LDL-C disagree on your risk, <strong>ApoB wins</strong>. Ask for it by name — your doctor probably won\'t order it otherwise. ~$15 add-on.' },
-      'insulin': { label: 'Metabolic upgrade', text: 'Insulin resistance shows up <strong>10–15 years before a diabetes diagnosis</strong>. Fasting insulin catches it earliest. ~$15 add-on to your next lab order.' },
-      'bp': { label: 'Blood pressure', text: '<strong>47% of US adults have hypertension. Half don\'t know.</strong> A $40 home cuff is the single highest-ROI health purchase.' },
-      'lpa': { label: 'Lp(a)', text: '<strong>20% of people have elevated Lp(a)</strong> — genetically fixed, invisible on standard panels. One draw, ~$30, once in your entire life.' },
-      'family': { label: 'Family history', text: 'One conversation with your parents changes your entire risk model. <strong>The cheapest health data you\'ll ever collect.</strong>' },
-      'sleep': { label: 'Sleep tracking', text: '<strong>Sleep regularity predicts mortality more than duration.</strong> If your device tracks it, turn it on.' },
-      'no-wearable': { label: 'No wearable needed', text: 'Your phone already counts steps. Each additional <strong>1,000 steps/day = ~15% lower all-cause mortality</strong>.' },
-      'meds': { label: 'Medication context', text: '<strong>If your tracker doesn\'t know what you\'re taking, every other number gets misread.</strong> Most underrated health metric.' },
-      'phq9': { label: 'Mental health screen', text: 'The PHQ-9 is a free, 3-minute depression screen. <strong>Depression independently raises cardiovascular risk 80%.</strong>' },
-      'unsure': { label: 'Get your records', text: 'Ask your doctor\'s office for a copy of your last lab results. <strong>You paid for it — you own it.</strong>' },
-      't1-complete': { label: 'Foundation complete', text: 'You\'re ahead of <strong>95% of people</strong>. Your foundation is solid.' },
-    };
-
-    if (insights) {
-      const ids = insights.split(',').map(s => s.trim()).filter(id => INSIGHT_MAP[id]);
-      if (ids.length > 0) {
-        const insightsEl = document.getElementById('insights');
-        let html = '<h3>What we\'d tell you</h3>';
-        ids.slice(0, 3).forEach(id => {
-          const ins = INSIGHT_MAP[id];
-          html += '<div class="insight-card"><div class="insight-label">' + ins.label + '</div><div class="insight-text">' + ins.text + '</div></div>';
-        });
-        insightsEl.innerHTML = html;
-      }
-    }
-
-    // Set hidden fields
-    document.getElementById('hidden-source').value = 'chatgpt-deeplink';
-    document.getElementById('hidden-score').value = score + '%';
-    document.getElementById('hidden-catchall').value = 'via-chatgpt';
-
-    // Silent ping — capture score data even if user doesn't enter email
-    const pingData = new FormData();
-    pingData.append('_subject', 'Score ping (no email)');
-    pingData.append('source', 'chatgpt-deeplink');
-    pingData.append('coverage_score', score + '%');
-    if (!isNaN(t1)) pingData.append('t1', t1 + '%');
-    if (!isNaN(t2)) pingData.append('t2', t2 + '%');
-    if (insights) pingData.append('insights', insights);
-    fetch('https://formspree.io/f/mjgezrdp', {
-      method: 'POST', body: pingData,
-      headers: { 'Accept': 'application/json' }
-    }).catch(() => {});
+// CLIP-UP: each line slides up from behind a clip mask — feels like it was always there, just revealed
+document.querySelectorAll('.entrance-clip-up').forEach(el => {
+  // Wrap each line (split by <br>) so we can clip and animate independently
+  const html = el.innerHTML;
+  const lines = html.split(/<br\s*\/?>/i);
+  if (lines.length > 1) {
+    el.innerHTML = lines.map(line => `<span class="clip-line block" style="overflow:hidden;"><span class="clip-inner block">${line.trim()}</span></span>`).join('');
+    el.querySelectorAll('.clip-inner').forEach((inner, i) => {
+      gsap.from(inner, {
+        yPercent: 110, duration: 1.2, ease: 'expo.out',
+        delay: i * 0.12,
+        scrollTrigger: { trigger: el, start: 'top 85%', toggleActions: 'play none none reverse' }
+      });
+    });
+  } else if (el.children.length > 1) {
+    // Already has child elements (like THE REAL QUESTION with divs)
+    Array.from(el.children).forEach((child, i) => {
+      child.style.overflow = 'hidden';
+      gsap.from(child, {
+        yPercent: 110, duration: 1.2, ease: 'expo.out',
+        delay: i * 0.12,
+        scrollTrigger: { trigger: el, start: 'top 85%', toggleActions: 'play none none reverse' }
+      });
+    });
+  } else {
+    // Single element, just slide up
+    el.style.overflow = 'hidden';
+    gsap.from(el, {
+      yPercent: 110, duration: 1.2, ease: 'expo.out',
+      scrollTrigger: { trigger: el, start: 'top 85%', toggleActions: 'play none none reverse' }
+    });
   }
-})();
+});
 
-// ── Score link visibility ──
-(function() {
-  const link = document.querySelector('.score-link');
-  const target = document.getElementById('score-section');
-  if (link && target) {
-    window.addEventListener('scroll', function() {
-      const rect = target.getBoundingClientRect();
-      link.classList.toggle('hidden', rect.top < window.innerHeight * 0.5);
-    }, { passive: true });
+// SNAP: appears instantly with a very slight scale punch — like it was always there and just snapped into focus
+document.querySelectorAll('.entrance-snap').forEach(el => {
+  gsap.from(el, {
+    scale: 1.08, opacity: 0, duration: 0.4, ease: 'power4.out',
+    scrollTrigger: { trigger: el, start: 'top 82%', toggleActions: 'play none none reverse' }
+  });
+});
+
+// SPLIT: lines come from opposite sides and meet in the middle
+document.querySelectorAll('.entrance-split').forEach(el => {
+  // Wrap each line in a span for independent animation
+  const html = el.innerHTML;
+  const lines = html.split('<br>');
+  if (lines.length >= 2) {
+    el.innerHTML = lines.map((line, i) => `<span class="split-line block" style="overflow:hidden;"><span class="split-inner block">${line}</span></span>`).join('');
+    const inners = el.querySelectorAll('.split-inner');
+    inners.forEach((inner, i) => {
+      gsap.from(inner, {
+        x: i % 2 === 0 ? -120 : 120, opacity: 0,
+        duration: 1, ease: 'expo.out',
+        delay: i * 0.1,
+        scrollTrigger: { trigger: el, start: 'top 85%', toggleActions: 'play none none reverse' }
+      });
+    });
   }
-})();
+});
 
-// ── Intake Form Engine ──
-(function() {
-  const TOTAL_STEPS = 5;
-  let currentStep = 0;
-  const answers = { age: null, sex: null, bloodwork: [], body: [], wearable: [], context: [], catchall: '' };
+// SLIDE-RIGHT: whole block slides in from the left edge
+document.querySelectorAll('.entrance-slide-right').forEach(el => {
+  gsap.from(el, {
+    x: -100, opacity: 0, duration: 1.4, ease: 'expo.out',
+    scrollTrigger: { trigger: el, start: 'top 85%', toggleActions: 'play none none reverse' }
+  });
+});
 
-  // Weight map — mirrors score.py TIER1_WEIGHTS + TIER2_WEIGHTS
-  // T1 = 60 pts, T2 = 25 pts, total = 85
-  const WEIGHTS = {
-    // T1
-    bp:       { tier: 1, weight: 8,  key: 'blood_pressure' },
-    lipids:   { tier: 1, weight: 8,  key: 'lipid_apob' },
-    metabolic:{ tier: 1, weight: 8,  key: 'metabolic' },
-    family:   { tier: 1, weight: 6,  key: 'family_history' },
-    sleep:    { tier: 1, weight: 5,  key: 'sleep' },
-    steps:    { tier: 1, weight: 4,  key: 'steps' },
-    rhr:      { tier: 1, weight: 4,  key: 'resting_hr' },
-    waist:    { tier: 1, weight: 5,  key: 'waist' },
-    meds:     { tier: 1, weight: 4,  key: 'medications' },
-    lpa:      { tier: 1, weight: 8,  key: 'lpa' },
-    // T2
-    vo2:      { tier: 2, weight: 5,  key: 'vo2_max' },
-    hrv:      { tier: 2, weight: 2,  key: 'hrv' },
-    hscrp:    { tier: 2, weight: 3,  key: 'hscrp' },
-    liver:    { tier: 2, weight: 2,  key: 'liver' },
-    cbc:      { tier: 2, weight: 2,  key: 'cbc' },
-    tsh:      { tier: 2, weight: 2,  key: 'thyroid' },
-    vitd:     { tier: 2, weight: 3,  key: 'vitamin_d_ferritin' },
-    weight:   { tier: 2, weight: 2,  key: 'weight_trends' },
-    phq9:     { tier: 2, weight: 2,  key: 'phq9' },
-    zone2:    { tier: 2, weight: 2,  key: 'zone2' },
-  };
-
-  // Map intake answers → covered weight keys
-  function mapAnswers() {
-    const covered = new Set();
-    const bw = answers.bloodwork;
-    const bd = answers.body;
-    const wr = answers.wearable;
-    const cx = answers.context;
-
-    // "I'm not sure" → assume standard panel
-    if (bw.includes('unsure')) {
-      covered.add('lipids');
-      covered.add('metabolic');
-      covered.add('cbc');
-      covered.add('liver');
+// ——— Word-by-word entrance: words fade in with stagger ———
+document.querySelectorAll('.entrance-words').forEach(el => {
+  // Wrap each word in a span, preserving existing HTML spans
+  const nodes = el.childNodes;
+  let html = '';
+  nodes.forEach(node => {
+    if (node.nodeType === 3) {
+      // Text node: wrap each word
+      const words = node.textContent.split(/(\s+)/);
+      words.forEach(w => {
+        if (w.trim()) {
+          html += `<span class="ew-word" style="display:inline-block; opacity:0;">${w}</span>`;
+        } else {
+          html += w;
+        }
+      });
+    } else {
+      // Element node (like <span class="text-coral">): wrap inner words
+      const inner = node.textContent.split(/(\s+)/);
+      const cls = node.className || '';
+      inner.forEach(w => {
+        if (w.trim()) {
+          html += `<span class="ew-word ${cls}" style="display:inline-block; opacity:0;">${w}</span>`;
+        } else {
+          html += w;
+        }
+      });
     }
+  });
+  el.innerHTML = html;
 
-    // Blood work specifics
-    if (bw.includes('lipids'))  covered.add('lipids');
-    if (bw.includes('apob'))   covered.add('lipids'); // ApoB implies lipids covered
-    if (bw.includes('glucose') || bw.includes('insulin')) covered.add('metabolic');
-    if (bw.includes('lpa'))    covered.add('lpa');
-    if (bw.includes('hscrp'))  covered.add('hscrp');
-    if (bw.includes('liver'))  covered.add('liver');
-    if (bw.includes('cbc'))    covered.add('cbc');
-    if (bw.includes('tsh'))    covered.add('tsh');
-    if (bw.includes('vitd'))   covered.add('vitd');
+  const words = el.querySelectorAll('.ew-word');
+  gsap.to(words, {
+    opacity: 1, y: 0, duration: 0.4, ease: 'power2.out',
+    stagger: 0.04,
+    scrollTrigger: { trigger: el, start: 'top 85%', toggleActions: 'play none none reverse' }
+  });
+  // Set initial y offset
+  gsap.set(words, { y: 8 });
+});
 
-    // Body
-    if (bd.includes('bp'))     covered.add('bp');
-    if (bd.includes('waist'))  covered.add('waist');
-    if (bd.includes('weight')) covered.add('weight');
+// ——— Ghost text fill on scroll (GSAP ScrollTrigger scrub) ———
+document.querySelectorAll('.font-ghost, .font-ghost-light, .font-ghost-dark').forEach(el => {
+  gsap.to(el, {
+    '--fill': '100%',
+    ease: 'none',
+    scrollTrigger: { trigger: el, start: 'top 85%', end: 'top 25%', scrub: true }
+  });
+});
 
-    // Wearable
-    if (wr.includes('steps'))  covered.add('steps');
-    if (wr.includes('hr'))     { covered.add('rhr'); covered.add('hrv'); }
-    if (wr.includes('sleep'))  covered.add('sleep');
-    if (wr.includes('vo2'))    covered.add('vo2');
-    if (wr.includes('zones'))  covered.add('zone2');
+// ——— Parallax with GSAP ScrollTrigger ———
+document.querySelectorAll('.parallax').forEach(el => {
+  const speed = parseFloat(el.dataset.speed) || 0.03;
+  gsap.to(el, {
+    yPercent: speed * -100,
+    ease: 'none',
+    scrollTrigger: { trigger: el, start: 'top bottom', end: 'bottom top', scrub: true }
+  });
+});
 
-    // Context
-    if (cx.includes('family')) covered.add('family');
-    if (cx.includes('meds'))   covered.add('meds');
-    if (cx.includes('phq9'))   covered.add('phq9');
+// ——— Stacked words: stagger in from right ———
+document.querySelectorAll('.stack-word').forEach((el, i) => {
+  gsap.from(el, {
+    x: 80, opacity: 0, duration: 1.2, ease: 'expo.out',
+    delay: i * 0.1,
+    scrollTrigger: { trigger: el, start: 'top 90%', toggleActions: 'play none none reverse' }
+  });
+});
 
-    return covered;
-  }
-
-  function computeScore(covered) {
-    let t1Total = 0, t1Covered = 0, t2Total = 0, t2Covered = 0;
-    for (const [key, m] of Object.entries(WEIGHTS)) {
-      if (m.tier === 1) { t1Total += m.weight; if (covered.has(key)) t1Covered += m.weight; }
-      else              { t2Total += m.weight; if (covered.has(key)) t2Covered += m.weight; }
-    }
-    const total = t1Total + t2Total;
-    const coveredWeight = t1Covered + t2Covered;
-    return {
-      pct: Math.round(coveredWeight / total * 100),
-      t1Pct: Math.round(t1Covered / t1Total * 100),
-      t2Pct: Math.round(t2Covered / t2Total * 100),
-      t1Covered, t1Total, t2Covered, t2Total,
-      coveredWeight, total,
-    };
-  }
-
-  // Insight library — keyed by gap condition
-  const INSIGHTS = [
-    {
-      id: 'apob',
-      condition: (bw, covered) => bw.includes('lipids') && !bw.includes('apob'),
-      label: 'Lipid upgrade',
-      text: 'When ApoB and LDL-C disagree on your risk, <strong>ApoB wins</strong>. It\'s causally linked to atherosclerosis. Ask for it by name — your doctor probably won\'t order it otherwise. ~$15 add-on.',
-      tier: 1, weight: 8,
-    },
-    {
-      id: 'insulin',
-      condition: (bw) => (bw.includes('glucose') && !bw.includes('insulin')),
-      label: 'Metabolic upgrade',
-      text: 'Insulin resistance shows up <strong>10–15 years before a diabetes diagnosis</strong>. Fasting glucose misses early-stage IR. Fasting insulin catches it. ~$15 add-on to your next lab order.',
-      tier: 1, weight: 8,
-    },
-    {
-      id: 'bp',
-      condition: (bw, covered) => !covered.has('bp'),
-      label: 'Blood pressure',
-      text: '<strong>47% of US adults have hypertension. Half don\'t know.</strong> Each 20 mmHg above 115 systolic doubles CVD mortality. A $40 home cuff is the single highest-ROI health purchase.',
-      tier: 1, weight: 8,
-    },
-    {
-      id: 'lpa',
-      condition: (bw) => !bw.includes('lpa'),
-      label: 'Lp(a)',
-      text: '<strong>20% of people have elevated Lp(a)</strong> — genetically fixed, invisible on standard panels. One draw, ~$30, once in your entire life. Either changes your risk model permanently or it doesn\'t.',
-      tier: 1, weight: 8,
-    },
-    {
-      id: 'family',
-      condition: (bw, covered) => !covered.has('family'),
-      label: 'Family history',
-      text: 'Parental CVD before 60 roughly doubles your risk. <strong>One conversation with your parents changes your entire risk model.</strong> The cheapest, highest-ROI health data you\'ll ever collect.',
-      tier: 1, weight: 6,
-    },
-    {
-      id: 'sleep',
-      condition: (bw, covered) => !covered.has('sleep'),
-      label: 'Sleep tracking',
-      text: '<strong>Sleep regularity predicts mortality more than sleep duration.</strong> 8 hours doesn\'t help if your bedtime swings by 2 hours. If your device tracks it, turn it on.',
-      tier: 1, weight: 5,
-    },
-    {
-      id: 'no-wearable',
-      condition: (bw, covered, wr) => wr.includes('no-wearable'),
-      label: 'No wearable needed',
-      text: 'Your phone already counts steps. Each additional <strong>1,000 steps/day = ~15% lower all-cause mortality</strong>. No wearable required — just carry your phone.',
-      tier: 1, weight: 4,
-    },
-    {
-      id: 'meds',
-      condition: (bw, covered) => !covered.has('meds'),
-      label: 'Medication context',
-      text: 'Statins change your lipids. Beta-blockers suppress HR and HRV. <strong>If your tracker doesn\'t know what you\'re taking, every other number gets misread.</strong> Most underrated health metric.',
-      tier: 1, weight: 4,
-    },
-    {
-      id: 'phq9',
-      condition: (bw, covered, wr, cx) => !cx.includes('phq9'),
-      label: 'Mental health screen',
-      text: 'The PHQ-9 is a free, 3-minute depression screen. <strong>Depression independently raises cardiovascular risk 80%.</strong> Worth the 3 minutes.',
-      tier: 2, weight: 2,
-    },
-    {
-      id: 'unsure',
-      condition: (bw) => bw.includes('unsure'),
-      label: 'Get your records',
-      text: 'Ask your doctor\'s office for a copy of your last lab results. <strong>You paid for it — you own it.</strong> Knowing what was tested is the first step.',
-      tier: 0, weight: 100, // always show if applicable
-    },
-    {
-      id: 't1-complete',
-      condition: (bw, covered) => {
-        const t1Keys = Object.entries(WEIGHTS).filter(([,m]) => m.tier === 1).map(([k]) => k);
-        return t1Keys.every(k => covered.has(k));
-      },
-      label: 'Foundation complete',
-      text: 'You\'re ahead of <strong>95% of people</strong>. Your foundation is solid — the remaining gaps are in the enhanced picture. Most people never get this far.',
-      tier: 0, weight: 100,
-    },
+// ——— Domain cards: pinned grid, cards arrive from different directions, finale glow ———
+// IMPORTANT: This must run BEFORE outcome triggers, because the pin adds scroll height
+const domainCards = document.querySelectorAll('.domain-card');
+if (domainCards.length) {
+  const entryDirections = [
+    { x: -80, y: 0 },   // 01 SLEEP - from left
+    { x: 0, y: -80 },   // 02 LABS - from top
+    { x: 80, y: 0 },    // 03 MOVEMENT - from right
+    { x: 0, y: 80 },    // 04 NUTRITION - from bottom
+    { x: -80, y: 40 },  // 05 BODY COMP - from bottom-left
+    { x: 80, y: -40 },  // 06 VITALS - from top-right
+    { x: -60, y: -60 }, // 07 MIND - from top-left
+    { x: 60, y: 60 },   // 08 HISTORY - from bottom-right
   ];
 
-  function pickInsights(covered) {
-    const bw = answers.bloodwork;
-    const wr = answers.wearable;
-    const cx = answers.context;
-    const applicable = INSIGHTS.filter(i => i.condition(bw, covered, wr, cx));
-    // Sort: tier 0 specials first, then T1 by weight desc, then T2
-    applicable.sort((a, b) => {
-      if (a.tier === 0 && b.tier !== 0) return -1;
-      if (b.tier === 0 && a.tier !== 0) return 1;
-      if (a.tier !== b.tier) return a.tier - b.tier;
-      return b.weight - a.weight;
-    });
-    return applicable.slice(0, 3);
-  }
-
-  // ── UI Logic ──
-
-  // Single-select option buttons
-  document.querySelectorAll('.option-group[data-type="single"] .opt-btn').forEach(btn => {
-    btn.addEventListener('click', function() {
-      const group = this.closest('.option-group');
-      group.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('selected'));
-      this.classList.add('selected');
-      answers[group.dataset.field] = this.dataset.value;
-    });
+  const domainTl = gsap.timeline({
+    scrollTrigger: {
+      trigger: '#domains-pin-wrap',
+      start: 'top 20%',
+      end: () => '+=' + (domainCards.length * 350 + 1000),
+      pin: '#domains-pin-inner',
+      scrub: 0.5,
+    }
   });
 
-  // Multi-select check items
-  document.querySelectorAll('.check-item').forEach(item => {
-    item.addEventListener('click', function() {
-      const group = this.closest('.option-group');
-      const field = group.dataset.field;
-      const val = this.dataset.value;
-      const isExclusive = this.dataset.exclusive === 'true';
-
-      if (isExclusive) {
-        // Deselect all others, toggle this
-        group.querySelectorAll('.check-item').forEach(ci => {
-          if (ci !== this) ci.classList.remove('checked');
-        });
-        this.classList.toggle('checked');
-      } else {
-        // Deselect exclusive items, toggle this
-        group.querySelectorAll('.check-item[data-exclusive="true"]').forEach(ci => ci.classList.remove('checked'));
-        this.classList.toggle('checked');
-      }
-
-      // Rebuild answer array
-      answers[field] = [];
-      group.querySelectorAll('.check-item.checked').forEach(ci => {
-        answers[field].push(ci.dataset.value);
-      });
-    });
+  domainCards.forEach((card, i) => {
+    const dir = entryDirections[i];
+    domainTl.fromTo(card,
+      { x: dir.x, y: dir.y, scale: 0.8, opacity: 0, rotation: gsap.utils.random(-8, 8) },
+      { x: 0, y: 0, scale: 1, opacity: 1, rotation: 0, duration: 1.2, ease: 'expo.out' },
+      i * 0.5
+    );
   });
 
-  // Step navigation
-  function showStep(n) {
-    document.querySelectorAll('.intake-step').forEach(s => s.classList.remove('active'));
-    const step = document.querySelector(`.intake-step[data-step="${n}"]`);
-    if (step) step.classList.add('active');
+  // Brief hold after all cards settle
+  const finaleStart = domainCards.length * 0.5 + 1.2;
+  domainTl.to({}, { duration: 0.8 }, finaleStart);
 
-    document.querySelectorAll('.intake-progress .pip').forEach(p => {
-      const ps = parseInt(p.dataset.step);
-      p.classList.remove('active', 'done');
-      if (ps === n) p.classList.add('active');
-      else if (ps < n) p.classList.add('done');
-    });
+  // Crash out: cards fall/fly off in different directions
+  const crashDirections = [
+    { x: -200, y: 800, rotation: -35 },  // 01 SLEEP - fall left
+    { x: 80, y: 900, rotation: 15 },     // 02 LABS - fall center-right
+    { x: 250, y: 750, rotation: 40 },    // 03 MOVEMENT - fly right
+    { x: -100, y: 850, rotation: -20 },  // 04 NUTRITION - fall center-left
+    { x: -300, y: 700, rotation: -45 },  // 05 BODY COMP - fly far left
+    { x: 150, y: 950, rotation: 25 },    // 06 VITALS - drop right
+    { x: -50, y: 800, rotation: -10 },   // 07 MIND - drop center
+    { x: 300, y: 750, rotation: 50 },    // 08 HISTORY - fly far right
+  ];
 
-    currentStep = n;
-  }
+  const crashStart = finaleStart + 0.8;
+  domainCards.forEach((card, i) => {
+    const dir = crashDirections[i];
+    domainTl.to(card, {
+      x: dir.x, y: dir.y, rotation: dir.rotation, opacity: 0,
+      duration: 1.5, ease: 'power2.in',
+    }, crashStart + i * 0.08);
+  });
+}
 
-  document.querySelectorAll('.next-btn').forEach(btn => {
-    btn.addEventListener('click', function() {
-      if (currentStep < TOTAL_STEPS - 1) {
-        showStep(currentStep + 1);
-      } else {
-        // Final step — compute and show results
-        answers.catchall = document.getElementById('catchall').value.trim();
-        showResults();
-      }
-    });
+// Refresh after pin so all downstream triggers have correct positions
+ScrollTrigger.refresh();
+
+// ——— Outcomes: pinned carousel with all cards in DOM ———
+// Scrubbed timeline — simple fades only, no rotation/scale (scrub + fancy eases = janky)
+const outcomeNames = document.querySelectorAll('.outcome-name');
+const outcomeCards = document.querySelectorAll('.outcome-card-item');
+const carouselTrack = document.getElementById('outcomes-carousel-track');
+const nameHeight = 60;
+const numOutcomes = outcomeNames.length;
+
+if (numOutcomes) {
+  // More scroll per outcome = slower, more breathing room
+  const scrollPerOutcome = 600;
+  const totalScroll = numOutcomes * scrollPerOutcome;
+
+  const outcomeTl = gsap.timeline({
+    scrollTrigger: {
+      trigger: '#outcomes-pin-wrap',
+      start: 'top 15%',
+      end: () => '+=' + totalScroll,
+      pin: '#outcomes-pin-inner',
+      scrub: 1.5, // smoother catchup
+    }
   });
 
-  document.querySelectorAll('.back-btn').forEach(btn => {
-    btn.addEventListener('click', function() {
-      if (currentStep > 0) showStep(currentStep - 1);
-    });
-  });
+  // Each outcome gets a full segment with hold time
+  // Layout: [name transition 0.25] [card fade in 0.2] [hold 0.35] [card fade out 0.2]
+  const seg = 1;
 
-  function showResults() {
-    const covered = mapAnswers();
-    const score = computeScore(covered);
-    const insights = pickInsights(covered);
-    const isApprox = answers.bloodwork.includes('unsure');
+  outcomeNames.forEach((nameEl, i) => {
+    const t = i * seg;
+    const span = nameEl.querySelector('span');
+    const card = outcomeCards[i];
+    const prevSpan = i > 0 ? outcomeNames[i - 1].querySelector('span') : null;
+    const prevCard = i > 0 ? outcomeCards[i - 1] : null;
 
-    // Hide form, show results
-    document.getElementById('intake').style.display = 'none';
-    const resultEl = document.getElementById('results');
-    resultEl.classList.add('active');
-
-    // Animate score ring
-    const circumference = 2 * Math.PI * 70; // ~440
-    const offset = circumference - (score.pct / 100) * circumference;
-    const arc = document.getElementById('score-arc');
-    arc.style.strokeDasharray = circumference;
-    setTimeout(() => { arc.style.strokeDashoffset = offset; }, 50);
-    if (score.pct < 40) arc.classList.add('red');
-
-    // Score number
-    document.getElementById('score-pct').textContent = (isApprox ? '~' : '') + score.pct + '%';
-
-    // Context text
-    let ctx = '';
-    if (score.pct >= 80) ctx = "You're ahead of most people. Your data coverage is strong.";
-    else if (score.pct >= 60) ctx = "Solid foundation. A few targeted additions would get you to <strong>80%+</strong>.";
-    else if (score.pct >= 40) ctx = "You're closer than you think. <strong>Three moves totaling ~$50</strong> could nearly double your coverage.";
-    else ctx = "Most people start here. The good news: the highest-ROI metrics are cheap or free.";
-    if (isApprox) ctx += ' <em style="color:var(--text-dim);font-size:0.82rem;">(Score is approximate — we assumed a standard panel.)</em>';
-    document.getElementById('score-context').innerHTML = ctx;
-
-    // Tier bars
-    setTimeout(() => {
-      document.getElementById('t1-fill').style.width = score.t1Pct + '%';
-      document.getElementById('t2-fill').style.width = score.t2Pct + '%';
-    }, 100);
-    document.getElementById('t1-pct').textContent = score.t1Pct + '%';
-    document.getElementById('t2-pct').textContent = score.t2Pct + '%';
-
-    // Insights
-    const insightsEl = document.getElementById('insights');
-    if (insights.length > 0) {
-      let html = '<h3>What we\'d tell you</h3>';
-      insights.forEach(ins => {
-        html += `<div class="insight-card">
-          <div class="insight-label">${ins.label}</div>
-          <div class="insight-text">${ins.text}</div>
-        </div>`;
-      });
-      insightsEl.innerHTML = html;
+    // Previous card fades out (overlaps with name transition)
+    if (prevCard) {
+      outcomeTl.to(prevCard, {
+        opacity: 0, y: -20, duration: seg * 0.2, ease: 'none',
+      }, t);
     }
 
-    // Hidden fields for Formspree
-    document.getElementById('hidden-score').value = score.pct + '%';
-    document.getElementById('hidden-catchall').value = answers.catchall;
+    // Slide carousel track to this name
+    outcomeTl.to(carouselTrack, {
+      y: -(i * nameHeight), duration: seg * 0.25, ease: 'none',
+    }, t);
 
-    // Silent ping — capture score data even if user doesn't enter email
-    const pingData = new FormData();
-    pingData.append('_subject', 'Score ping (no email)');
-    pingData.append('source', 'intake-form');
-    pingData.append('coverage_score', score.pct + '%');
-    pingData.append('t1', score.t1Pct + '%');
-    pingData.append('t2', score.t2Pct + '%');
-    pingData.append('insights', insights.map(i => i.id).join(','));
-    if (answers.catchall) pingData.append('catchall', answers.catchall);
-    fetch('https://formspree.io/f/mjgezrdp', {
-      method: 'POST', body: pingData,
-      headers: { 'Accept': 'application/json' }
-    }).catch(() => {});
+    // Highlight this name, dim previous
+    if (span) {
+      outcomeTl.to(span, { color: '#c83c3c', duration: seg * 0.2, ease: 'none' }, t);
+    }
+    if (prevSpan) {
+      outcomeTl.to(prevSpan, { color: 'rgba(240,240,240,0.15)', duration: seg * 0.15, ease: 'none' }, t);
+    }
+
+    // Card fades in (simple opacity + slight y, no rotation/scale)
+    if (card) {
+      outcomeTl.fromTo(card,
+        { opacity: 0, y: 24 },
+        { opacity: 1, y: 0, duration: seg * 0.25, ease: 'none' },
+        t + seg * 0.2
+      );
+    }
+  });
+
+  // Dim last name and fade last card at end
+  const lastSpan = outcomeNames[numOutcomes - 1]?.querySelector('span');
+  const lastCard = outcomeCards[numOutcomes - 1];
+  if (lastSpan) outcomeTl.to(lastSpan, { color: 'rgba(240,240,240,0.15)', duration: 0.3, ease: 'none' }, numOutcomes * seg);
+  if (lastCard) outcomeTl.to(lastCard, { opacity: 0, duration: 0.3, ease: 'none' }, numOutcomes * seg);
+}
+
+// ——— Proof section: pinned, stat row + insulin card animate in sequence ———
+const proofStatRow = document.getElementById('proof-stat-row');
+if (proofStatRow) {
+  const proofTl = gsap.timeline({
+    scrollTrigger: {
+      trigger: '#proof-pin-wrap',
+      start: 'top 20%',
+      end: '+=800',
+      pin: '#proof-pin-inner',
+      scrub: 1,
+    }
+  });
+
+  // Stat numbers scale up
+  const statBefore = proofStatRow.querySelector('.text-ink-dim\\/30'); // arrow
+  const statNums = proofStatRow.querySelectorAll('.font-stat');
+  statNums.forEach((num, i) => {
+    proofTl.from(num, {
+      scale: 0.5, opacity: 0, duration: 0.5, ease: 'back.out(1.4)',
+    }, i * 0.2);
+  });
+
+  // Arrow fades in
+  if (statBefore) {
+    proofTl.from(statBefore, { opacity: 0, duration: 0.3 }, 0.1);
   }
-})();
-</script>
 
+  // Paragraph fades up
+  const proofPara = proofStatRow.parentElement.querySelector('.max-w-md');
+  if (proofPara) {
+    proofTl.from(proofPara, { y: 30, opacity: 0, duration: 0.5 }, 0.5);
+  }
+
+  // Insulin card scales in
+  const insulinCard = proofStatRow.parentElement.querySelector('.max-w-xl');
+  if (insulinCard) {
+    proofTl.from(insulinCard, { scale: 0.9, opacity: 0, y: 40, duration: 0.6, ease: 'expo.out' }, 0.8);
+  }
+}
+
+// ——— Coverage bar animations ———
+document.querySelectorAll('.coverage-bar').forEach(bar => {
+  const target = parseInt(bar.dataset.target);
+  gsap.to(bar, {
+    width: target + '%',
+    duration: 1.2,
+    ease: 'expo.out',
+    scrollTrigger: { trigger: bar, start: 'top 90%', toggleActions: 'play none none reverse' }
+  });
+});
+
+// ——— Comparison card tilt on entry ———
+document.querySelectorAll('.comp-card').forEach((card, i) => {
+  const endRotation = parseFloat(card.dataset.rotate) || 0;
+  gsap.fromTo(card,
+    { rotation: gsap.utils.random(-15, 15), y: 60, opacity: 0 },
+    { rotation: endRotation, y: 0, opacity: 1, duration: 1, ease: 'back.out(1.4)', delay: i * 0.12,
+      scrollTrigger: { trigger: card.parentElement, start: 'top 80%', toggleActions: 'play none none reverse' }
+    }
+  );
+});
+
+// ——— Scroll progress bar ———
+gsap.to('#scroll-progress', {
+  width: '100%',
+  ease: 'none',
+  scrollTrigger: { trigger: 'body', start: 'top top', end: 'bottom bottom', scrub: true }
+});
+
+// ——— Stat counter animation ———
+document.querySelectorAll('.stat-count').forEach(el => {
+  const target = parseInt(el.dataset.target);
+  const suffix = target === 33 ? '%' : '';
+  ScrollTrigger.create({
+    trigger: el, start: 'top 80%',
+    onEnter: () => {
+      if (el.dataset.counted) return;
+      el.dataset.counted = 'true';
+      let obj = { val: 0 };
+      gsap.to(obj, {
+        val: target, duration: 1.2, ease: 'expo.out',
+        onUpdate: () => { el.textContent = Math.round(obj.val) + suffix; }
+      });
+    }
+  });
+});
+
+// ——— Form submission ———
+const form = document.getElementById('coach-form');
+const success = document.getElementById('success');
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const btn = form.querySelector('button[type="submit"]');
+  btn.disabled = true;
+  btn.textContent = 'SENDING...';
+  try {
+    const res = await fetch(form.action, {
+      method: 'POST',
+      body: new FormData(form),
+      headers: { 'Accept': 'application/json' }
+    });
+    if (res.ok) {
+      form.style.display = 'none';
+      success.classList.remove('hidden');
+    } else {
+      btn.disabled = false;
+      btn.textContent = "I'M IN";
+    }
+  } catch {
+    btn.disabled = false;
+    btn.textContent = "I'M IN";
+  }
+});
+
+// ——— Footer reveal: set spacer height + only show footer near bottom ———
+const footer = document.getElementById('site-footer');
+const spacer = document.getElementById('footer-spacer');
+if (footer && spacer) {
+  const setSpacerHeight = () => { spacer.style.height = footer.offsetHeight + 'px'; };
+  setSpacerHeight();
+  window.addEventListener('resize', setSpacerHeight);
+
+  // Only show footer when CTA section is almost fully scrolled past
+  ScrollTrigger.create({
+    trigger: '#get-started',
+    start: 'bottom 90%',
+    onEnter: () => { footer.style.visibility = 'visible'; },
+    onLeaveBack: () => { footer.style.visibility = 'hidden'; },
+  });
+}
+
+// ——— Step cards: scale up from behind (emerge on scroll) ———
+document.querySelectorAll('.step-emerge').forEach((card, i) => {
+  gsap.from(card, {
+    y: 100, scale: 0.8, opacity: 0, duration: 1, ease: 'expo.out',
+    delay: i * 0.12,
+    scrollTrigger: { trigger: card.parentElement, start: 'top 85%', toggleActions: 'play none none reverse' }
+  });
+});
+
+// ——— Connector blur+fade: connector fades out as next section enters ———
+document.querySelectorAll('.connector-section').forEach(conn => {
+  gsap.to(conn, {
+    filter: 'blur(8px)',
+    opacity: 0.3,
+    ease: 'none',
+    scrollTrigger: { trigger: conn, start: 'center center', end: 'bottom top', scrub: true }
+  });
+});
+
+// ——— Founder photos: scale up from behind content ———
+document.querySelectorAll('.founder-photo').forEach(photo => {
+  gsap.from(photo, {
+    scale: 0.7, y: 80, opacity: 0, duration: 1.4, ease: 'expo.out',
+    scrollTrigger: { trigger: photo, start: 'top 90%', toggleActions: 'play none none reverse' }
+  });
+});
+
+// ——— Rotated strip cards animation ———
+document.querySelectorAll('.rotated-strip').forEach((strip, i) => {
+  gsap.from(strip, {
+    rotation: gsap.utils.random(-25, 25),
+    y: 80,
+    opacity: 0,
+    duration: 1.2,
+    ease: 'back.out(1.7)',
+    delay: i * 0.1,
+    scrollTrigger: { trigger: strip.parentElement, start: 'top 80%', toggleActions: 'play none none reverse' }
+  });
+});
+</script>
 </body>
 </html>

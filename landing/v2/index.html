@@ -207,9 +207,8 @@ tailwind.config = {
   /* Outcome name */
   .outcome-name { transition: transform 0.3s ease; }
 
-  /* Domain emerge cards */
-  .domain-emerge { will-change: transform, opacity; transition: border-color 0.3s ease; }
-  .domain-emerge:hover { border-color: rgba(200,60,60,0.3) !important; }
+  /* Domain card in pinned grid */
+  .domain-card { will-change: transform, opacity; transition: border-color 0.3s ease; }
 
   /* Founder photo parallax scale */
   .founder-photo { will-change: transform; }
@@ -255,7 +254,7 @@ tailwind.config = {
     <div class="font-label text-ink-dim mb-6 reveal">your full health picture</div>
     <h1 class="font-massive text-[clamp(5rem,18vw,16rem)] text-ink leading-[0.82] reveal stagger-1">FINALLY</h1>
     <div class="mt-8 md:mt-10 flex flex-col md:flex-row md:items-end md:justify-between gap-6 reveal stagger-2">
-      <p class="font-mono text-[0.75rem] md:text-[0.8rem] text-ink-muted tracking-widest uppercase max-w-md leading-relaxed">an ai coach that knows your numbers.<br>connects them. tells you what to do next.</p>
+      <p class="font-mono text-[0.75rem] md:text-[0.8rem] text-ink-muted tracking-widest uppercase max-w-md leading-relaxed entrance-words">an ai coach that knows your numbers. connects them. tells you what to do next.</p>
       <a href="#get-started" class="font-mono text-[0.65rem] text-coral tracking-widest uppercase hover:text-ink transition-colors">get started &darr;</a>
     </div>
   </div>
@@ -292,17 +291,17 @@ tailwind.config = {
     <div class="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-0">
       <!-- Left: THE REAL QUESTION massive stacked -->
       <div class="md:col-span-6">
-        <div class="font-massive text-ink leading-[0.88]">
-          <div class="text-[clamp(3rem,9vw,8rem)] reveal">THE</div>
-          <div class="text-[clamp(3.5rem,11vw,10rem)] reveal stagger-1">REAL</div>
-          <div class="text-[clamp(2.5rem,7.5vw,6.5rem)] reveal stagger-2">QUESTION</div>
+        <div class="font-massive text-ink leading-[0.88] entrance-clip-up">
+          <div class="text-[clamp(3rem,9vw,8rem)]">THE</div>
+          <div class="text-[clamp(3.5rem,11vw,10rem)]">REAL</div>
+          <div class="text-[clamp(2.5rem,7.5vw,6.5rem)]">QUESTION</div>
         </div>
       </div>
 
       <!-- Right: the question + pain points, vertically centered next to REAL -->
       <div class="md:col-span-5 md:col-start-8 flex flex-col justify-center">
         <div class="mb-10">
-          <p class="text-ink text-[1.1rem] leading-[1.6] font-medium reveal stagger-1">How do I know if I'm <span class="text-coral font-semibold">actually</span> healthy?</p>
+          <p class="text-ink text-[1.1rem] leading-[1.6] font-medium entrance-words">How do I know if I'm <span class="text-coral font-semibold">actually</span> healthy?</p>
           <p class="text-ink-muted text-[0.95rem] leading-[1.85] mt-4 reveal stagger-2">Not "am I fit?" Not "are my labs in range?" The one your doctor doesn't answer and your wearable can't.</p>
         </div>
 
@@ -333,142 +332,245 @@ tailwind.config = {
 </div>
 
 <!-- ═══════════════════════ HEALTH DOMAINS — WHERE YOUR CONTEXT LIVES ═══════════════════════ -->
-<section class="bg-bg relative noise overflow-hidden" id="outcomes-section">
+<section class="bg-bg relative noise" style="overflow: clip;" id="outcomes-section">
   <div class="px-band pt-[clamp(6rem,12vw,10rem)] pb-8 md:pb-16">
     <div class="font-label text-coral mb-10 md:mb-16 reveal">(your health picture)</div>
 
     <div class="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-16 mb-16 md:mb-24">
       <div class="md:col-span-5">
-        <div class="font-massive text-[clamp(2.2rem,5.5vw,4.5rem)] text-ink mb-8 parallax reveal" data-speed="0.02">SCATTERED<br>CONTEXT<br>ONE<br>PICTURE</div>
-        <p class="text-ink-muted text-[0.95rem] leading-[1.85] max-w-md reveal stagger-1">Your labs are in one portal. Your sleep is in another app. Your weight is on a scale. Family history is in your head. No tool connects them. We do.</p>
+        <div class="font-display font-bold text-[clamp(1.4rem,3.5vw,2.8rem)] text-ink leading-[1.15] tracking-tight mb-8 parallax entrance-snap" data-speed="0.02">SCATTERED CONTEXT<br>ONE PICTURE</div>
+        <p class="text-ink-muted text-[0.95rem] leading-[1.85] max-w-md entrance-words">Your labs are in one portal. Your sleep is in another app. Your weight is on a scale. Family history is in your head. No tool connects them. We do.</p>
       </div>
-      <div class="md:col-span-5 md:col-start-8 flex items-end">
-        <p class="font-mono text-[0.65rem] text-ink-dim tracking-widest uppercase reveal stagger-2">eight domains. forty metrics.<br>one coach that sees all of it.</p>
-      </div>
-    </div>
-
-    <!-- Health domains: parallax emerging cards (ABCS work-page style) -->
-    <div class="relative mb-16 md:mb-24" style="min-height: 600px;" id="domains-parallax">
-      <!-- Row 1 -->
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mb-4 md:mb-6">
-        <div class="domain-emerge rounded-xl border border-ink-dim/15 p-5 md:p-7" style="background: rgba(255,255,255,0.03);">
-          <div class="font-stat text-[1.4rem] text-coral/40 mb-2">01</div>
-          <div class="font-display font-bold text-ink text-[clamp(1.2rem,2.5vw,1.8rem)] tracking-tight">SLEEP</div>
-          <p class="text-[0.65rem] text-ink-dim leading-relaxed mt-2">Duration, consistency, quality</p>
-        </div>
-        <div class="domain-emerge rounded-xl border border-ink-dim/15 p-5 md:p-7" style="background: rgba(255,255,255,0.03);">
-          <div class="font-stat text-[1.4rem] text-coral/40 mb-2">02</div>
-          <div class="font-display font-bold text-ink text-[clamp(1.2rem,2.5vw,1.8rem)] tracking-tight">LABS</div>
-          <p class="text-[0.65rem] text-ink-dim leading-relaxed mt-2">Blood work, biomarkers, trends</p>
-        </div>
-        <div class="domain-emerge rounded-xl border border-ink-dim/15 p-5 md:p-7" style="background: rgba(255,255,255,0.03);">
-          <div class="font-stat text-[1.4rem] text-coral/40 mb-2">03</div>
-          <div class="font-display font-bold text-ink text-[clamp(1.2rem,2.5vw,1.8rem)] tracking-tight">MOVEMENT</div>
-          <p class="text-[0.65rem] text-ink-dim leading-relaxed mt-2">Steps, training, VO2 max</p>
-        </div>
-        <div class="domain-emerge rounded-xl border border-ink-dim/15 p-5 md:p-7" style="background: rgba(255,255,255,0.03);">
-          <div class="font-stat text-[1.4rem] text-coral/40 mb-2">04</div>
-          <div class="font-display font-bold text-ink text-[clamp(1.2rem,2.5vw,1.8rem)] tracking-tight">NUTRITION</div>
-          <p class="text-[0.65rem] text-ink-dim leading-relaxed mt-2">Macros, protein, meal patterns</p>
-        </div>
-      </div>
-      <!-- Row 2 -->
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-        <div class="domain-emerge rounded-xl border border-ink-dim/15 p-5 md:p-7" style="background: rgba(255,255,255,0.03);">
-          <div class="font-stat text-[1.4rem] text-coral/40 mb-2">05</div>
-          <div class="font-display font-bold text-ink text-[clamp(1.2rem,2.5vw,1.8rem)] tracking-tight">BODY COMP</div>
-          <p class="text-[0.65rem] text-ink-dim leading-relaxed mt-2">Weight, waist, lean mass</p>
-        </div>
-        <div class="domain-emerge rounded-xl border border-ink-dim/15 p-5 md:p-7" style="background: rgba(255,255,255,0.03);">
-          <div class="font-stat text-[1.4rem] text-coral/40 mb-2">06</div>
-          <div class="font-display font-bold text-ink text-[clamp(1.2rem,2.5vw,1.8rem)] tracking-tight">VITALS</div>
-          <p class="text-[0.65rem] text-ink-dim leading-relaxed mt-2">Blood pressure, heart rate, HRV</p>
-        </div>
-        <div class="domain-emerge rounded-xl border border-ink-dim/15 p-5 md:p-7" style="background: rgba(255,255,255,0.03);">
-          <div class="font-stat text-[1.4rem] text-coral/40 mb-2">07</div>
-          <div class="font-display font-bold text-ink text-[clamp(1.2rem,2.5vw,1.8rem)] tracking-tight">MIND</div>
-          <p class="text-[0.65rem] text-ink-dim leading-relaxed mt-2">Stress, mood, mental health</p>
-        </div>
-        <div class="domain-emerge rounded-xl border border-ink-dim/15 p-5 md:p-7" style="background: rgba(255,255,255,0.03);">
-          <div class="font-stat text-[1.4rem] text-coral/40 mb-2">08</div>
-          <div class="font-display font-bold text-ink text-[clamp(1.2rem,2.5vw,1.8rem)] tracking-tight">HISTORY</div>
-          <p class="text-[0.65rem] text-ink-dim leading-relaxed mt-2">Family history, medications</p>
-        </div>
+      <div class="md:col-span-5 md:col-start-8 flex flex-col justify-end">
+        <p class="font-display font-bold text-[clamp(1.1rem,1.8vw,1.4rem)] leading-[1.45] tracking-tight text-ink reveal stagger-2 mt-auto">Eight domains. Forty metrics.<br>One coach that sees all of it.</p>
       </div>
     </div>
 
-    <!-- Transition label -->
-    <div class="font-label text-coral mb-6 reveal">(what we help you do)</div>
-  </div>
-
-  <!-- Outcomes: ABCS clients pattern — names scroll, card is sticky -->
-  <div class="relative px-band" id="outcomes-section-scroll">
-    <div class="flex flex-col md:flex-row gap-8 md:gap-16 items-start">
-
-      <!-- Left: sticky side label (desktop) -->
-      <div class="hidden md:block md:w-[140px] shrink-0 sticky top-[50vh] -translate-y-1/2">
-        <p class="font-mono text-[0.6rem] text-ink-dim tracking-widest uppercase leading-relaxed">The outcomes<br>we coach on</p>
-      </div>
-
-      <!-- Center: names that scroll naturally -->
-      <div class="flex-1 max-w-lg py-[30vh]" id="outcomes-names">
-        <div class="outcome-name py-6 md:py-8 cursor-default" data-outcome-name="sleep">
-          <span class="font-display font-bold text-[clamp(2.2rem,5.5vw,4rem)] text-ink/15 leading-[1.1] tracking-tight block">SLEEP BETTER</span>
-        </div>
-        <div class="outcome-name py-6 md:py-8 cursor-default" data-outcome-name="weight">
-          <span class="font-display font-bold text-[clamp(2.2rem,5.5vw,4rem)] text-ink/15 leading-[1.1] tracking-tight block">LOSE WEIGHT</span>
-        </div>
-        <div class="outcome-name py-6 md:py-8 cursor-default" data-outcome-name="energy">
-          <span class="font-display font-bold text-[clamp(2.2rem,5.5vw,4rem)] text-ink/15 leading-[1.1] tracking-tight block">MORE ENERGY</span>
-        </div>
-        <div class="outcome-name py-6 md:py-8 cursor-default" data-outcome-name="strength">
-          <span class="font-display font-bold text-[clamp(2.2rem,5.5vw,4rem)] text-ink/15 leading-[1.1] tracking-tight block">BUILD STRENGTH</span>
-        </div>
-        <div class="outcome-name py-6 md:py-8 cursor-default" data-outcome-name="nutrition">
-          <span class="font-display font-bold text-[clamp(2.2rem,5.5vw,4rem)] text-ink/15 leading-[1.1] tracking-tight block">EAT HEALTHIER</span>
-        </div>
-        <div class="outcome-name py-6 md:py-8 cursor-default" data-outcome-name="stress">
-          <span class="font-display font-bold text-[clamp(2.2rem,5.5vw,4rem)] text-ink/15 leading-[1.1] tracking-tight block">LESS STRESS</span>
-        </div>
-        <div class="outcome-name py-6 md:py-8 cursor-default" data-outcome-name="focus">
-          <span class="font-display font-bold text-[clamp(2.2rem,5.5vw,4rem)] text-ink/15 leading-[1.1] tracking-tight block">SHARPER FOCUS</span>
-        </div>
-        <div class="outcome-name py-6 md:py-8 cursor-default" data-outcome-name="coverage">
-          <span class="font-display font-bold text-[clamp(2.2rem,5.5vw,4rem)] text-ink/15 leading-[1.1] tracking-tight block">KNOW YOUR SCORE</span>
-        </div>
-      </div>
-
-      <!-- Right: sticky card + description (desktop) -->
-      <div class="hidden md:block md:w-[300px] shrink-0 sticky top-[50vh] -translate-y-1/2">
-        <!-- Card container with overflow clip for rotation entrance -->
-        <div class="rounded-xl overflow-hidden mb-6" id="outcome-card-wrap">
-          <div class="bg-bg-elevated border border-ink-dim/20 rounded-xl p-6 shadow-2xl" id="outcome-card">
-            <div class="font-mono text-[0.55rem] text-coral tracking-widest uppercase mb-4" id="outcome-card-label">sleep duration</div>
-            <div class="flex items-baseline gap-3 mb-1">
-              <div class="font-stat text-[1rem] text-ink-dim/40 leading-tight line-through decoration-ink-dim/20" id="outcome-card-before">5.2 hrs</div>
-              <div class="text-ink-dim/30">&rarr;</div>
-              <div class="font-stat text-[1.8rem] text-ink leading-tight" id="outcome-card-after">7.4 hrs</div>
-            </div>
-            <div class="font-mono text-[0.6rem] text-coral font-bold tracking-widest uppercase mb-4" id="outcome-card-delta">+42%</div>
-            <div class="w-full h-px bg-ink-dim/20 mb-3"></div>
-            <p class="text-[0.7rem] text-ink-muted leading-relaxed" id="outcome-card-desc">From fragmented to restorative. The foundation everything else depends on.</p>
+    <!-- Health domains: pinned grid, cards reveal one at a time -->
+    <div class="relative mb-16 md:mb-24" id="domains-pin-wrap">
+      <div id="domains-pin-inner">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mb-4 md:mb-6">
+          <div class="domain-card rounded-xl border border-ink-dim/15 p-5 md:p-7 opacity-0" style="background: rgba(255,255,255,0.03);" data-domain-idx="0">
+            <div class="font-stat text-[1.4rem] text-coral/40 mb-2">01</div>
+            <div class="font-display font-bold text-ink text-[clamp(1.2rem,2.5vw,1.8rem)] tracking-tight mb-2">SLEEP</div>
+            <p class="text-[0.65rem] text-ink-dim leading-relaxed">Duration, consistency, quality</p>
+            <p class="text-[0.7rem] text-ink-muted leading-relaxed mt-3 hidden md:block">Poor sleep doubles your risk of metabolic disease. The foundation everything else depends on.</p>
+          </div>
+          <div class="domain-card rounded-xl border border-ink-dim/15 p-5 md:p-7 opacity-0" style="background: rgba(255,255,255,0.03);" data-domain-idx="1">
+            <div class="font-stat text-[1.4rem] text-coral/40 mb-2">02</div>
+            <div class="font-display font-bold text-ink text-[clamp(1.2rem,2.5vw,1.8rem)] tracking-tight mb-2">LABS</div>
+            <p class="text-[0.65rem] text-ink-dim leading-relaxed">Blood work, biomarkers, trends</p>
+            <p class="text-[0.7rem] text-ink-muted leading-relaxed mt-3 hidden md:block">A single blood draw is a snapshot. Three draws reveal trajectories your doctor can't see in one visit.</p>
+          </div>
+          <div class="domain-card rounded-xl border border-ink-dim/15 p-5 md:p-7 opacity-0" style="background: rgba(255,255,255,0.03);" data-domain-idx="2">
+            <div class="font-stat text-[1.4rem] text-coral/40 mb-2">03</div>
+            <div class="font-display font-bold text-ink text-[clamp(1.2rem,2.5vw,1.8rem)] tracking-tight mb-2">MOVEMENT</div>
+            <p class="text-[0.65rem] text-ink-dim leading-relaxed">Steps, training, VO2 max</p>
+            <p class="text-[0.7rem] text-ink-muted leading-relaxed mt-3 hidden md:block">VO2 max is the single strongest predictor of all-cause mortality. Stronger than smoking. And it's trainable at any age.</p>
+          </div>
+          <div class="domain-card rounded-xl border border-ink-dim/15 p-5 md:p-7 opacity-0" style="background: rgba(255,255,255,0.03);" data-domain-idx="3">
+            <div class="font-stat text-[1.4rem] text-coral/40 mb-2">04</div>
+            <div class="font-display font-bold text-ink text-[clamp(1.2rem,2.5vw,1.8rem)] tracking-tight mb-2">NUTRITION</div>
+            <p class="text-[0.65rem] text-ink-dim leading-relaxed">Macros, protein, meal patterns</p>
+            <p class="text-[0.7rem] text-ink-muted leading-relaxed mt-3 hidden md:block">Most adults eat 50-70% less protein than optimal. One change here moves body comp, energy, and recovery simultaneously.</p>
           </div>
         </div>
-        <p class="text-ink-muted text-[0.85rem] leading-relaxed" id="outcome-card-blurb">The single highest-leverage change for most people.</p>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+          <div class="domain-card rounded-xl border border-ink-dim/15 p-5 md:p-7 opacity-0" style="background: rgba(255,255,255,0.03);" data-domain-idx="4">
+            <div class="font-stat text-[1.4rem] text-coral/40 mb-2">05</div>
+            <div class="font-display font-bold text-ink text-[clamp(1.2rem,2.5vw,1.8rem)] tracking-tight mb-2">BODY COMP</div>
+            <p class="text-[0.65rem] text-ink-dim leading-relaxed">Weight, waist, lean mass</p>
+            <p class="text-[0.7rem] text-ink-muted leading-relaxed mt-3 hidden md:block">The scale lies. Two people at 180 lbs can have completely different health profiles. Composition is signal.</p>
+          </div>
+          <div class="domain-card rounded-xl border border-ink-dim/15 p-5 md:p-7 opacity-0" style="background: rgba(255,255,255,0.03);" data-domain-idx="5">
+            <div class="font-stat text-[1.4rem] text-coral/40 mb-2">06</div>
+            <div class="font-display font-bold text-ink text-[clamp(1.2rem,2.5vw,1.8rem)] tracking-tight mb-2">VITALS</div>
+            <p class="text-[0.65rem] text-ink-dim leading-relaxed">Blood pressure, heart rate, HRV</p>
+            <p class="text-[0.7rem] text-ink-muted leading-relaxed mt-3 hidden md:block">Resting heart rate trends predict cardiac events years in advance. Your body's real-time status report.</p>
+          </div>
+          <div class="domain-card rounded-xl border border-ink-dim/15 p-5 md:p-7 opacity-0" style="background: rgba(255,255,255,0.03);" data-domain-idx="6">
+            <div class="font-stat text-[1.4rem] text-coral/40 mb-2">07</div>
+            <div class="font-display font-bold text-ink text-[clamp(1.2rem,2.5vw,1.8rem)] tracking-tight mb-2">MIND</div>
+            <p class="text-[0.65rem] text-ink-dim leading-relaxed">Stress, mood, mental health</p>
+            <p class="text-[0.7rem] text-ink-muted leading-relaxed mt-3 hidden md:block">Chronic stress elevates cortisol, disrupts sleep, and accelerates aging. The domain that amplifies every other one.</p>
+          </div>
+          <div class="domain-card rounded-xl border border-ink-dim/15 p-5 md:p-7 opacity-0" style="background: rgba(255,255,255,0.03);" data-domain-idx="7">
+            <div class="font-stat text-[1.4rem] text-coral/40 mb-2">08</div>
+            <div class="font-display font-bold text-ink text-[clamp(1.2rem,2.5vw,1.8rem)] tracking-tight mb-2">HISTORY</div>
+            <p class="text-[0.65rem] text-ink-dim leading-relaxed">Family history, medications</p>
+            <p class="text-[0.7rem] text-ink-muted leading-relaxed mt-3 hidden md:block">Your family history changes which metrics matter most. Context that changes what to measure first.</p>
+          </div>
+        </div>
       </div>
-
     </div>
 
-    <!-- Mobile: sticky stat at bottom -->
-    <div class="md:hidden sticky bottom-0 left-0 right-0 bg-bg/90 backdrop-blur-sm border-t border-ink-dim/10 px-band py-4 z-10" id="outcome-mobile-stat">
-      <div class="flex items-baseline gap-3 mb-1">
-        <div class="font-mono text-[0.55rem] text-coral tracking-widest uppercase" id="outcome-mobile-label">sleep duration</div>
-      </div>
-      <div class="flex items-baseline gap-3">
-        <div class="font-stat text-[0.9rem] text-ink-dim/40 leading-tight line-through" id="outcome-mobile-before">5.2 hrs</div>
-        <div class="text-ink-dim/30 text-sm">&rarr;</div>
-        <div class="font-stat text-[1.3rem] text-ink leading-tight" id="outcome-mobile-after">7.4 hrs</div>
-        <div class="font-mono text-[0.6rem] text-coral font-bold tracking-widest uppercase" id="outcome-mobile-delta">+42%</div>
+  </div>
+</section>
+
+<!-- ═══════════ TRANSITION: What we help you do ═══════════ -->
+<section class="bg-bg relative noise py-band px-band text-center">
+  <div class="font-label text-coral mb-8 reveal">(what we help you do)</div>
+  <div class="font-massive text-[clamp(2.5rem,7vw,5.5rem)] text-ink leading-[0.88] entrance-split">THE OUTCOMES<br>WE COACH ON</div>
+  <p class="text-ink-muted text-[0.95rem] leading-[1.85] max-w-md mx-auto mt-8 reveal stagger-2">Your context powers everything below. These are the results people see when the full picture comes together.</p>
+</section>
+
+<!-- ═══════════════════════ OUTCOMES (pinned carousel) ═══════════════════════ -->
+<section class="bg-bg relative" id="outcomes-pin-section">
+  <div id="outcomes-pin-wrap">
+    <div class="min-h-screen flex items-center px-band" id="outcomes-pin-inner">
+      <div class="w-full flex flex-col md:flex-row gap-8 md:gap-16 items-center">
+
+        <!-- Left: side label (desktop) -->
+        <div class="hidden md:block md:w-[100px] shrink-0">
+          <p class="font-mono text-[0.6rem] text-ink-dim tracking-widest uppercase leading-relaxed">The outcomes<br>we coach on</p>
+        </div>
+
+        <!-- Center: carousel viewport (clips overflow, shows one name at a time) -->
+        <div class="flex-1 max-w-lg relative overflow-hidden" style="height: 60px;" id="outcomes-carousel">
+          <div class="absolute left-0 w-full" id="outcomes-carousel-track">
+            <div class="outcome-name" data-outcome-name="sleep" style="height: 60px; display: flex; align-items: center;">
+              <span class="font-display font-bold text-[clamp(2rem,5vw,3.5rem)] text-ink/15 leading-[1] tracking-tight block">SLEEP BETTER</span>
+            </div>
+            <div class="outcome-name" data-outcome-name="weight" style="height: 60px; display: flex; align-items: center;">
+              <span class="font-display font-bold text-[clamp(2rem,5vw,3.5rem)] text-ink/15 leading-[1] tracking-tight block">LOSE WEIGHT</span>
+            </div>
+            <div class="outcome-name" data-outcome-name="energy" style="height: 60px; display: flex; align-items: center;">
+              <span class="font-display font-bold text-[clamp(2rem,5vw,3.5rem)] text-ink/15 leading-[1] tracking-tight block">MORE ENERGY</span>
+            </div>
+            <div class="outcome-name" data-outcome-name="strength" style="height: 60px; display: flex; align-items: center;">
+              <span class="font-display font-bold text-[clamp(2rem,5vw,3.5rem)] text-ink/15 leading-[1] tracking-tight block">BUILD STRENGTH</span>
+            </div>
+            <div class="outcome-name" data-outcome-name="nutrition" style="height: 60px; display: flex; align-items: center;">
+              <span class="font-display font-bold text-[clamp(2rem,5vw,3.5rem)] text-ink/15 leading-[1] tracking-tight block">EAT HEALTHIER</span>
+            </div>
+            <div class="outcome-name" data-outcome-name="stress" style="height: 60px; display: flex; align-items: center;">
+              <span class="font-display font-bold text-[clamp(2rem,5vw,3.5rem)] text-ink/15 leading-[1] tracking-tight block">LESS STRESS</span>
+            </div>
+            <div class="outcome-name" data-outcome-name="focus" style="height: 60px; display: flex; align-items: center;">
+              <span class="font-display font-bold text-[clamp(2rem,5vw,3.5rem)] text-ink/15 leading-[1] tracking-tight block">SHARPER FOCUS</span>
+            </div>
+            <div class="outcome-name" data-outcome-name="coverage" style="height: 60px; display: flex; align-items: center;">
+              <span class="font-display font-bold text-[clamp(2rem,5vw,3.5rem)] text-ink/15 leading-[1] tracking-tight block">KNOW MORE</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: stacked cards (all 8 in DOM, GSAP controls visibility) -->
+        <div class="hidden md:block md:w-[300px] shrink-0 relative" id="outcome-card-area" style="min-height: 280px;">
+          <div class="outcome-card-item absolute inset-0 opacity-0" data-outcome-idx="0">
+            <div class="bg-bg-elevated border border-ink-dim/20 rounded-xl p-6 shadow-2xl mb-5">
+              <div class="font-mono text-[0.55rem] text-coral tracking-widest uppercase mb-4">sleep duration</div>
+              <div class="flex items-baseline gap-3 mb-1">
+                <div class="font-stat text-[1rem] text-ink-dim/40 leading-tight line-through decoration-ink-dim/20">5.2 hrs</div>
+                <div class="text-ink-dim/30">&rarr;</div>
+                <div class="font-stat text-[1.8rem] text-ink leading-tight">7.4 hrs</div>
+              </div>
+              <div class="font-mono text-[0.6rem] text-coral font-bold tracking-widest uppercase mb-4">+42%</div>
+              <div class="w-full h-px bg-ink-dim/20 mb-3"></div>
+              <p class="text-[0.7rem] text-ink-muted leading-relaxed">From fragmented to restorative. The foundation everything else depends on.</p>
+            </div>
+            <p class="text-ink-muted text-[0.85rem] leading-relaxed">The single highest-leverage change for most people.</p>
+          </div>
+          <div class="outcome-card-item absolute inset-0 opacity-0" data-outcome-idx="1">
+            <div class="bg-bg-elevated border border-ink-dim/20 rounded-xl p-6 shadow-2xl mb-5">
+              <div class="font-mono text-[0.55rem] text-coral tracking-widest uppercase mb-4">weight trend</div>
+              <div class="flex items-baseline gap-3 mb-1">
+                <div class="font-stat text-[1rem] text-ink-dim/40 leading-tight line-through decoration-ink-dim/20">206 lbs</div>
+                <div class="text-ink-dim/30">&rarr;</div>
+                <div class="font-stat text-[1.8rem] text-ink leading-tight">188 lbs</div>
+              </div>
+              <div class="font-mono text-[0.6rem] text-coral font-bold tracking-widest uppercase mb-4">-18 lbs</div>
+              <div class="w-full h-px bg-ink-dim/20 mb-3"></div>
+              <p class="text-[0.7rem] text-ink-muted leading-relaxed">Sustainable habits, not crash diets. Your coach tracks the trend, not the day.</p>
+            </div>
+            <p class="text-ink-muted text-[0.85rem] leading-relaxed">Calories, protein, consistency. No crash diets.</p>
+          </div>
+          <div class="outcome-card-item absolute inset-0 opacity-0" data-outcome-idx="2">
+            <div class="bg-bg-elevated border border-ink-dim/20 rounded-xl p-6 shadow-2xl mb-5">
+              <div class="font-mono text-[0.55rem] text-coral tracking-widest uppercase mb-4">daily energy</div>
+              <div class="flex items-baseline gap-3 mb-1">
+                <div class="font-stat text-[1rem] text-ink-dim/40 leading-tight line-through decoration-ink-dim/20">3/10</div>
+                <div class="text-ink-dim/30">&rarr;</div>
+                <div class="font-stat text-[1.8rem] text-ink leading-tight">8/10</div>
+              </div>
+              <div class="font-mono text-[0.6rem] text-coral font-bold tracking-widest uppercase mb-4">+167%</div>
+              <div class="w-full h-px bg-ink-dim/20 mb-3"></div>
+              <p class="text-[0.7rem] text-ink-muted leading-relaxed">Move more, recover well, feel alert. Energy is the output of every system working.</p>
+            </div>
+            <p class="text-ink-muted text-[0.85rem] leading-relaxed">Energy is the output of every system working.</p>
+          </div>
+          <div class="outcome-card-item absolute inset-0 opacity-0" data-outcome-idx="3">
+            <div class="bg-bg-elevated border border-ink-dim/20 rounded-xl p-6 shadow-2xl mb-5">
+              <div class="font-mono text-[0.55rem] text-coral tracking-widest uppercase mb-4">training consistency</div>
+              <div class="flex items-baseline gap-3 mb-1">
+                <div class="font-stat text-[1rem] text-ink-dim/40 leading-tight line-through decoration-ink-dim/20">1x/wk</div>
+                <div class="text-ink-dim/30">&rarr;</div>
+                <div class="font-stat text-[1.8rem] text-ink leading-tight">4x/wk</div>
+              </div>
+              <div class="font-mono text-[0.6rem] text-coral font-bold tracking-widest uppercase mb-4">4x</div>
+              <div class="w-full h-px bg-ink-dim/20 mb-3"></div>
+              <p class="text-[0.7rem] text-ink-muted leading-relaxed">Progressive load, consistent training. Volume adjusts with your recovery.</p>
+            </div>
+            <p class="text-ink-muted text-[0.85rem] leading-relaxed">Volume adjusts with your recovery data.</p>
+          </div>
+          <div class="outcome-card-item absolute inset-0 opacity-0" data-outcome-idx="4">
+            <div class="bg-bg-elevated border border-ink-dim/20 rounded-xl p-6 shadow-2xl mb-5">
+              <div class="font-mono text-[0.55rem] text-coral tracking-widest uppercase mb-4">daily protein</div>
+              <div class="flex items-baseline gap-3 mb-1">
+                <div class="font-stat text-[1rem] text-ink-dim/40 leading-tight line-through decoration-ink-dim/20">62g</div>
+                <div class="text-ink-dim/30">&rarr;</div>
+                <div class="font-stat text-[1.8rem] text-ink leading-tight">165g</div>
+              </div>
+              <div class="font-mono text-[0.6rem] text-coral font-bold tracking-widest uppercase mb-4">+166%</div>
+              <div class="w-full h-px bg-ink-dim/20 mb-3"></div>
+              <p class="text-[0.7rem] text-ink-muted leading-relaxed">One change at a time until it sticks. No meal plans. Just better defaults.</p>
+            </div>
+            <p class="text-ink-muted text-[0.85rem] leading-relaxed">One change at a time until it sticks.</p>
+          </div>
+          <div class="outcome-card-item absolute inset-0 opacity-0" data-outcome-idx="5">
+            <div class="bg-bg-elevated border border-ink-dim/20 rounded-xl p-6 shadow-2xl mb-5">
+              <div class="font-mono text-[0.55rem] text-coral tracking-widest uppercase mb-4">hrv baseline</div>
+              <div class="flex items-baseline gap-3 mb-1">
+                <div class="font-stat text-[1rem] text-ink-dim/40 leading-tight line-through decoration-ink-dim/20">28 ms</div>
+                <div class="text-ink-dim/30">&rarr;</div>
+                <div class="font-stat text-[1.8rem] text-ink leading-tight">52 ms</div>
+              </div>
+              <div class="font-mono text-[0.6rem] text-coral font-bold tracking-widest uppercase mb-4">+86%</div>
+              <div class="w-full h-px bg-ink-dim/20 mb-3"></div>
+              <p class="text-[0.7rem] text-ink-muted leading-relaxed">Stress shows up in the numbers before you feel it. Recovery is measurable.</p>
+            </div>
+            <p class="text-ink-muted text-[0.85rem] leading-relaxed">Stress shows up before you feel it.</p>
+          </div>
+          <div class="outcome-card-item absolute inset-0 opacity-0" data-outcome-idx="6">
+            <div class="bg-bg-elevated border border-ink-dim/20 rounded-xl p-6 shadow-2xl mb-5">
+              <div class="font-mono text-[0.55rem] text-coral tracking-widest uppercase mb-4">sleep consistency</div>
+              <div class="flex items-baseline gap-3 mb-1">
+                <div class="font-stat text-[1rem] text-ink-dim/40 leading-tight line-through decoration-ink-dim/20">52%</div>
+                <div class="text-ink-dim/30">&rarr;</div>
+                <div class="font-stat text-[1.8rem] text-ink leading-tight">89%</div>
+              </div>
+              <div class="font-mono text-[0.6rem] text-coral font-bold tracking-widest uppercase mb-4">+71%</div>
+              <div class="w-full h-px bg-ink-dim/20 mb-3"></div>
+              <p class="text-[0.7rem] text-ink-muted leading-relaxed">Same bedtime, same wake time. Focus follows when the basics are locked in.</p>
+            </div>
+            <p class="text-ink-muted text-[0.85rem] leading-relaxed">Same time in, same time out. Every day.</p>
+          </div>
+          <div class="outcome-card-item absolute inset-0 opacity-0" data-outcome-idx="7">
+            <div class="bg-bg-elevated border border-ink-dim/20 rounded-xl p-6 shadow-2xl mb-5">
+              <div class="font-mono text-[0.55rem] text-coral tracking-widest uppercase mb-4">health coverage</div>
+              <div class="flex items-baseline gap-3 mb-1">
+                <div class="font-stat text-[1rem] text-ink-dim/40 leading-tight line-through decoration-ink-dim/20">42%</div>
+                <div class="text-ink-dim/30">&rarr;</div>
+                <div class="font-stat text-[1.8rem] text-ink leading-tight">85%</div>
+              </div>
+              <div class="font-mono text-[0.6rem] text-coral font-bold tracking-widest uppercase mb-4">+43pts</div>
+              <div class="w-full h-px bg-ink-dim/20 mb-3"></div>
+              <p class="text-[0.7rem] text-ink-muted leading-relaxed">Your full health picture. What you have measured, what is missing, what to do next.</p>
+            </div>
+            <p class="text-ink-muted text-[0.85rem] leading-relaxed">What you have, what is missing, what to do next.</p>
+          </div>
+        </div>
+
       </div>
     </div>
   </div>
@@ -523,18 +625,19 @@ tailwind.config = {
   <div class="font-ghost-dark text-[clamp(2.5rem,8vw,7rem)] leading-[0.9] max-w-5xl mx-auto">YOUR NUMBERS TELL A STORY</div>
 </div>
 
-<!-- ═══════════════════════ THE PROOF (centered, stat-forward) ═══════════════════════ -->
-<section class="relative overflow-hidden" style="background: #0c0c0f;">
-  <div class="px-band py-band">
+<!-- ═══════════════════════ THE PROOF (pinned stat reveal) ═══════════════════════ -->
+<section class="relative overflow-hidden" style="background: #0c0c0f;" id="proof-section">
+  <div class="px-band py-band" id="proof-pin-wrap">
+    <div id="proof-pin-inner">
     <div class="font-label text-coral mb-16 text-center reveal">(the proof)</div>
 
     <!-- Centered provocative statement (ABCS about-page serif heading style) -->
     <div class="max-w-3xl mx-auto text-center mb-16 md:mb-20">
-      <h2 class="font-serif text-[clamp(1.6rem,3.5vw,2.8rem)] text-ink leading-[1.3] font-medium reveal">About 40 metrics where the science is clear. Validated across large populations. Replicated across decades. Not 400. <em class="text-coral">Forty.</em></h2>
+      <h2 class="font-serif text-[clamp(1.6rem,3.5vw,2.8rem)] text-ink leading-[1.3] font-medium entrance-snap">About 40 metrics where the science is clear. Validated across large populations. Replicated across decades. Not 400. <em class="text-coral">Forty.</em></h2>
     </div>
 
     <!-- Hero stat: 42% → 85% centered big -->
-    <div class="flex items-center justify-center gap-8 md:gap-12 mb-16 md:mb-20 reveal">
+    <div class="flex items-center justify-center gap-8 md:gap-12 mb-16 md:mb-20 reveal" id="proof-stat-row">
       <div class="text-center">
         <div class="font-stat text-[clamp(3rem,8vw,5rem)] text-ink-dim/30 leading-none">42%</div>
         <div class="text-xs text-ink-dim mt-3 font-mono tracking-widest">before</div>
@@ -563,6 +666,7 @@ tailwind.config = {
         <p class="font-mono text-[0.6rem] text-ink-dim tracking-widest uppercase">founder's real data</p>
       </div>
     </div>
+    </div>
   </div>
 </section>
 
@@ -573,7 +677,7 @@ tailwind.config = {
 
     <div class="grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-16 mb-20">
       <div class="md:col-span-6">
-        <div class="font-massive text-[clamp(2.2rem,5.5vw,4.5rem)] text-ink leading-[0.95] reveal">DIFFERENT TOOLS GIVE YOU SLICES.</div>
+        <div class="font-massive text-[clamp(2.2rem,5.5vw,4.5rem)] text-ink leading-[0.95] entrance-split">DIFFERENT TOOLS<br>GIVE YOU SLICES.</div>
       </div>
       <div class="md:col-span-5 md:col-start-8 flex items-end">
         <p class="text-ink-muted text-[0.95rem] leading-[1.85] reveal stagger-1">Each product is excellent at what it does. They give you a piece. <strong class="text-ink">Baseline is the layer that shows you the whole picture.</strong></p>
@@ -660,7 +764,7 @@ tailwind.config = {
 
     <!-- Story beat 1: Paul's opening — the problem he lived -->
     <div class="max-w-3xl mx-auto mb-20 md:mb-28">
-      <h2 class="font-massive text-[clamp(2rem,5vw,4rem)] text-[#1a1714] leading-[0.92] reveal">MORE DATA<br>MADE IT<br>WORSE.</h2>
+      <h2 class="font-massive text-[clamp(2rem,5vw,4rem)] text-[#1a1714] leading-[0.92] entrance-clip-up">MORE DATA<br>MADE IT<br>WORSE.</h2>
     </div>
 
     <!-- Story beat 2: Paul + polaroid -->
@@ -685,7 +789,7 @@ tailwind.config = {
         </div>
       </div>
       <div class="md:col-span-6 md:col-start-7 flex flex-col justify-center pl-0 md:pl-4">
-        <p class="font-display font-bold text-[#1a1714] text-[clamp(1.2rem,2.2vw,1.6rem)] leading-[1.4] tracking-tight mb-4 reveal">Full-body MRI. 150+ biomarker panels. Microbiome tests. A decade of spreadsheets.</p>
+        <p class="font-display font-bold text-[#1a1714] text-[clamp(1.2rem,2.2vw,1.6rem)] leading-[1.4] tracking-tight mb-4 entrance-words">Full-body MRI. 150+ biomarker panels. Microbiome tests. A decade of spreadsheets.</p>
         <p class="text-[#4a4a4a] text-[1.05rem] leading-[1.85] reveal stagger-1">Paul assembled an entire care team: functional medicine, primary care, nutrition, specialists. Each provider held a partial picture. He was the one responsible for synthesizing it all.</p>
       </div>
     </div>
@@ -693,21 +797,21 @@ tailwind.config = {
     <!-- Story beat 3: The anxiety breakthrough -->
     <div class="max-w-3xl mx-auto mb-20 md:mb-28">
       <h2 class="font-massive text-[clamp(1.6rem,4vw,3rem)] text-[#1a1714] leading-[0.95] mb-6 reveal">THE BREAKTHROUGH<br>WASN'T MORE DATA.</h2>
-      <p class="font-display font-bold text-[#1a1714] text-[clamp(1.1rem,1.8vw,1.4rem)] leading-[1.45] tracking-tight mb-4 reveal stagger-1">It was something that could finally synthesize the complete picture.</p>
+      <p class="font-display font-bold text-[clamp(1.1rem,1.8vw,1.4rem)] leading-[1.45] tracking-tight mb-4 font-ghost text-[#1a1714]" style="background: linear-gradient(to right, #1a1714 var(--fill, 0%), rgba(0,0,0,0.08) var(--fill, 0%)); -webkit-background-clip: text; background-clip: text; color: transparent;">It was something that could finally synthesize the complete picture.</p>
       <p class="text-[#4a4a4a] text-[1.05rem] leading-[1.85] reveal stagger-2">Accumulating data had intensified his anxiety, not improved his outcomes. When language models became capable enough to connect the dots, the cognitive burden disappeared. A few interventions that actually mattered became clear.</p>
     </div>
 
     <!-- Story beat 4: The vision shift -->
     <div class="max-w-3xl mx-auto mb-20 md:mb-28">
       <h2 class="font-massive text-[clamp(1.6rem,4vw,3rem)] text-[#1a1714] leading-[0.95] mb-6 reveal">NOT BUILT FOR<br>BIOHACKERS.</h2>
-      <p class="font-display font-bold text-[#1a1714] text-[clamp(1.1rem,1.8vw,1.4rem)] leading-[1.45] tracking-tight mb-4 reveal stagger-1">Built for the parent who gets lab results and doesn't know what to do with them.</p>
+      <p class="font-display font-bold text-[clamp(1.1rem,1.8vw,1.4rem)] leading-[1.45] tracking-tight mb-4 font-ghost" style="background: linear-gradient(to right, #1a1714 var(--fill, 0%), rgba(0,0,0,0.08) var(--fill, 0%)); -webkit-background-clip: text; background-clip: text; color: transparent;">Built for the parent who gets lab results and doesn't know what to do with them.</p>
       <p class="text-[#4a4a4a] text-[1.05rem] leading-[1.85] reveal stagger-2">Two kids. Aging parents. Limited time. The system identifies small, impactful daily actions that fit into a real life. Not 30 habits. Three to five.</p>
     </div>
 
     <!-- Story beat 5: Andrew + polaroid -->
     <div class="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-10 mb-20 md:mb-28 items-center">
       <div class="md:col-span-6 flex flex-col justify-center">
-        <p class="font-display font-bold text-[#1a1714] text-[clamp(1.2rem,2.2vw,1.6rem)] leading-[1.4] tracking-tight mb-4 reveal">I built the coach that texts me every morning.</p>
+        <p class="font-display font-bold text-[#1a1714] text-[clamp(1.2rem,2.2vw,1.6rem)] leading-[1.4] tracking-tight mb-4 entrance-words">I built the coach that texts me every morning.</p>
         <p class="text-[#4a4a4a] text-[1.05rem] leading-[1.85] reveal stagger-1">It pulls my sleep data, heart rate, weight trend, and lab history. Three weeks in, it cross-referenced sleep fragmentation, heart rate patterns, and nocturia frequency. Flagged possible sleep apnea. Connected dots a decade of doctor visits missed.</p>
       </div>
       <div class="md:col-span-5 md:col-start-8 reveal-left">
@@ -734,13 +838,13 @@ tailwind.config = {
     <!-- Story beat 6: The dad story (emotional closer) -->
     <div class="max-w-3xl mx-auto mb-24">
       <h2 class="font-massive text-[clamp(1.6rem,4vw,3rem)] text-[#1a1714] leading-[0.95] mb-6 reveal">I TEXTED MY DAD<br>FROM IT.</h2>
-      <p class="font-display font-bold text-[#1a1714] text-[clamp(1.1rem,1.8vw,1.4rem)] leading-[1.45] tracking-tight reveal stagger-1">He doesn't know what AI is. He doesn't need to.</p>
+      <p class="font-display font-bold text-[clamp(1.1rem,1.8vw,1.4rem)] leading-[1.45] tracking-tight font-ghost" style="background: linear-gradient(to right, #1a1714 var(--fill, 0%), rgba(0,0,0,0.08) var(--fill, 0%)); -webkit-background-clip: text; background-clip: text; color: transparent;">He doesn't know what AI is. He doesn't need to.</p>
       <p class="text-[#4a4a4a] text-[1.05rem] leading-[1.85] mt-4 reveal stagger-2">He got a message from a coach who's about to learn his health picture and help him build on it.</p>
     </div>
 
     <!-- Big closing statement -->
     <div class="text-center reveal">
-      <div class="font-ghost text-[clamp(3rem,10vw,9rem)] leading-[0.85] mx-auto">THERE'S A HEALTHIER VERSION OF YOU</div>
+      <div class="font-ghost text-[clamp(3rem,10vw,9rem)] leading-[0.85] mx-auto">START WITH WHAT YOU HAVE</div>
     </div>
 
   </div>
@@ -757,7 +861,7 @@ tailwind.config = {
     <div class="grid grid-cols-1 md:grid-cols-12 gap-16">
       <div class="md:col-span-5 flex flex-col justify-center">
         <div class="font-label text-coral mb-8 reveal">(get started)</div>
-        <div class="font-massive text-[clamp(2.5rem,6vw,4.5rem)] text-ink mb-6 reveal stagger-1">READY<br>WHEN YOU<br>ARE</div>
+        <div class="font-massive text-[clamp(2.5rem,6vw,4.5rem)] text-ink mb-6 entrance-clip-up">READY<br>WHEN YOU<br>ARE</div>
         <p class="text-ink-muted text-[0.9rem] leading-relaxed max-w-sm reveal stagger-2">Just your name and how you want to be reached. Your coach will take it from there.</p>
         <p class="text-ink-dim text-xs mt-8 reveal stagger-3"><strong class="text-ink-muted font-medium">Free while we grow.</strong> Early members get founding rates locked in for life.</p>
       </div>
@@ -801,7 +905,7 @@ tailwind.config = {
 </section>
 
 <!-- ═══════════════════════ FOOTER (revealed from behind CTA) ═══════════════════════ -->
-<footer class="footer-reveal bg-bg overflow-hidden" id="site-footer">
+<footer class="footer-reveal bg-bg overflow-hidden" id="site-footer" style="visibility: hidden;">
   <div class="px-band pt-16 md:pt-24 pb-12">
     <!-- Big BASELINE watermark -->
     <div class="font-massive text-[clamp(5rem,18vw,14rem)] text-ink/[0.06] leading-[0.82] mb-12">BASELINE</div>
@@ -859,6 +963,118 @@ document.querySelectorAll('.reveal-scale').forEach(el => {
   });
 });
 
+// ——— Unique section header entrances (ABCS-inspired variety) ———
+
+// CLIP-UP: each line slides up from behind a clip mask — feels like it was always there, just revealed
+document.querySelectorAll('.entrance-clip-up').forEach(el => {
+  // Wrap each line (split by <br>) so we can clip and animate independently
+  const html = el.innerHTML;
+  const lines = html.split(/<br\s*\/?>/i);
+  if (lines.length > 1) {
+    el.innerHTML = lines.map(line => `<span class="clip-line block" style="overflow:hidden;"><span class="clip-inner block">${line.trim()}</span></span>`).join('');
+    el.querySelectorAll('.clip-inner').forEach((inner, i) => {
+      gsap.from(inner, {
+        yPercent: 110, duration: 1.2, ease: 'expo.out',
+        delay: i * 0.12,
+        scrollTrigger: { trigger: el, start: 'top 85%', toggleActions: 'play none none reverse' }
+      });
+    });
+  } else if (el.children.length > 1) {
+    // Already has child elements (like THE REAL QUESTION with divs)
+    Array.from(el.children).forEach((child, i) => {
+      child.style.overflow = 'hidden';
+      gsap.from(child, {
+        yPercent: 110, duration: 1.2, ease: 'expo.out',
+        delay: i * 0.12,
+        scrollTrigger: { trigger: el, start: 'top 85%', toggleActions: 'play none none reverse' }
+      });
+    });
+  } else {
+    // Single element, just slide up
+    el.style.overflow = 'hidden';
+    gsap.from(el, {
+      yPercent: 110, duration: 1.2, ease: 'expo.out',
+      scrollTrigger: { trigger: el, start: 'top 85%', toggleActions: 'play none none reverse' }
+    });
+  }
+});
+
+// SNAP: appears instantly with a very slight scale punch — like it was always there and just snapped into focus
+document.querySelectorAll('.entrance-snap').forEach(el => {
+  gsap.from(el, {
+    scale: 1.08, opacity: 0, duration: 0.4, ease: 'power4.out',
+    scrollTrigger: { trigger: el, start: 'top 82%', toggleActions: 'play none none reverse' }
+  });
+});
+
+// SPLIT: lines come from opposite sides and meet in the middle
+document.querySelectorAll('.entrance-split').forEach(el => {
+  // Wrap each line in a span for independent animation
+  const html = el.innerHTML;
+  const lines = html.split('<br>');
+  if (lines.length >= 2) {
+    el.innerHTML = lines.map((line, i) => `<span class="split-line block" style="overflow:hidden;"><span class="split-inner block">${line}</span></span>`).join('');
+    const inners = el.querySelectorAll('.split-inner');
+    inners.forEach((inner, i) => {
+      gsap.from(inner, {
+        x: i % 2 === 0 ? -120 : 120, opacity: 0,
+        duration: 1, ease: 'expo.out',
+        delay: i * 0.1,
+        scrollTrigger: { trigger: el, start: 'top 85%', toggleActions: 'play none none reverse' }
+      });
+    });
+  }
+});
+
+// SLIDE-RIGHT: whole block slides in from the left edge
+document.querySelectorAll('.entrance-slide-right').forEach(el => {
+  gsap.from(el, {
+    x: -100, opacity: 0, duration: 1.4, ease: 'expo.out',
+    scrollTrigger: { trigger: el, start: 'top 85%', toggleActions: 'play none none reverse' }
+  });
+});
+
+// ——— Word-by-word entrance: words fade in with stagger ———
+document.querySelectorAll('.entrance-words').forEach(el => {
+  // Wrap each word in a span, preserving existing HTML spans
+  const nodes = el.childNodes;
+  let html = '';
+  nodes.forEach(node => {
+    if (node.nodeType === 3) {
+      // Text node: wrap each word
+      const words = node.textContent.split(/(\s+)/);
+      words.forEach(w => {
+        if (w.trim()) {
+          html += `<span class="ew-word" style="display:inline-block; opacity:0;">${w}</span>`;
+        } else {
+          html += w;
+        }
+      });
+    } else {
+      // Element node (like <span class="text-coral">): wrap inner words
+      const inner = node.textContent.split(/(\s+)/);
+      const cls = node.className || '';
+      inner.forEach(w => {
+        if (w.trim()) {
+          html += `<span class="ew-word ${cls}" style="display:inline-block; opacity:0;">${w}</span>`;
+        } else {
+          html += w;
+        }
+      });
+    }
+  });
+  el.innerHTML = html;
+
+  const words = el.querySelectorAll('.ew-word');
+  gsap.to(words, {
+    opacity: 1, y: 0, duration: 0.4, ease: 'power2.out',
+    stagger: 0.04,
+    scrollTrigger: { trigger: el, start: 'top 85%', toggleActions: 'play none none reverse' }
+  });
+  // Set initial y offset
+  gsap.set(words, { y: 8 });
+});
+
 // ——— Ghost text fill on scroll (GSAP ScrollTrigger scrub) ———
 document.querySelectorAll('.font-ghost, .font-ghost-light, .font-ghost-dark').forEach(el => {
   gsap.to(el, {
@@ -887,72 +1103,179 @@ document.querySelectorAll('.stack-word').forEach((el, i) => {
   });
 });
 
-// ——— Outcomes: ABCS clients pattern (names scroll, card is sticky) ———
-const outcomeMap = {
-  sleep:     { label: 'sleep duration',        before: '5.2 hrs', after: '7.4 hrs', delta: '+42%',  desc: 'From fragmented to restorative. The foundation everything else depends on.', blurb: 'The single highest-leverage change for most people.' },
-  weight:    { label: 'weight trend',          before: '206 lbs', after: '188 lbs', delta: '-18 lbs', desc: 'Sustainable habits, not crash diets. Your coach tracks the trend, not the day.', blurb: 'Calories, protein, consistency. No crash diets.' },
-  energy:    { label: 'daily energy',          before: '3/10',    after: '8/10',    delta: '+167%', desc: 'Move more, recover well, feel alert. Energy is the output of every system working.', blurb: 'Energy is the output of every system working.' },
-  strength:  { label: 'training consistency',  before: '1x/wk',  after: '4x/wk',  delta: '4x',    desc: 'Progressive load, consistent training. Volume adjusts with your recovery.', blurb: 'Volume adjusts with your recovery data.' },
-  nutrition: { label: 'daily protein',         before: '62g',     after: '165g',    delta: '+166%', desc: 'One change at a time until it sticks. No meal plans. Just better defaults.', blurb: 'One change at a time until it sticks.' },
-  stress:    { label: 'hrv baseline',          before: '28 ms',   after: '52 ms',   delta: '+86%',  desc: 'Stress shows up in the numbers before you feel it. Recovery is measurable.', blurb: 'Stress shows up before you feel it.' },
-  focus:     { label: 'sleep consistency',     before: '52%',     after: '89%',     delta: '+71%',  desc: 'Same bedtime, same wake time. Focus follows when the basics are locked in.', blurb: 'Same time in, same time out. Every day.' },
-  coverage:  { label: 'health coverage',       before: '42%',     after: '85%',     delta: '+43pts', desc: 'Your full health picture. What you have measured, what is missing, what to do next.', blurb: 'What you have, what is missing, what to do next.' },
-};
-const outcomeNames = document.querySelectorAll('.outcome-name');
-const outcomeCard = document.getElementById('outcome-card');
+// ——— Domain cards: pinned grid, cards arrive from different directions, finale glow ———
+// IMPORTANT: This must run BEFORE outcome triggers, because the pin adds scroll height
+const domainCards = document.querySelectorAll('.domain-card');
+if (domainCards.length) {
+  const entryDirections = [
+    { x: -80, y: 0 },   // 01 SLEEP - from left
+    { x: 0, y: -80 },   // 02 LABS - from top
+    { x: 80, y: 0 },    // 03 MOVEMENT - from right
+    { x: 0, y: 80 },    // 04 NUTRITION - from bottom
+    { x: -80, y: 40 },  // 05 BODY COMP - from bottom-left
+    { x: 80, y: -40 },  // 06 VITALS - from top-right
+    { x: -60, y: -60 }, // 07 MIND - from top-left
+    { x: 60, y: 60 },   // 08 HISTORY - from bottom-right
+  ];
 
-function showOutcome(name) {
-  const d = outcomeMap[name];
-  if (!d) return;
-
-  // Fade all names to dim, highlight active
-  outcomeNames.forEach(el => {
-    const span = el.querySelector('span');
-    if (el.dataset.outcomeName === name) {
-      gsap.to(span, { color: '#c83c3c', duration: 0.5, ease: 'expo.out' });
-    } else {
-      gsap.to(span, { color: 'rgba(240,240,240,0.15)', duration: 0.4 });
+  const domainTl = gsap.timeline({
+    scrollTrigger: {
+      trigger: '#domains-pin-wrap',
+      start: 'top 20%',
+      end: () => '+=' + (domainCards.length * 350 + 1000),
+      pin: '#domains-pin-inner',
+      scrub: 0.5,
     }
   });
 
-  // Card entrance: scale up, rotate in (ABCS logo pattern)
-  if (outcomeCard) {
-    gsap.fromTo(outcomeCard,
-      { scale: 0.85, rotation: 8, opacity: 0.3 },
-      { scale: 1, rotation: 0, opacity: 1, duration: 0.6, ease: 'expo.out' }
+  domainCards.forEach((card, i) => {
+    const dir = entryDirections[i];
+    domainTl.fromTo(card,
+      { x: dir.x, y: dir.y, scale: 0.8, opacity: 0, rotation: gsap.utils.random(-8, 8) },
+      { x: 0, y: 0, scale: 1, opacity: 1, rotation: 0, duration: 1.2, ease: 'expo.out' },
+      i * 0.5
     );
-  }
+  });
 
-  // Update card content
-  const el = (id) => document.getElementById(id);
-  if (el('outcome-card-label'))  el('outcome-card-label').textContent = d.label;
-  if (el('outcome-card-before')) el('outcome-card-before').textContent = d.before;
-  if (el('outcome-card-after'))  el('outcome-card-after').textContent = d.after;
-  if (el('outcome-card-delta'))  el('outcome-card-delta').textContent = d.delta;
-  if (el('outcome-card-desc'))   el('outcome-card-desc').textContent = d.desc;
-  if (el('outcome-card-blurb'))  el('outcome-card-blurb').textContent = d.blurb;
+  // Brief hold after all cards settle
+  const finaleStart = domainCards.length * 0.5 + 1.2;
+  domainTl.to({}, { duration: 0.8 }, finaleStart);
 
-  // Mobile stat
-  if (el('outcome-mobile-label')) {
-    el('outcome-mobile-label').textContent = d.label;
-    el('outcome-mobile-before').textContent = d.before;
-    el('outcome-mobile-after').textContent = d.after;
-    el('outcome-mobile-delta').textContent = d.delta;
-  }
+  // Crash out: cards fall/fly off in different directions
+  const crashDirections = [
+    { x: -200, y: 800, rotation: -35 },  // 01 SLEEP - fall left
+    { x: 80, y: 900, rotation: 15 },     // 02 LABS - fall center-right
+    { x: 250, y: 750, rotation: 40 },    // 03 MOVEMENT - fly right
+    { x: -100, y: 850, rotation: -20 },  // 04 NUTRITION - fall center-left
+    { x: -300, y: 700, rotation: -45 },  // 05 BODY COMP - fly far left
+    { x: 150, y: 950, rotation: 25 },    // 06 VITALS - drop right
+    { x: -50, y: 800, rotation: -10 },   // 07 MIND - drop center
+    { x: 300, y: 750, rotation: 50 },    // 08 HISTORY - fly far right
+  ];
+
+  const crashStart = finaleStart + 0.8;
+  domainCards.forEach((card, i) => {
+    const dir = crashDirections[i];
+    domainTl.to(card, {
+      x: dir.x, y: dir.y, rotation: dir.rotation, opacity: 0,
+      duration: 1.5, ease: 'power2.in',
+    }, crashStart + i * 0.08);
+  });
 }
 
-// Each name gets its own ScrollTrigger at "top center"
-const nameKeys = [];
-outcomeNames.forEach((nameEl, i) => {
-  const key = nameEl.dataset.outcomeName;
-  nameKeys.push(key);
-  ScrollTrigger.create({
-    trigger: nameEl,
-    start: 'top center',
-    onEnter: () => showOutcome(key),
-    onLeaveBack: () => { if (i > 0) showOutcome(nameKeys[i - 1]); },
+// Refresh after pin so all downstream triggers have correct positions
+ScrollTrigger.refresh();
+
+// ——— Outcomes: pinned carousel with all cards in DOM ———
+// Scrubbed timeline — simple fades only, no rotation/scale (scrub + fancy eases = janky)
+const outcomeNames = document.querySelectorAll('.outcome-name');
+const outcomeCards = document.querySelectorAll('.outcome-card-item');
+const carouselTrack = document.getElementById('outcomes-carousel-track');
+const nameHeight = 60;
+const numOutcomes = outcomeNames.length;
+
+if (numOutcomes) {
+  // More scroll per outcome = slower, more breathing room
+  const scrollPerOutcome = 600;
+  const totalScroll = numOutcomes * scrollPerOutcome;
+
+  const outcomeTl = gsap.timeline({
+    scrollTrigger: {
+      trigger: '#outcomes-pin-wrap',
+      start: 'top 15%',
+      end: () => '+=' + totalScroll,
+      pin: '#outcomes-pin-inner',
+      scrub: 1.5, // smoother catchup
+    }
   });
-});
+
+  // Each outcome gets a full segment with hold time
+  // Layout: [name transition 0.25] [card fade in 0.2] [hold 0.35] [card fade out 0.2]
+  const seg = 1;
+
+  outcomeNames.forEach((nameEl, i) => {
+    const t = i * seg;
+    const span = nameEl.querySelector('span');
+    const card = outcomeCards[i];
+    const prevSpan = i > 0 ? outcomeNames[i - 1].querySelector('span') : null;
+    const prevCard = i > 0 ? outcomeCards[i - 1] : null;
+
+    // Previous card fades out (overlaps with name transition)
+    if (prevCard) {
+      outcomeTl.to(prevCard, {
+        opacity: 0, y: -20, duration: seg * 0.2, ease: 'none',
+      }, t);
+    }
+
+    // Slide carousel track to this name
+    outcomeTl.to(carouselTrack, {
+      y: -(i * nameHeight), duration: seg * 0.25, ease: 'none',
+    }, t);
+
+    // Highlight this name, dim previous
+    if (span) {
+      outcomeTl.to(span, { color: '#c83c3c', duration: seg * 0.2, ease: 'none' }, t);
+    }
+    if (prevSpan) {
+      outcomeTl.to(prevSpan, { color: 'rgba(240,240,240,0.15)', duration: seg * 0.15, ease: 'none' }, t);
+    }
+
+    // Card fades in (simple opacity + slight y, no rotation/scale)
+    if (card) {
+      outcomeTl.fromTo(card,
+        { opacity: 0, y: 24 },
+        { opacity: 1, y: 0, duration: seg * 0.25, ease: 'none' },
+        t + seg * 0.2
+      );
+    }
+  });
+
+  // Dim last name and fade last card at end
+  const lastSpan = outcomeNames[numOutcomes - 1]?.querySelector('span');
+  const lastCard = outcomeCards[numOutcomes - 1];
+  if (lastSpan) outcomeTl.to(lastSpan, { color: 'rgba(240,240,240,0.15)', duration: 0.3, ease: 'none' }, numOutcomes * seg);
+  if (lastCard) outcomeTl.to(lastCard, { opacity: 0, duration: 0.3, ease: 'none' }, numOutcomes * seg);
+}
+
+// ——— Proof section: pinned, stat row + insulin card animate in sequence ———
+const proofStatRow = document.getElementById('proof-stat-row');
+if (proofStatRow) {
+  const proofTl = gsap.timeline({
+    scrollTrigger: {
+      trigger: '#proof-pin-wrap',
+      start: 'top 20%',
+      end: '+=800',
+      pin: '#proof-pin-inner',
+      scrub: 1,
+    }
+  });
+
+  // Stat numbers scale up
+  const statBefore = proofStatRow.querySelector('.text-ink-dim\\/30'); // arrow
+  const statNums = proofStatRow.querySelectorAll('.font-stat');
+  statNums.forEach((num, i) => {
+    proofTl.from(num, {
+      scale: 0.5, opacity: 0, duration: 0.5, ease: 'back.out(1.4)',
+    }, i * 0.2);
+  });
+
+  // Arrow fades in
+  if (statBefore) {
+    proofTl.from(statBefore, { opacity: 0, duration: 0.3 }, 0.1);
+  }
+
+  // Paragraph fades up
+  const proofPara = proofStatRow.parentElement.querySelector('.max-w-md');
+  if (proofPara) {
+    proofTl.from(proofPara, { y: 30, opacity: 0, duration: 0.5 }, 0.5);
+  }
+
+  // Insulin card scales in
+  const insulinCard = proofStatRow.parentElement.querySelector('.max-w-xl');
+  if (insulinCard) {
+    proofTl.from(insulinCard, { scale: 0.9, opacity: 0, y: 40, duration: 0.6, ease: 'expo.out' }, 0.8);
+  }
+}
 
 // ——— Coverage bar animations ———
 document.querySelectorAll('.coverage-bar').forEach(bar => {
@@ -1028,13 +1351,21 @@ form.addEventListener('submit', async (e) => {
   }
 });
 
-// ——— Footer reveal: set spacer height to match footer ———
+// ——— Footer reveal: set spacer height + only show footer near bottom ———
 const footer = document.getElementById('site-footer');
 const spacer = document.getElementById('footer-spacer');
 if (footer && spacer) {
   const setSpacerHeight = () => { spacer.style.height = footer.offsetHeight + 'px'; };
   setSpacerHeight();
   window.addEventListener('resize', setSpacerHeight);
+
+  // Only show footer when CTA section is almost fully scrolled past
+  ScrollTrigger.create({
+    trigger: '#get-started',
+    start: 'bottom 90%',
+    onEnter: () => { footer.style.visibility = 'visible'; },
+    onLeaveBack: () => { footer.style.visibility = 'hidden'; },
+  });
 }
 
 // ——— Step cards: scale up from behind (emerge on scroll) ———
@@ -1061,23 +1392,6 @@ document.querySelectorAll('.founder-photo').forEach(photo => {
   gsap.from(photo, {
     scale: 0.7, y: 80, opacity: 0, duration: 1.4, ease: 'expo.out',
     scrollTrigger: { trigger: photo, start: 'top 90%', toggleActions: 'play none none reverse' }
-  });
-});
-
-// ——— Domain cards: each emerges individually at different speeds ———
-const domainSpeeds = [140, 90, 160, 110, 100, 150, 80, 130];
-document.querySelectorAll('.domain-emerge').forEach((card, i) => {
-  gsap.from(card, {
-    y: domainSpeeds[i] || 100,
-    scale: 0.8,
-    opacity: 0,
-    ease: 'none',
-    scrollTrigger: {
-      trigger: card,
-      start: 'top 95%',
-      end: 'top 40%',
-      scrub: true,
-    }
   });
 });
 
