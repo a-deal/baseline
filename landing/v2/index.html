@@ -842,11 +842,17 @@ tailwind.config = {
       <p class="text-[#4a4a4a] text-[1.05rem] leading-[1.85] mt-4 reveal stagger-2">He got a message from a coach who's about to learn his health picture and help him build on it.</p>
     </div>
 
-    <!-- Big closing statement -->
-    <div class="text-center reveal">
-      <div class="font-ghost text-[clamp(3rem,10vw,9rem)] leading-[0.85] mx-auto">START WITH WHAT YOU HAVE</div>
-    </div>
+  </div>
+</section>
 
+<!-- ═══════════ CLOSING STATEMENT (pinned on cream, breathes before CTA) ═══════════ -->
+<section class="bg-cream relative" id="closing-pin-section">
+  <div id="closing-pin-wrap" style="min-height: 100vh;">
+    <div class="flex items-center justify-center px-band" id="closing-pin-inner" style="min-height: 100vh;">
+      <div class="text-center">
+        <div class="font-ghost text-[clamp(2.5rem,9vw,8rem)] leading-[0.85] mx-auto" id="closing-ghost">START WITH WHAT YOU HAVE</div>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -1329,6 +1335,30 @@ if (proofStatRow && !isMobile) {
   if (insulinCard) {
     proofTl.from(insulinCard, { scale: 0.9, opacity: 0, y: 40, duration: 0.6, ease: 'expo.out' }, 0.8);
   }
+}
+
+// ——— Closing statement: pinned on cream, ghost-fill, then release to CTA (desktop only) ———
+const closingGhost = document.getElementById('closing-ghost');
+if (closingGhost && !isMobile) {
+  // Start invisible, fade in while pinned, then ghost-fill
+  gsap.set(closingGhost, { '--fill': '0%', opacity: 0 });
+
+  const closingTl = gsap.timeline({
+    scrollTrigger: {
+      trigger: '#closing-pin-wrap',
+      start: 'top top',
+      end: '+=1200',
+      pin: '#closing-pin-inner',
+      scrub: 1,
+    }
+  });
+
+  // Blank cream for a beat, then text fades in subtly
+  closingTl.to(closingGhost, { opacity: 1, duration: 0.4, ease: 'none' }, 0.2);
+  // Ghost fill from left to right
+  closingTl.to(closingGhost, { '--fill': '100%', duration: 0.6, ease: 'none' }, 0.3);
+  // Hold at full fill
+  closingTl.to({}, { duration: 0.2 });
 }
 
 // ——— Coverage bar animations ———
