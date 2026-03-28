@@ -1251,29 +1251,32 @@ if (numOutcomes && !isMobile) {
     mobileList.className = 'space-y-6 w-full px-band py-8';
 
     const outcomeLabels = ['SLEEP BETTER','LOSE WEIGHT','MORE ENERGY','BUILD STRENGTH','EAT HEALTHIER','LESS STRESS','SHARPER FOCUS','KNOW MORE'];
+    const outcomeOneLiner = [
+      'The single highest-leverage change for most people.',
+      'Calories, protein, consistency. No crash diets.',
+      'Energy is the output of every system working.',
+      'Volume adjusts with your recovery data.',
+      'One change at a time until it sticks.',
+      'Stress shows up before you feel it.',
+      'Same time in, same time out. Every day.',
+      'What you have, what is missing, what to do next.',
+    ];
 
     outcomeCards.forEach((card, i) => {
       const wrapper = document.createElement('div');
-      wrapper.className = 'reveal';
+      wrapper.className = 'reveal flex items-baseline gap-4 py-3 border-b border-ink-dim/10';
       wrapper.style.opacity = '0';
 
-      // Name heading
       const name = document.createElement('div');
-      name.className = 'font-display font-bold text-coral text-[1.4rem] tracking-tight mb-3';
+      name.className = 'font-display font-bold text-coral text-[1.1rem] tracking-tight shrink-0';
       name.textContent = outcomeLabels[i] || '';
 
-      // Clone the card content (not the absolute-positioned wrapper)
-      const cardContent = card.querySelector('.bg-bg-elevated');
-      const blurb = card.querySelector('p.text-ink-muted');
-      const cardClone = cardContent ? cardContent.cloneNode(true) : null;
+      const line = document.createElement('p');
+      line.className = 'text-ink-muted text-[0.8rem] leading-relaxed';
+      line.textContent = outcomeOneLiner[i] || '';
 
       wrapper.appendChild(name);
-      if (cardClone) wrapper.appendChild(cardClone);
-      if (blurb) {
-        const blurbClone = blurb.cloneNode(true);
-        blurbClone.className = 'text-ink-muted text-[0.85rem] leading-relaxed mt-4';
-        wrapper.appendChild(blurbClone);
-      }
+      wrapper.appendChild(line);
 
       mobileList.appendChild(wrapper);
 
