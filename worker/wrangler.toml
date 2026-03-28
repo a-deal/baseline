@@ -6,6 +6,10 @@ compatibility_flags = ["nodejs_compat"]
 [vars]
 ALLOWED_ORIGIN = "https://andrewdeal.info,https://beta.mybaseline.health,https://mybaseline.health"
 
+routes = [
+  { pattern = "api.mybaseline.health/*", zone_id = "00ada418c05d0e8b5f9bbf2c1f912fb4" }
+]
+
 [[kv_namespaces]]
 binding = "LOGS"
 id = "8818d789085540ee80b0cc8448ce1113"
