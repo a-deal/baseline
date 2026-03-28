@@ -1387,8 +1387,26 @@ if (closingBehind && !isMobile) {
     duration: 0.4, ease: 'none',
   }, 0.3);
 
-  // Hold
-  closingTl.to({}, { duration: 0.25 });
+  // Fill to full black
+  closingTl.to(closingFront, {
+    color: 'rgba(26,23,20,1)', duration: 0.2, ease: 'none',
+  }, 0.65);
+
+  // Hold at full black
+  closingTl.to({}, { duration: 0.2 });
+
+  // Words peel out left and right alternating
+  const frontWords = closingFront.querySelectorAll('span');
+  frontWords.forEach((word, i) => {
+    closingTl.to(word, {
+      x: i % 2 === 0 ? -300 : 300,
+      opacity: 0,
+      duration: 0.25,
+      ease: 'none',
+    }, 0.9 + i * 0.04);
+  });
+  // Also fade the back layer
+  closingTl.to(closingBehind, { opacity: 0, duration: 0.15, ease: 'none' }, 0.9);
 }
 
 // ——— Coverage bar animations ———
