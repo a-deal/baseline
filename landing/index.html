@@ -1667,14 +1667,22 @@ document.querySelectorAll('.rotated-strip').forEach((strip, i) => {
   }
   #milo-input:focus { border-color: rgba(200,60,60,0.4); }
   #milo-input::placeholder { color: rgba(255,255,255,0.2); }
-  #milo-send {
+  #milo-send, #milo-mic {
     width: 36px; height: 36px; border-radius: 8px; border: none;
-    background: #c83c3c; cursor: pointer; display: flex;
+    cursor: pointer; display: flex;
     align-items: center; justify-content: center; flex-shrink: 0;
-    transition: opacity 0.2s;
+    transition: opacity 0.2s, background 0.2s;
   }
+  #milo-send { background: #c83c3c; }
   #milo-send:disabled { opacity: 0.4; cursor: default; }
-  #milo-send svg { width: 16px; height: 16px; fill: white; }
+  #milo-send svg, #milo-mic svg { width: 16px; height: 16px; fill: white; }
+  #milo-mic { background: rgba(255,255,255,0.08); }
+  #milo-mic:hover { background: rgba(255,255,255,0.15); }
+  #milo-mic.recording { background: #c83c3c; animation: micPulse 1.2s infinite; }
+  @keyframes micPulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(200,60,60,0.4); }
+    50% { box-shadow: 0 0 0 8px rgba(200,60,60,0); }
+  }
 </style>
 
 <!-- FAB button -->
@@ -1695,9 +1703,12 @@ document.querySelectorAll('.rotated-strip').forEach((strip, i) => {
   </div>
   <div id="milo-messages">
     <div class="milo-msg system">this is a demo. your data isn't saved.</div>
+    <div class="milo-typing" id="milo-typing"><span></span><span></span><span></span></div>
   </div>
-  <div class="milo-typing" id="milo-typing"><span></span><span></span><span></span></div>
   <div id="milo-input-wrap">
+    <button id="milo-mic" aria-label="Voice input" style="display:none;">
+      <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm-1-9c0-.55.45-1 1-1s1 .45 1 1v6c0 .55-.45 1-1 1s-1-.45-1-1V5zm6 6c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
+    </button>
     <input type="text" id="milo-input" placeholder="Ask Milo anything about your health..." autocomplete="off">
     <button id="milo-send" disabled>
       <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
@@ -1718,11 +1729,57 @@ document.querySelectorAll('.rotated-strip').forEach((strip, i) => {
   const typingEl = document.getElementById('milo-typing');
 
   const SUMMARY_URL = 'https://api.mybaseline.health/demo-summary';
+  const micBtn = document.getElementById('milo-mic');
   let messages = []; // conversation history for API
   let isOpen = false;
   let isSending = false;
   let greeted = false;
   let summarized = false;
+  let recognition = null;
+  let isRecording = false;
+
+  // Set up speech recognition if available
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (SpeechRecognition && micBtn) {
+    micBtn.style.display = 'flex';
+    recognition = new SpeechRecognition();
+    recognition.continuous = false;
+    recognition.interimResults = true;
+    recognition.lang = 'en-US';
+
+    recognition.onresult = (e) => {
+      const transcript = Array.from(e.results)
+        .map(r => r[0].transcript)
+        .join('');
+      input.value = transcript;
+      sendBtn.disabled = !transcript.trim();
+      // Auto-send on final result
+      if (e.results[e.results.length - 1].isFinal && transcript.trim()) {
+        send();
+      }
+    };
+
+    recognition.onend = () => {
+      isRecording = false;
+      micBtn.classList.remove('recording');
+    };
+
+    recognition.onerror = () => {
+      isRecording = false;
+      micBtn.classList.remove('recording');
+    };
+
+    micBtn.addEventListener('click', () => {
+      if (isRecording) {
+        recognition.stop();
+      } else {
+        isRecording = true;
+        micBtn.classList.add('recording');
+        input.value = '';
+        recognition.start();
+      }
+    });
+  }
 
   fab.addEventListener('click', () => {
     isOpen = true;
