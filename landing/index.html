@@ -1628,6 +1628,16 @@ document.querySelectorAll('.rotated-strip').forEach((strip, i) => {
   .milo-choice:hover {
     background: rgba(200,60,60,0.25); border-color: rgba(200,60,60,0.5);
   }
+  .milo-choice.selected {
+    background: rgba(200,60,60,0.3); border-color: #c83c3c;
+  }
+  .milo-choices-submit {
+    background: #c83c3c; color: white; border: none; border-radius: 8px;
+    padding: 8px 20px; font-family: 'Inter', sans-serif; font-size: 0.8rem;
+    font-weight: 600; cursor: pointer; transition: opacity 0.2s;
+    margin-top: 4px; display: none;
+  }
+  .milo-choices-submit:hover { opacity: 0.85; }
   .milo-msg.user {
     align-self: flex-end; background: #c83c3c; color: white;
     border-bottom-right-radius: 4px;
@@ -1891,8 +1901,12 @@ document.querySelectorAll('.rotated-strip').forEach((strip, i) => {
     const div = document.createElement('div');
     div.className = `milo-msg ${role}`;
     if (role === 'assistant') {
+      // Detect [multi] tag for multi-select
+      const isMulti = /\[multi\]/i.test(content);
+      const cleanContent = content.replace(/\[multi\]\s*/gi, '');
+
       // Extract numbered options for clickable buttons
-      const lines = content.split('\n');
+      const lines = cleanContent.split('\n');
       const options = [];
       const textLines = [];
       for (const line of lines) {
@@ -1912,18 +1926,51 @@ document.querySelectorAll('.rotated-strip').forEach((strip, i) => {
       if (options.length > 0) {
         const choicesDiv = document.createElement('div');
         choicesDiv.className = 'milo-choices';
-        options.forEach(opt => {
-          const btn = document.createElement('button');
-          btn.className = 'milo-choice';
-          btn.textContent = opt;
-          btn.addEventListener('click', () => {
-            // Remove all choice buttons (used)
-            messagesEl.querySelectorAll('.milo-choices').forEach(c => c.remove());
-            addMessage('user', opt);
-            sendToMilo(opt);
+
+        if (isMulti) {
+          // Multi-select: toggle selection, submit button sends all selected
+          const selected = new Set();
+          options.forEach(opt => {
+            const btn = document.createElement('button');
+            btn.className = 'milo-choice';
+            btn.textContent = opt;
+            btn.addEventListener('click', () => {
+              if (selected.has(opt)) {
+                selected.delete(opt);
+                btn.classList.remove('selected');
+              } else {
+                selected.add(opt);
+                btn.classList.add('selected');
+              }
+              submitBtn.style.display = selected.size > 0 ? 'block' : 'none';
+            });
+            choicesDiv.appendChild(btn);
           });
-          choicesDiv.appendChild(btn);
-        });
+          const submitBtn = document.createElement('button');
+          submitBtn.className = 'milo-choices-submit';
+          submitBtn.textContent = 'Done';
+          submitBtn.addEventListener('click', () => {
+            const answer = Array.from(selected).join(', ');
+            messagesEl.querySelectorAll('.milo-choices').forEach(c => c.remove());
+            messagesEl.querySelectorAll('.milo-choices-submit').forEach(c => c.remove());
+            addMessage('user', answer);
+            sendToMilo(answer);
+          });
+          choicesDiv.appendChild(submitBtn);
+        } else {
+          // Single-select: click sends immediately
+          options.forEach(opt => {
+            const btn = document.createElement('button');
+            btn.className = 'milo-choice';
+            btn.textContent = opt;
+            btn.addEventListener('click', () => {
+              messagesEl.querySelectorAll('.milo-choices').forEach(c => c.remove());
+              addMessage('user', opt);
+              sendToMilo(opt);
+            });
+            choicesDiv.appendChild(btn);
+          });
+        }
         messagesEl.appendChild(choicesDiv);
       }
     } else {
