@@ -856,8 +856,11 @@ tailwind.config = {
 <section class="bg-cream relative" id="closing-pin-section">
   <div id="closing-pin-wrap" style="min-height: 100vh;">
     <div class="flex items-center justify-center px-band" id="closing-pin-inner" style="min-height: 100vh;">
-      <div class="text-center">
-        <div class="font-ghost-diag text-[clamp(2.5rem,9vw,8rem)] leading-[0.85] mx-auto" id="closing-ghost">START WITH WHAT YOU HAVE</div>
+      <div class="text-center relative" id="closing-text-wrap">
+        <!-- Back layer: ghost text, words tumble up -->
+        <div class="font-display font-black text-[clamp(2.5rem,9vw,8rem)] leading-[0.85] uppercase tracking-[-0.03em] mx-auto" style="color: rgba(26,23,20,0.08);" id="closing-behind">START WITH WHAT YOU HAVE</div>
+        <!-- Front layer: filled text, clip-path wipes down to reveal -->
+        <div class="font-display font-black text-[clamp(2.5rem,9vw,8rem)] leading-[0.85] uppercase tracking-[-0.03em] mx-auto absolute inset-0" style="color: rgba(26,23,20,0.7); clip-path: polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%);" id="closing-front">START WITH WHAT YOU HAVE</div>
       </div>
     </div>
   </div>
@@ -1344,29 +1347,48 @@ if (proofStatRow && !isMobile) {
   }
 }
 
-// ——— Closing statement: pinned on cream, ghost-fill, then release to CTA (desktop only) ———
-const closingGhost = document.getElementById('closing-ghost');
-if (closingGhost && !isMobile) {
-  gsap.set(closingGhost, { opacity: 0, scale: 0.92 });
+// ——— Closing statement: ABCS two-layer reveal (words tumble up + clip wipe down) ———
+const closingBehind = document.getElementById('closing-behind');
+const closingFront = document.getElementById('closing-front');
+if (closingBehind && !isMobile) {
+  // Split back layer into words for tumble animation
+  const text = closingBehind.textContent;
+  const words = text.split(/\s+/);
+  closingBehind.innerHTML = words.map(w => `<span class="closing-word" style="display:inline-block; overflow:hidden;"><span class="closing-word-inner" style="display:inline-block;">${w}</span></span>`).join(' ');
+  // Match front layer word wrapping
+  closingFront.innerHTML = words.map(w => `<span style="display:inline-block;">${w}</span>`).join(' ');
+
+  const wordInners = closingBehind.querySelectorAll('.closing-word-inner');
+
+  // Words start below and rotated
+  gsap.set(wordInners, { yPercent: 110, rotation: 3 });
 
   const closingTl = gsap.timeline({
     scrollTrigger: {
       trigger: '#closing-pin-wrap',
       start: 'top top',
-      end: '+=1600',
+      end: '+=1400',
       pin: '#closing-pin-inner',
       scrub: 1,
     }
   });
 
-  // Fade in with a subtle scale punch
-  closingTl.to(closingGhost, { opacity: 1, scale: 1, duration: 0.2, ease: 'none' }, 0.05);
-  // Diagonal ghost fill sweeps from top-left to bottom-right
-  closingTl.to(closingGhost, { '--fill': '100%', duration: 0.5, ease: 'none' }, 0.15);
-  // Hold at full — let it land
-  closingTl.to({}, { duration: 0.2 });
-  // Fade out with slight scale up (exhale)
-  closingTl.to(closingGhost, { opacity: 0, scale: 1.05, duration: 0.2, ease: 'none' });
+  // Words tumble up into place with stagger
+  closingTl.to(wordInners, {
+    yPercent: 0, rotation: 0, duration: 0.4, ease: 'none',
+    stagger: 0.06,
+  }, 0.05);
+
+  // Clip-path wipe reveals the filled front layer (top to bottom)
+  closingTl.fromTo(closingFront, {
+    clipPath: 'polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)',
+  }, {
+    clipPath: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
+    duration: 0.4, ease: 'none',
+  }, 0.3);
+
+  // Hold
+  closingTl.to({}, { duration: 0.25 });
 }
 
 // ——— Coverage bar animations ———
