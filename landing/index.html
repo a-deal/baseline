@@ -1597,6 +1597,22 @@ document.querySelectorAll('.rotated-strip').forEach((strip, i) => {
     align-self: flex-start; background: rgba(255,255,255,0.06); color: #e0e0e0;
     border-bottom-left-radius: 4px;
   }
+  .milo-msg.assistant p { margin: 0 0 8px; }
+  .milo-msg.assistant p:last-child { margin-bottom: 0; }
+  .milo-msg.assistant ol, .milo-msg.assistant ul {
+    margin: 8px 0; padding-left: 0; list-style: none;
+  }
+  .milo-msg.assistant li {
+    padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.05);
+    font-weight: 500;
+  }
+  .milo-msg.assistant li:last-child { border-bottom: none; }
+  .milo-msg.assistant ol { counter-reset: milo; }
+  .milo-msg.assistant ol li { counter-increment: milo; }
+  .milo-msg.assistant ol li::before {
+    content: counter(milo) ". ";
+    color: #c83c3c; font-weight: 700; margin-right: 4px;
+  }
   .milo-msg.user {
     align-self: flex-end; background: #c83c3c; color: white;
     border-bottom-right-radius: 4px;
@@ -1735,10 +1751,35 @@ document.querySelectorAll('.rotated-strip').forEach((strip, i) => {
     sendToMilo(text);
   }
 
+  function formatChat(text) {
+    // Escape HTML
+    const esc = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    // Split into paragraphs by double newlines
+    const blocks = esc.split(/\n\n+/);
+    return blocks.map(block => {
+      const lines = block.split('\n');
+      // Check if block is a numbered or bulleted list
+      const isList = lines.every(l => /^\s*(\d+[\.\)]\s|[-*]\s)/.test(l) || !l.trim());
+      if (isList && lines.filter(l => l.trim()).length > 1) {
+        const items = lines.filter(l => l.trim()).map(l =>
+          '<li>' + l.replace(/^\s*(\d+[\.\)]|[-*])\s*/, '') + '</li>'
+        ).join('');
+        const isOrdered = /^\s*\d/.test(lines.find(l => l.trim()) || '');
+        return isOrdered ? '<ol>' + items + '</ol>' : '<ul>' + items + '</ul>';
+      }
+      // Regular paragraph, preserve single newlines as <br>
+      return '<p>' + lines.join('<br>') + '</p>';
+    }).join('');
+  }
+
   function addMessage(role, content) {
     const div = document.createElement('div');
     div.className = `milo-msg ${role}`;
-    div.textContent = content;
+    if (role === 'assistant') {
+      div.innerHTML = formatChat(content);
+    } else {
+      div.textContent = content;
+    }
     messagesEl.appendChild(div);
     messagesEl.scrollTop = messagesEl.scrollHeight;
   }
